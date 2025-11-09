@@ -492,6 +492,7 @@ internal class CSkin : IDisposable
         int size = 0;
         for (int i = 0; i < tempSkinSubfolders.Length; i++)
         {
+            tempSkinSubfolders[i] = tempSkinSubfolders[i].Replace(System.IO.Path.DirectorySeparatorChar, '/');
             #region [ 検出したフォルダがスキンフォルダかどうか確認する]
             if (!bIsValid(tempSkinSubfolders[i]))
                 continue;
