@@ -11,12 +11,12 @@ class TextureLoader
     const string TITLE = @"1_Title/";
     const string CONFIG = @"2_Config/";
     const string SONGSELECT = @"3_SongSelect/";
-    const string SONGSELECTV2 = @"3.1_SongSelect_v2/";
+    const string SONGSELECTV2 = @"3_SongSelect_v2/";
     const string SONGLOADING = @"4_SongLoading/";
-    const string SONGLOADINGV2 = @"4.1_SongLoading_v2/";
+    const string SONGLOADINGV2 = @"4_SongLoading_v2/";
     const string GAME = @"5_Game/";
     const string RESULT = @"6_Result/";
-    const string RESULTV2 = @"6.1_Result_v2/";
+    const string RESULTV2 = @"6_Result_v2/";
     const string EXIT = @"7_Exit/";
 
     // InSongSelect
@@ -43,7 +43,7 @@ class TextureLoader
     const string PUCHICHARA = @"18_PuchiChara/";
     const string TRAINING = @"19_Training/";
     const string DANC = @"17_DanC/";
-    const string DANCV2 = @"17.1_DanC_V2/";
+    const string DANCV2 = @"17_DanC_V2/";
 
     public bool IsLoaded = false;
 
