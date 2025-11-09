@@ -52,6 +52,7 @@
     <Copyright>Copyright(C) 2000-2013 DTXMania Group</Copyright>
     <Version>21.0.0.0</Version>
     <NeutralLanguage>ja-JP</NeutralLanguage>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
 </Project>
