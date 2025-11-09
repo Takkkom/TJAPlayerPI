@@ -1,0 +1,19 @@
+*.cs text diff=csharp eol=crlf
+*.csproj text eol=crlf
+*.sln text eol=crlf
+
+*.md text eol=lf
+*.yml text eol=lf
+
+*.def text eol=crlf working-tree-encoding=cp932
+*.lrc text eol=crlf working-tree-encoding=cp932
+*.tja text eol=crlf working-tree-encoding=cp932
+
+*.dll binary
+*.dylib binary
+*.ico binary
+*.ogg binary
+*.png binary
+*.so binary
+*.ttf binary
+*.wav binary
