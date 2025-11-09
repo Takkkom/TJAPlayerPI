@@ -3,7 +3,7 @@ using SkiaSharp;
 
 namespace TJAPlayerPI;
 
-internal class TJAPlayerPI : Game
+public class TJAPlayerPI : Game
 {
     // プロパティ
     #region [ properties ]
@@ -24,12 +24,12 @@ internal class TJAPlayerPI : Game
         get;
         private set;
     }
-    public C文字コンソール act文字コンソール
+    internal C文字コンソール act文字コンソール
     {
         get;
         private set;
     }
-    public CConfigIni ConfigIni
+    internal CConfigIni ConfigIni
     {
         get;
         private set;
@@ -39,7 +39,7 @@ internal class TJAPlayerPI : Game
         get;
         private set;
     }
-    public static CDTX[] DTX
+    internal static CDTX[] DTX
     {
         get
         {
@@ -84,27 +84,27 @@ internal class TJAPlayerPI : Game
         get;
         private set;
     }
-    public CSkin Skin
+    internal CSkin Skin
     {
         get;
         private set;
     }
-    public static CSongsManager SongsManager
+    internal static CSongsManager SongsManager
     {
         get;
         set;    // 2012.1.26 yyagi private解除 CStage起動でのdesirialize読み込みのため
     }
-    public static CEnumSongs EnumSongs
+    internal static CEnumSongs EnumSongs
     {
         get;
         private set;
     }
-    public static CActEnumSongs actEnumSongs
+    internal static CActEnumSongs actEnumSongs
     {
         get;
         private set;
     }
-    public static CActScanningLoudness actScanningLoudness
+    internal static CActScanningLoudness actScanningLoudness
     {
         get;
         private set;
@@ -128,52 +128,52 @@ internal class TJAPlayerPI : Game
         private set;
     }
 
-    public static CStageStartUp stageStartUp
+    internal static CStageStartUp stageStartUp
     {
         get;
         private set;
     }
-    public static CStageTitle stageTitle
+    internal static CStageTitle stageTitle
     {
         get;
         private set;
     }
-    public static CStageConfig stageConfig
+    internal static CStageConfig stageConfig
     {
         get;
         private set;
     }
-    public static CStage選曲 stage選曲
+    internal static CStage選曲 stage選曲
     {
         get;
         private set;
     }
-    public static CStageSongLoading stageSongLoading
+    internal static CStageSongLoading stageSongLoading
     {
         get;
         private set;
     }
-    public static CStage演奏画面共通 stage演奏ドラム画面
+    internal static CStage演奏画面共通 stage演奏ドラム画面
     {
         get;
         private set;
     }
-    public static CStageResult stageResult
+    internal static CStageResult stageResult
     {
         get;
         private set;
     }
-    public static CStageChangeSkin stageChangeSkin
+    internal static CStageChangeSkin stageChangeSkin
     {
         get;
         private set;
     }
-    public static CStageEnding stageEnding
+    internal static CStageEnding stageEnding
     {
         get;
         private set;
     }
-    public static CStageMaintenance stageMaintenance
+    internal static CStageMaintenance stageMaintenance
     {
         get;
         private set;
@@ -186,7 +186,7 @@ internal class TJAPlayerPI : Game
         get;
         private set;
     }
-    public DiscordRichPresence Discord
+    internal DiscordRichPresence Discord
     {
         get;
         private set;
@@ -214,6 +214,12 @@ internal class TJAPlayerPI : Game
         get;
         set;
     }
+
+    public static string SkinName = "Unknown";
+    public static string SkinVersion = "Unknown";
+    public static string SkinCreator = "Unknown";
+    public static string Renderer = "Unknown";
+
     #endregion
 
     // コンストラクタ
@@ -223,7 +229,7 @@ internal class TJAPlayerPI : Game
     {
         TJAPlayerPI.app = this;
 
-        Program.Renderer = this.RendererName;
+        Renderer = this.RendererName;
         #region [ Config.toml の読み込み ]
         string tomlpath = strEXEのあるフォルダ + "Config.toml";
         ConfigToml = CConfigToml.Load(tomlpath);
@@ -1338,7 +1344,7 @@ internal class TJAPlayerPI : Game
     private long 前回のシステム時刻ms = long.MinValue;
     private static CDTX[] dtx = new CDTX[4];
 
-    public TextureLoader Tx = new TextureLoader();
+    internal TextureLoader Tx = new TextureLoader();
 
     private List<CActivity> listトップレベルActivities;
     private int n進行描画の戻り値;

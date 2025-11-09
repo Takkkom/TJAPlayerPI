@@ -646,9 +646,9 @@ internal class CSkin : IDisposable
         Console.WriteLine(Tomlyn.Toml.FromModel(this.SkinConfig, tomlModelOptions));
 #endif
         this.SkinConfig = Toml.ToModel<CSkinConfig>(strToml, null, tomlModelOptions);
-        Program.SkinName = this.SkinConfig.General.Name;
-        Program.SkinCreator = this.SkinConfig.General.Creator;
-        Program.SkinVersion = this.SkinConfig.General.Version;
+        TJAPlayerPI.SkinName = this.SkinConfig.General.Name;
+        TJAPlayerPI.SkinCreator = this.SkinConfig.General.Creator;
+        TJAPlayerPI.SkinVersion = this.SkinConfig.General.Version;
         CFontRenderer.SetRotate_Chara_List_Vertical(this.SkinConfig.SongSelect.RotateChara);
         CFontRenderer.SetTextCorrectionX_Chara_List_Vertical(this.SkinConfig.SongSelect.CorrectionXChara);
         CFontRenderer.SetTextCorrectionY_Chara_List_Vertical(this.SkinConfig.SongSelect.CorrectionYChara);
