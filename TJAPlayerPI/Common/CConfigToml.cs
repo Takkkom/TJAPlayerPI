@@ -57,7 +57,7 @@ public class CConfigToml
     public class CGeneral
     {
         public string Version { get; set; } = "Unknown";
-        public string[] ChartPath { get; set; } = new string[] { "./Songs/" };
+        public string[] ChartPath { get; set; } = new string[] { Path.Combine(TJAPlayerPI.strEXEのあるフォルダ, "Songs").Replace('\\', '/') };
         public string SkinPath
         {
             get

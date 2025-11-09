@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FDK19", "FDK19\FDK19.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TJAPlayerPI.Desktop", "TJAPlayerPI.Desktop\TJAPlayerPI.Desktop.csproj", "{BEF37C2C-72D6-4C08-BC8A-1CCCE3AFDC11}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TJAPlayerPI.Android", "TJAPlayerPI.Android\TJAPlayerPI.Android.csproj", "{BB67AB88-87AF-44CD-881A-E9210C559D8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,12 @@ Global
 		{BEF37C2C-72D6-4C08-BC8A-1CCCE3AFDC11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEF37C2C-72D6-4C08-BC8A-1CCCE3AFDC11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEF37C2C-72D6-4C08-BC8A-1CCCE3AFDC11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB67AB88-87AF-44CD-881A-E9210C559D8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB67AB88-87AF-44CD-881A-E9210C559D8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB67AB88-87AF-44CD-881A-E9210C559D8B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{BB67AB88-87AF-44CD-881A-E9210C559D8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB67AB88-87AF-44CD-881A-E9210C559D8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB67AB88-87AF-44CD-881A-E9210C559D8B}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

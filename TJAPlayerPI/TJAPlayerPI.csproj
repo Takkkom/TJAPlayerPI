@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -37,9 +37,9 @@
 
   <ItemGroup>
     <None Include="ThirdPartyLicenses/**" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Songs/**" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="System/**" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Docs/**" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Songs/**" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="System/**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

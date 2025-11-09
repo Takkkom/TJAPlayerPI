@@ -229,15 +229,16 @@ public class TJAPlayerPI : Game
     {
         TJAPlayerPI.app = this;
 
+        ExportEmbeddedFiles();
         Renderer = this.RendererName;
         #region [ Config.toml の読み込み ]
-        string tomlpath = strEXEのあるフォルダ + "Config.toml";
+        string tomlpath = Path.Combine(strEXEのあるフォルダ, "Config.toml");
         ConfigToml = CConfigToml.Load(tomlpath);
         #endregion
         #region [ Config.ini の読込み ]
         //---------------------
         ConfigIni = new CConfigIni();
-        string path = strEXEのあるフォルダ + "Config.ini";
+        string path = Path.Combine(strEXEのあるフォルダ, "Config.ini");
         if (File.Exists(path))
         {
             try
@@ -1607,7 +1608,7 @@ public class TJAPlayerPI : Game
             #region [ Config.iniの出力 ]
             //---------------------
             Trace.TraceInformation("Config.ini を出力します。");
-            string str = strEXEのあるフォルダ + "Config.ini";
+            string str = Path.Combine(strEXEのあるフォルダ, "Config.ini");
             Trace.Indent();
             try
             {
@@ -1645,7 +1646,7 @@ public class TJAPlayerPI : Game
             //---------------------
             #endregion
             #region [ Config.toml の出力]
-            string tomlpath = strEXEのあるフォルダ + "Config.toml";
+            string tomlpath = Path.Combine(strEXEのあるフォルダ, "Config.toml");
             ConfigToml.Save(tomlpath);
             #endregion
             Trace.TraceInformation("アプリケーションの終了処理を完了しました。");
@@ -1692,6 +1693,60 @@ public class TJAPlayerPI : Game
 
         TJAPlayerPI.app.act文字コンソール.On活性化();
     }
+
+    private void ExportEmbeddedFiles()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        string[] exts = new string[] { "txt", "png", "ogg", "wav", "tja", "def", "lua", "mp3", "otf", "ttf", "so", "dll", "dylib", "md", "toml", "json", "ico" };
+        foreach (string item in assembly.GetManifestResourceNames())
+        {
+            string fileName = item.Remove(0, "TJAPlayerPI.".Length);
+            fileName = fileName.Replace('.', '/');
+
+            foreach (var ext in exts)
+            {
+                fileName = fileName.Replace($"/{ext}", $".{ext}");
+            }
+
+            FileInfo fileInfo = new FileInfo(fileName);
+
+            string oldDirPath = Path.Combine(strEXEのあるフォルダ, Path.GetDirectoryName(fileName) ?? "");
+            string dirPath = "";
+            foreach (var item1 in oldDirPath.Split('/', '\\'))
+            {
+                string line = item1;
+                if (line.StartsWith("_"))
+                {
+                    line = line.Remove(0, 1);
+                }
+                dirPath += line + "/";
+            }
+
+            if (!Directory.Exists(dirPath))
+            {
+                Debug.Print($"create: {dirPath}");
+                Directory.CreateDirectory(dirPath);
+            }
+
+            string nextFileName = dirPath + Path.GetFileName(fileName);
+            if (File.Exists(nextFileName))
+            {
+                continue;
+            }
+
+            using Stream? stream = assembly.GetManifestResourceStream(item);
+            if (stream is null)
+            {
+                continue;
+            }
+            byte[] buffer = new byte[stream.Length];
+            stream.Read(buffer);
+
+            using Stream newStream = File.OpenWrite(nextFileName);
+            newStream.Write(buffer);
+        }
+    }
+
     #region [ Windowイベント処理 ]
     //-----------------
     private void Window_MouseWheel(object? sender, FDK.Windowing.MouseWheelEventArgs? e)
