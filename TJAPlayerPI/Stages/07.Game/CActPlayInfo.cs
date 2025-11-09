@@ -55,7 +55,6 @@ internal class CActPlayInfo : CActivity
             string.Format("Part:          {0:####0}/{1:####0}", NowMeasure[0], NowMeasure[1]),
             string.Format("Time:          {0:####0.00}/{1:####0.00}", ((double)(CSoundManager.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0))) / 1000.0, ((double)lastChipTime) / 1000.0),
             string.Format("BGM/Taiko Adj: {0:####0}/{1:####0} ms", TJAPlayerPI.DTX[0].nBGMAdjust, TJAPlayerPI.app.ConfigToml.PlayOption.InputAdjustTimeMs),
-            string.Format("Sound CPU :    {0:####0.00}%", TJAPlayerPI.SoundManager.CPUUsage ),
         };
 
         for (int i = 0; i < infoList.Length; i++)

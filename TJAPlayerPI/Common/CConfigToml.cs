@@ -29,15 +29,6 @@ public class CConfigToml
     private const int MaximumKeyboardSoundLevelIncrement = 20;
     private const int DefaultKeyboardSoundLevelIncrement = 5;
 
-    public enum ESoundDeviceTypeForConfig
-    {
-        BASS = 0,
-        ASIO,
-        WASAPI_Exclusive,
-        WASAPI_Shared,
-        Unknown = 99,
-    }
-
     public bool NotExistOrIncorrectVersion { get; private set; } = true;
 
     //Configから読み込ませないのならフィールドに
@@ -126,9 +117,9 @@ public class CConfigToml
         public int DeviceType
         {
             get { return _DeviceType; }
-            set { _DeviceType = Math.Clamp(value, 0, 4); }
+            set { _DeviceType = Math.Clamp(value, 0, 6); }
         }
-        private int _DeviceType = (int)(OperatingSystem.IsWindows() ? ESoundDeviceTypeForConfig.WASAPI_Shared : ESoundDeviceTypeForConfig.BASS);
+        private int _DeviceType = (int)(OperatingSystem.IsWindows() ? ESoundDeviceType.SharedWASAPI : ESoundDeviceType.BASS);
         public int WASAPIBufferSizeMs
         {
             get { return _WASAPIBufferSizeMs; }

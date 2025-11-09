@@ -1,4 +1,6 @@
-﻿namespace FDK;
+﻿using FDK.Sound;
+
+namespace FDK;
 
 #region [ DTXMania用拡張 ]
 public class CSoundManager  // : CSound
@@ -72,20 +74,6 @@ public class CSoundManager  // : CSound
     private static int SoundDelayASIO = 0;                       // 0にすると、デバイスの設定値をそのまま使う。
     private static int ASIODevice = 0;
 
-    public long GetSoundDelay()
-    {
-        if (SoundDevice is not null)
-        {
-            return SoundDevice.nBufferSizems;
-        }
-        else
-        {
-            return -1;
-        }
-    }
-
-    public float CPUUsage => (SoundDevice is not null ? SoundDevice.CPUUsage : 0);
-
     #endregion
 
 
@@ -119,12 +107,14 @@ public class CSoundManager  // : CSound
         ASIODevice = _nASIODevice;
         bUseOSTimer = _bUseOSTimer;
 
-        ESoundDeviceType[] ESoundDeviceTypes = new ESoundDeviceType[5]
+        ESoundDeviceType[] ESoundDeviceTypes = new ESoundDeviceType[7]
         {
+            ESoundDeviceType.BASS,
             ESoundDeviceType.SharedWASAPI,
             ESoundDeviceType.ExclusiveWASAPI,
             ESoundDeviceType.ASIO,
-            ESoundDeviceType.BASS,
+            ESoundDeviceType.SDL,
+            ESoundDeviceType.OpenAL,
             ESoundDeviceType.Unknown
         };
 
@@ -186,22 +176,24 @@ public class CSoundManager  // : CSound
         //-----------------
         switch (SoundDeviceType)
         {
-            case ESoundDeviceType.ExclusiveWASAPI:
-                SoundDevice = new CSoundDeviceWASAPI(CSoundDeviceWASAPI.EWASAPIMode.Exclusive, SoundDelayExclusiveWASAPI, SoundUpdatePeriodExclusiveWASAPI);
-                break;
-
-            case ESoundDeviceType.SharedWASAPI:
-                SoundDevice = new CSoundDeviceWASAPI(CSoundDeviceWASAPI.EWASAPIMode.Shared, SoundDelaySharedWASAPI, SoundUpdatePeriodSharedWASAPI);
-                break;
-
-            case ESoundDeviceType.ASIO:
-                SoundDevice = new CSoundDeviceASIO(SoundDelayASIO, ASIODevice);
-                break;
-
             case ESoundDeviceType.BASS:
                 SoundDevice = new CSoundDeviceBASS(SoundUpdatePeriodBASS, SoundDelayBASS);
                 break;
-
+            case ESoundDeviceType.SharedWASAPI:
+                SoundDevice = new CSoundDeviceWASAPI(CSoundDeviceWASAPI.EWASAPIMode.Shared, SoundDelaySharedWASAPI, SoundUpdatePeriodSharedWASAPI);
+                break;
+            case ESoundDeviceType.ExclusiveWASAPI:
+                SoundDevice = new CSoundDeviceWASAPI(CSoundDeviceWASAPI.EWASAPIMode.Exclusive, SoundDelayExclusiveWASAPI, SoundUpdatePeriodExclusiveWASAPI);
+                break;
+            case ESoundDeviceType.ASIO:
+                SoundDevice = new CSoundDeviceASIO(SoundDelayASIO, ASIODevice);
+                break;
+            case ESoundDeviceType.SDL:
+                SoundDevice = new CSoundDeviceSDL();
+                break;
+            case ESoundDeviceType.OpenAL:
+                SoundDevice = new CSoundDeviceOpenAL();
+                break;
             default:
                 throw new Exception(string.Format("未対応の SoundDeviceType です。[{0}]", SoundDeviceType.ToString()));
         }
@@ -241,28 +233,34 @@ public class CSoundManager  // : CSound
     {
         switch (SoundDeviceType)
         {
-            case ESoundDeviceType.ExclusiveWASAPI:
-                return "WASAPI(Exclusive)";
-            case ESoundDeviceType.SharedWASAPI:
-                return "WASAPI(Shared)";
-            case ESoundDeviceType.ASIO:
-                return "ASIO";
             case ESoundDeviceType.BASS:
                 return "BASS";
+            case ESoundDeviceType.SharedWASAPI:
+                return "WASAPI(Shared)";
+            case ESoundDeviceType.ExclusiveWASAPI:
+                return "WASAPI(Exclusive)";
+            case ESoundDeviceType.ASIO:
+                return "ASIO";
+            case ESoundDeviceType.SDL:
+                return "SDL";
+            case ESoundDeviceType.OpenAL:
+                return "OpenAL";
             default:
                 return "Unknown";
         }
     }
 
+    /*
     public void AddMixer(CSound cs, double db再生速度, bool _b演奏終了後も再生が続くチップである)
     {
         cs.b演奏終了後も再生が続くチップである = _b演奏終了後も再生が続くチップである;
         cs.dbPlaySpeed = db再生速度;
-        cs.tBASSサウンドをミキサーに追加する();
+        //cs.tBASSサウンドをミキサーに追加する();
     }
     public void RemoveMixer(CSound cs)
     {
-        cs.tBASSサウンドをミキサーから削除する();
+        //cs.tBASSサウンドをミキサーから削除する();
     }
+    */
 }
 #endregion

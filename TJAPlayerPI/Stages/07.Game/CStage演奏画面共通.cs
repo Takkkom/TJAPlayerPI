@@ -226,8 +226,6 @@ internal class CStage演奏画面共通 : CStage
         //			this.nRisky = CDTXMania.ConfigIni.nRisky;											// #23559 2011.7.28 yyagi
         actGauge.Init(TJAPlayerPI.app.ConfigToml.PlayOption.Risky);									// #23559 2011.7.28 yyagi
 
-        TJAPlayerPI.app.Skin.tRemoveMixerAll();	// 効果音のストリームをミキサーから解除しておく
-
         queueMixerSound = new Queue<STMixer>(64);
         this.bPAUSE = false;
 
@@ -247,7 +245,7 @@ internal class CStage演奏画面共通 : CStage
                     {
                         if (wc.rSound is not null)
                         {
-                            TJAPlayerPI.SoundManager.AddMixer(wc.rSound, db再生速度, pChip.b演奏終了後も再生が続くチップである);
+                            wc.rSound.t再生を開始する();
                         }
                     }
                 }
@@ -840,11 +838,11 @@ internal class CStage演奏画面共通 : CStage
                     STMixer stm = queueMixerSound.Dequeue();
                     if (stm.bIsAdd)
                     {
-                        TJAPlayerPI.SoundManager.AddMixer(stm.csound, db再生速度, stm.b演奏終了後も再生が続くチップである);
+                        stm.csound.t再生を開始する();
                     }
                     else
                     {
-                        TJAPlayerPI.SoundManager.RemoveMixer(stm.csound);
+                        stm.csound.t再生を停止する();
                     }
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using ManagedBass;
 using ManagedBass.Mix;
+using NAudio.Wave;
 
 namespace FDK;
 
@@ -174,17 +175,17 @@ public class CSoundDeviceBASS : ISoundDevice
     public CSound tCreateSound(string strFilename, ESoundGroup soundGroup)
     {
         var sound = new CSound(soundGroup);
-        sound.tBASSサウンドを作成する(strFilename, this.hMixer, this.eOutputDevice, BassFlags.Decode);
+        sound.SoundImpl = new CSoundImplBass(strFilename, this.hMixer, soundGroup);
         return sound;
     }
 
     public void tCreateSound(string strFilename, CSound sound)
     {
-        sound.tBASSサウンドを作成する(strFilename, this.hMixer, this.eOutputDevice, BassFlags.Decode);
+        sound.SoundImpl = new CSoundImplBass(strFilename, this.hMixer, sound.SoundGroup);
     }
-    public void tCreateSound(byte[] byArrWAVFileImage, CSound sound)
+    public void tCreateSound(byte[] byArrWAVファイルイメージ, CSound sound)
     {
-        sound.tBASSサウンドを作成する(byArrWAVFileImage, this.hMixer, this.eOutputDevice, BassFlags.Decode);
+        sound.SoundImpl = new CSoundImplBass(byArrWAVファイルイメージ, this.hMixer, sound.SoundGroup);
     }
     #endregion
 

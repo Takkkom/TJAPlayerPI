@@ -229,17 +229,6 @@ internal class CSkin : IDisposable
                 r最後に再生した排他システムサウンド = null;
         }
 
-        public void tRemoveMixer()
-        {
-            for (int i = 0; i < 2; i++)
-            {
-                if (this.rSound[i] is not null)
-                {
-                    TJAPlayerPI.SoundManager.RemoveMixer(this.rSound[i]);
-                }
-            }
-        }
-
         #region [ IDisposable 実装 ]
         //-----------------
         public void Dispose()
@@ -613,20 +602,6 @@ internal class CSkin : IDisposable
         string filePathTitle;
         filePathTitle = System.IO.Path.Combine(skinPathFullName, @"Graphics/1_Title/Background.png");
         return (File.Exists(filePathTitle));
-    }
-
-
-    public void tRemoveMixerAll()
-    {
-        for (int i = 0; i < nシステムサウンド数; i++)
-        {
-            if (this[i] is not null && this[i].b読み込み成功)
-            {
-                this[i].t停止する();
-                this[i].tRemoveMixer();
-            }
-        }
-
     }
 
     public void tReadSkinConfig()

@@ -248,7 +248,7 @@ internal class CActConfigList : CActivity
             "\n" +
             "Note: Exit CONFIGURATION to make\n" +
             "     the setting take effect.",
-            new string[] { "BASS", "ASIO", "WASAPI(Exclusive)", "WASAPI(Shared)" });
+            new string[] { "BASS", "WASAPI(Shared)", "WASAPI(Exclusive)", "ASIO", "SDL", "OpenAL" });
         this.list項目リスト.Add(this.iSystemSoundType);
 
         // #24820 2013.1.15 yyagi
@@ -1032,25 +1032,7 @@ internal class CActConfigList : CActivity
                 this.iSystemBASSBufferSizeMs_initial != this.iSystemBASSBufferSizeMs.nValue ||
             this.iSystemSoundTimerType_initial != this.iSystemSoundTimerType.GetIndex())
         {
-            ESoundDeviceType soundDeviceType;
-            switch (this.iSystemSoundType.n現在選択されている項目番号)
-            {
-                case 0:
-                    soundDeviceType = ESoundDeviceType.BASS;
-                    break;
-                case 1:
-                    soundDeviceType = ESoundDeviceType.ASIO;
-                    break;
-                case 2:
-                    soundDeviceType = ESoundDeviceType.ExclusiveWASAPI;
-                    break;
-                case 3:
-                    soundDeviceType = ESoundDeviceType.SharedWASAPI;
-                    break;
-                default:
-                    soundDeviceType = ESoundDeviceType.Unknown;
-                    break;
-            }
+            ESoundDeviceType soundDeviceType = (ESoundDeviceType)this.iSystemSoundType.n現在選択されている項目番号;
             TJAPlayerPI.SoundManager.tInitialize(soundDeviceType,
                                     this.iSystemWASAPIBufferSizeMs.nValue,
                                     0,

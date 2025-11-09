@@ -630,7 +630,7 @@ internal class CDTX : CActivity
             {
                 if (bミキサーからも削除する)
                 {
-                    cwav.rSound.tサウンドを停止してMixerからも削除する();
+                    cwav.rSound.t再生を停止する();
                 }
                 else
                 {

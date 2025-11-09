@@ -447,25 +447,7 @@ public class TJAPlayerPI : Game
         Trace.Indent();
         try
         {
-            ESoundDeviceType soundDeviceType;
-            switch (TJAPlayerPI.app.ConfigToml.SoundDevice.DeviceType)
-            {
-                case 0:
-                    soundDeviceType = ESoundDeviceType.BASS;
-                    break;
-                case 1:
-                    soundDeviceType = ESoundDeviceType.ASIO;
-                    break;
-                case 2:
-                    soundDeviceType = ESoundDeviceType.ExclusiveWASAPI;
-                    break;
-                case 3:
-                    soundDeviceType = ESoundDeviceType.SharedWASAPI;
-                    break;
-                default:
-                    soundDeviceType = ESoundDeviceType.Unknown;
-                    break;
-            }
+            ESoundDeviceType soundDeviceType = (ESoundDeviceType)TJAPlayerPI.app.ConfigToml.SoundDevice.DeviceType;
             SoundManager = new CSoundManager(soundDeviceType,
                                         TJAPlayerPI.app.ConfigToml.SoundDevice.WASAPIBufferSizeMs,
                                         0,
@@ -1362,9 +1344,8 @@ public class TJAPlayerPI : Game
 
     public void ShowWindowTitleWithSoundType()
     {
-        string delay = "(" + SoundManager.GetSoundDelay() + "ms)";
         AssemblyName asmApp = Assembly.GetExecutingAssembly().GetName();
-        base.Title = asmApp.Name + " Ver." + VERSION + " (" + SoundManager.GetCurrentSoundDeviceType() + delay + ")";
+        base.Title = asmApp.Name + " Ver." + VERSION + " (" + SoundManager.GetCurrentSoundDeviceType() + ")";
     }
 
     private void t終了処理()

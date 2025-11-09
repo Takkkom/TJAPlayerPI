@@ -2,9 +2,11 @@
 
 public enum ESoundDeviceType
 {
-    ExclusiveWASAPI,
-    SharedWASAPI,
-    ASIO,
     BASS,
+    SharedWASAPI,
+    ExclusiveWASAPI,
+    ASIO,
+    SDL,
+    OpenAL,
     Unknown,
 }
