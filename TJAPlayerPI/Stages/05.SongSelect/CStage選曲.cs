@@ -487,25 +487,23 @@ internal class CStage選曲 : CStage
                             return 0;
                         }
                         #endregion
-#if PLAYABLE
                         #region [ F3 1PオートON/OFF ]
-                        if (TJAPlayer3.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.F3))
+                        if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.F3))
                         {
-                            TJAPlayer3.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音].t再生する();
-                            TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[0] = !TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[0];
+                            TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音].t再生する();
+                            TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[0] = !TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[0];
                         }
                         #endregion
                         #region [ F4 2PオートON/OFF ]
-                        if (TJAPlayer3.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.F4))
+                        if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.F4))
                         {
-                            if (TJAPlayer3.app.ConfigToml.PlayOption.PlayerCount > 1)
+                            if (TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount > 1)
                             {
-                                TJAPlayer3.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音].t再生する();
-                                TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[1] = !TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[1];
+                                TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音].t再生する();
+                                TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[1] = !TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[1];
                             }
                         }
                         #endregion
-#endif
                         #region [ F5 スーパーハード ]
                         if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.F5))
                         {
@@ -778,25 +776,23 @@ internal class CStage選曲 : CStage
                             return 0;
                         }
                         #endregion
-#if PLAYABLE
                         #region [ F3 1PオートON/OFF ]
-                        if (TJAPlayer3.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.F3))
+                        if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.F3))
                         {
-                            TJAPlayer3.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音].t再生する();
-                            TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[0] = !TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[0];
+                            TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音].t再生する();
+                            TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[0] = !TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[0];
                         }
                         #endregion
                         #region [ F4 2PオートON/OFF ]
-                        if (TJAPlayer3.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.F4))
+                        if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.F4))
                         {
-                            if (TJAPlayer3.app.ConfigToml.PlayOption.PlayerCount > 1)
+                            if (TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount > 1)
                             {
-                                TJAPlayer3.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音].t再生する();
-                                TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[1] = !TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[1];
+                                TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音].t再生する();
+                                TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[1] = !TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[1];
                             }
                         }
                         #endregion
-#endif
                         #region [ F5 スーパーハード ]
                         if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.F5))
                         {

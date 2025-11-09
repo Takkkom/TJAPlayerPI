@@ -458,21 +458,19 @@ internal class CActConfigList : CActivity
         this.list項目リスト.Add(this.iDrumsReturnToMenu);
 
         #region [ AutoPlay ]
-#if PLAYABLE
-        this.iTaikoAutoPlay = new CItemToggle( "AUTO PLAY", TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[0],
+        this.iTaikoAutoPlay = new CItemToggle( "AUTO PLAY", TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[0],
             "すべての音符を自動で演奏します。\n" +
             "",
             "To play both Taiko\n" +
             " automatically." );
         this.list項目リスト.Add( this.iTaikoAutoPlay );
 
-        this.iTaikoAutoPlay2P = new CItemToggle( "AUTO PLAY 2P", TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[1],
+        this.iTaikoAutoPlay2P = new CItemToggle( "AUTO PLAY 2P", TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[1],
             "すべての音符を自動で演奏します。\n" +
             "",
             "To play both Taiko\n" +
             " automatically." );
         this.list項目リスト.Add( this.iTaikoAutoPlay2P );
-#endif
 
         this.iTaikoAutoRoll = new CItemToggle("AUTO Roll", TJAPlayerPI.app.ConfigToml.PlayOption.AutoRoll,
             "OFFにするとAUTO先生が黄色連打を\n" +
@@ -1486,10 +1484,8 @@ internal class CActConfigList : CActivity
     private CItemInteger iDrumsScrollSpeed1P;
     private CItemInteger iDrumsScrollSpeed2P;
     private CItemToggle iDrumsTight;
-#if PLAYABLE
     private CItemToggle iTaikoAutoPlay;
     private CItemToggle iTaikoAutoPlay2P;
-#endif
     private CItemToggle iTaikoAutoRoll;
     private CItemList iTaikoDefaultCourse; //2017.01.30 DD デフォルトでカーソルをあわせる難易度
     private CItemList iTaikoScoreMode;
@@ -1612,10 +1608,8 @@ internal class CActConfigList : CActivity
     }
     private void tConfigIniへ記録する_Drums()
     {
-#if PLAYABLE
-        TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[0] = this.iTaikoAutoPlay.bON;
-        TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[1] = this.iTaikoAutoPlay2P.bON;
-#endif
+        TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[0] = this.iTaikoAutoPlay.bON;
+        TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[1] = this.iTaikoAutoPlay2P.bON;
         TJAPlayerPI.app.ConfigToml.PlayOption.AutoRoll = this.iTaikoAutoRoll.bON;
 
         TJAPlayerPI.app.ConfigToml.PlayOption.ScrollSpeed[0] = this.iDrumsScrollSpeed1P.nValue;

@@ -2609,18 +2609,16 @@ internal class CStage演奏画面共通 : CStage
             {
                 TJAPlayerPI.app.ConfigToml.Game.Background._ClipDispType = (EClipDispType)(((int)TJAPlayerPI.app.ConfigToml.Game.Background._ClipDispType + 1) % 4);
             }
-#if PLAYABLE
             if ( keyboard.bIsKeyPressed( (int)SlimDXKeys.Key.F6 ) )
             {
-                TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[0] = !TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[0];
+                TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[0] = !TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[0];
                 this.b途中でAutoを切り替えたか[0] = true;
             }
             if ( keyboard.bIsKeyPressed( (int)SlimDXKeys.Key.F7 ) )
             {
-                TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[1] = !TJAPlayer3.app.ConfigToml.PlayOption.AutoPlay[1];
+                TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[1] = !TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[1];
                 this.b途中でAutoを切り替えたか[1] = true;
             }
-#endif
         }
         if (!this.actPauseMenu.bIsActivePopupMenu && this.bPAUSE && ((base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED)) && (base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut))
         {

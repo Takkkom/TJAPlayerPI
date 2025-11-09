@@ -763,11 +763,9 @@ public class CConfigToml
             sw.WriteLine("# Fixed score mode");
             sw.WriteLine("{0} = [ {1} ]", nameof(this.PlayOption.Shinuchi), string.Join(", ", this.PlayOption.Shinuchi.Select(x => x.ToString().ToLowerInvariant())));
             sw.WriteLine();
-#if PLAYABLE
             sw.WriteLine("# 自動演奏");
             sw.WriteLine("{0} = [ {1} ]", nameof(this.PlayOption.AutoPlay), string.Join(", ", this.PlayOption.AutoPlay.Select(x => x.ToString().ToLowerInvariant())));
             sw.WriteLine();
-#endif
             sw.WriteLine("# 自動演奏時の連打");
             sw.WriteLine("{0} = {1}", nameof(this.PlayOption.AutoRoll), this.PlayOption.AutoRoll.ToString().ToLowerInvariant());
             sw.WriteLine();
