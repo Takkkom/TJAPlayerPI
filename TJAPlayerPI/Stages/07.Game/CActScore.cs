@@ -370,11 +370,11 @@ internal class CActScore : CActivity
             if (int.TryParse(ch.ToString(), out var i))
             {
                 Rectangle rectangle = new Rectangle(TJAPlayerPI.app.Skin.SkinConfig.Game.Score.Size[0] * i, 0, TJAPlayerPI.app.Skin.SkinConfig.Game.Score.Size[0], TJAPlayerPI.app.Skin.SkinConfig.Game.Score.Size[1]);
+                CTexture? tx_score = TJAPlayerPI.app.Tx.Taiko_Score;
                 switch (mode)
                 {
                     case 0:
                         {
-                            CTexture? tx_score = TJAPlayerPI.app.Tx.Taiko_Score[0];
                             if (tx_score is not null)
                             {
                                 tx_score.Opacity = alpha;
@@ -385,29 +385,31 @@ internal class CActScore : CActivity
                         }
                     case 1:
                         {
-                            CTexture? tx_score = TJAPlayerPI.app.Tx.Taiko_Score[1];
                             if (tx_score is not null)
                             {
                                 tx_score.Opacity = alpha;
                                 tx_score.vcScaling.Y = 1;
+                                tx_score.color = Color.FromArgb(255, 100, 0);
                                 tx_score.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.DownLeft, x, y, rectangle);
+                                tx_score.color = Color.White;
                             }
                             break;
                         }
                     case 2:
                         {
-                            CTexture? tx_score = TJAPlayerPI.app.Tx.Taiko_Score[2];
                             if (tx_score is not null)
                             {
                                 tx_score.Opacity = alpha;
                                 tx_score.vcScaling.Y = 1;
+                                tx_score.color = Color.FromArgb(100, 215, 213);
                                 tx_score.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.DownLeft, x, y, rectangle);
+                                tx_score.color = Color.White;
                             }
                             break;
                         }
                 }
-                x += TJAPlayerPI.app.Skin.SkinConfig.Game.Score.Padding;
             }
+            x += TJAPlayerPI.app.Skin.SkinConfig.Game.Score.Padding;
         }
     }
 }

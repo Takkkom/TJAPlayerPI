@@ -810,10 +810,10 @@ internal class CAct演奏Drumsゲームモード : CActivity
                 if (cFont[i] == ch)
                 {
                     Rectangle rectangle = new Rectangle(TJAPlayerPI.app.Skin.SkinConfig.Game.Score.Size[0] * i, 0, TJAPlayerPI.app.Skin.SkinConfig.Game.Score.Size[0], TJAPlayerPI.app.Skin.SkinConfig.Game.Score.Size[1]);
-                    if (TJAPlayerPI.app.Tx.Taiko_Score[0] is not null)
+                    if (TJAPlayerPI.app.Tx.Taiko_Score is not null)
                     {
-                        TJAPlayerPI.app.Tx.Taiko_Score[0].vcScaling.Y = 1f;
-                        TJAPlayerPI.app.Tx.Taiko_Score[0].t2D描画(TJAPlayerPI.app.Device, x, y, rectangle);
+                        TJAPlayerPI.app.Tx.Taiko_Score.vcScaling.Y = 1f;
+                        TJAPlayerPI.app.Tx.Taiko_Score.t2D描画(TJAPlayerPI.app.Device, x, y, rectangle);
                     }
                 }
             }

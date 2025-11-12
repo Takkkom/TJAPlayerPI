@@ -976,6 +976,8 @@ internal class CSkin : IDisposable
             {
                 public int[] BackGroundX { get; set; } = new int[] { 0, 0 };
                 public int[] BackGroundY { get; set; } = new int[] { 184, 360 };
+                public int[] ScoreBaseX { get; set; } = new int[] { 0, 0 };
+                public int[] ScoreBaseY { get; set; } = new int[] { 192, 488 };
                 public int[] NamePlateX { get; set; } = new int[] { 0, 0 };
                 public int[] NamePlateY { get; set; } = new int[] { 288, 368 };
                 public int[] PlayerNumberX { get; set; } = new int[] { 4, 4 };
@@ -1007,14 +1009,22 @@ internal class CSkin : IDisposable
             {
                 public int[] ComboX { get; set; } = new int[] { 253, 253 };
                 public int[] ComboY { get; set; } = new int[] { -11, 498 };
+                public int[] ComboShinX { get; set; } = new int[] { 253, 253 };
+                public int[] ComboShinY { get; set; } = new int[] { -11, 498 };
                 public int[] ComboNumberX { get; set; } = new int[] { 312, 312 };
                 public int[] ComboNumberY { get; set; } = new int[] { 34, 540 };
-                public int[] ComboNumberExX { get; set; } = new int[] { 335, 335 };
-                public int[] ComboNumberExY { get; set; } = new int[] { 34, 540 };
+                public int[] ComboShinNumberX { get; set; } = new int[] { 312, 312 };
+                public int[] ComboShinNumberY { get; set; } = new int[] { 34, 540 };
                 public int[] ComboTextX { get; set; } = new int[] { 471, 471 };
                 public int[] ComboTextY { get; set; } = new int[] { 55, 561 };
-                public int[] ComboTextExX { get; set; } = new int[] { 491, 491 };
-                public int[] ComboTextExY { get; set; } = new int[] { 55, 561 };
+                public int[] ComboShinTextX { get; set; } = new int[] { 471, 471 };
+                public int[] ComboShinTextY { get; set; } = new int[] { 55, 561 };
+
+                public int[] ComboScoreX { get; set; } = new int[] { 452, 460 };
+                public int[] ComboScoreY { get; set; } = new int[] { 90, 650 };
+                public int ComboScorePadding { get; set; } = 20;
+                public int[] ComboScoreTextX { get; set; } = new int[] { 478, 483 };
+                public int[] ComboScoreTextY { get; set; } = new int[] { 90, 650 };
 
                 public int[] BalloonX { get; set; } = new int[] { 382, 382 };
                 public int[] BalloonY { get; set; } = new int[] { 115, 290 };
@@ -1101,9 +1111,19 @@ internal class CSkin : IDisposable
                 {
                     public int Timer { get; set; } = 7;
                 }
+                public CHitBase HitBase { get; set; } = new();
+                public class CHitBase
+                {
+                    public int Width { get; set; } = 150;
+                    public int Height { get; set; } = 150;
+                }
                 public CHitExplosion HitExplosion { get; set; } = new();
                 public class CHitExplosion
                 {
+                    public int Width { get; set; } = 260;
+                    public int Height { get; set; } = 260;
+                    public int BigWidth { get; set; } = 230;
+                    public int BigHeight { get; set; } = 230;
                     public bool AddBlend { get; set; } = true;
                     public bool BigAddBlend { get; set; } = true;
                 }

@@ -63,7 +63,11 @@ internal class CActMtaiko : CActivity
         }
 
         for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
+        {
             TJAPlayerPI.app.Tx.Taiko_Background[i]?.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.BackGroundX[i], TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.BackGroundY[i]);
+            TJAPlayerPI.app.Tx.Taiko_Score_Base?.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.ScoreBaseX[i], TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.ScoreBaseY[i],
+                i == 0 ? CTexture.EFlipType.None : CTexture.EFlipType.Vertical);
+        }
 
         for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
             TJAPlayerPI.app.Tx.Taiko_Base?.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.X[i], TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.Y[i]);

@@ -1096,6 +1096,7 @@ internal class CStage演奏画面共通 : CStage
                 //this.actChara.b風船連打中 = false;
                 pChip.b可視 = false;
                 this.actChara.bマイどんアクション中[nPlayer] = false; // 風船終了後、再生されていたアクションがされないようにするために追加。(AioiLight)
+                this.actBalloon.tBroke(nPlayer);
                 if (actChara.CharaAction_Balloon_Broke[nPlayer] is not null)
                 {
                     actChara.アクションタイマーリセット(nPlayer);
@@ -4377,12 +4378,12 @@ internal class CStage演奏画面共通 : CStage
                 if (pChip.bBranch)
                 {
                     TJAPlayerPI.app.Tx.Bar_Branch.fRotation = pChip.dbSCROLL != 0 ? (float)-Math.Atan((pChip.dbSCROLL_Y / pChip.dbSCROLL)) : (float)(Math.PI / 2.0);
-                    TJAPlayerPI.app.Tx.Bar_Branch.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Center, x - 1.5f, y + 65f, new Rectangle(0, 0, 3, 130));
+                    TJAPlayerPI.app.Tx.Bar_Branch.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Up, x - 2, y);
                 }
                 else
                 {
                     TJAPlayerPI.app.Tx.Bar.fRotation = pChip.dbSCROLL != 0 ? (float)-Math.Atan((pChip.dbSCROLL_Y / pChip.dbSCROLL)) : (float)(Math.PI / 2.0);
-                    TJAPlayerPI.app.Tx.Bar.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Center, x - 1.5f, y + 65f, new Rectangle(0, 0, 3, 130));
+                    TJAPlayerPI.app.Tx.Bar.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Up, x - 2, y);
                 }
             }
         }
@@ -4416,6 +4417,10 @@ internal class CStage演奏画面共通 : CStage
                         this.n現在の連打数[i] = 0;
                     }
                 }
+            }
+            if (this.actBalloon.bIsNowPlayBalloonBrokeAnimation[i])
+            {
+                this.actBalloon.On進行描画(0, 0, i);
             }
         }
 

@@ -24,11 +24,16 @@ CorrectionXChara = [ ".", "ッ", "ェ", "ョ", "ャ", "[", "]" ]
 CorrectionXCharaValue = [ 10, 5, 7, 7, 7, -10, -10 ]
 
 [Game]
+SENotesOffsetY = [ 131, 131 ]
+JudgePointX = [ 413, 413 ]
+JudgePointY = [ 256, 433 ]
+ScrollFieldBGX = [ 332, 332 ]
+ScrollFieldBGY = [ 192, 368 ]
 NotesAnime = true
 
 [Game.Chara]
 BalloonX = [ 210, 210 ]
-BalloonY = [ 0, 175 ]
+BalloonY = [ 0, 298 ]
 BeatNormal = [ 1, 1 ]
 BeatClear = [ 2, 2 ]
 BeatGoGo = [ 2, 2 ]
@@ -55,15 +60,158 @@ Beat = 1
 Beat = 1
 PtnBeat = 1
 
+[Game.CourseSymbol]
+X = [ 15, 15 ]
+Y = [ 232, 368 ]
+
+[Game.PanelFont]
+MusicNameX = 1254
+MusicNameY = 14
+MusicNameFontSize = 30
+SubTitleNameX = 1114
+SubTitleNameY = 70
+SubTitleNameFontSize = 15
+GenreX = 1116
+GenreY = 75
+LyricX = 640
+LyricY = 630
+LyricFontSize = 38
+StageText = "n曲目"
+StageTextDisp = true
+
+[Game.Score]
+X = [ 19, 19 ]
+Y = [ 229, 531 ]
+AddX = [ 19, 19 ]
+AddY = [ 192, 567 ]
+AddBonusX = [ 19, 19 ]
+AddBonusY = [ 139, 614 ]
+Padding = 20
+Size = [ 32, 40 ]
+
+[Game.Taiko]
+BackGroundX = [ 0, 0 ]
+BackGroundY = [ 184, 360 ]
+ScoreBaseX = [ 0, 0 ]
+ScoreBaseY = [ 192, 488 ]
+NamePlateX = [ 0, 0 ]
+NamePlateY = [ 288, 368 ]
+X = [ 176, 176 ]
+Y = [ 187, 363 ]
+ComboX = [ 249, 249 ]
+ComboY = [ 271, 449 ]
+ComboExX = [ 249, 249 ]
+ComboExY = [ 269, 447 ]
+ComboEx4X = [ 249, 249 ]
+ComboEx4Y = [ 269, 447 ]
+ComboPadding = [ 42, 48, 40 ]
+ComboSize = [ 56, 64 ]
+ComboSizeEx = [ 56, 64 ]
+ComboScale = [ 1.0, 1.0, 0.85 ]
+ComboTextX = [ 248, 248 ]
+ComboTextY = [ 299, 475 ]
+ComboTextSize = [ 100, 50 ]
+ComboExIsJumping = true
+
+[Game.Gauge]
+RainbowTimer = 50
+
 [Game.Balloon]
-ComboNumberX = [ 312, 312 ]
-ComboNumberY = [ 34, 580 ]
-ComboNumberExX = [ 335, 335 ]
-ComboNumberExY = [ 34, 580 ]
-ComboTextX = [ 473, 473 ]
-ComboTextY = [ 55, 601 ]
-ComboTextExX = [ 498, 498 ]
-ComboTextExY = [ 55, 601 ]
+ComboX = [ 264, 264 ]
+ComboY = [ 16, 572 ]
+ComboShinX = [ 254, 254 ]
+ComboShinY = [ 16, 572 ]
+ComboNumberX = [ 385, 385 ]
+ComboNumberY = [ 32, 588 ]
+ComboShinNumberX = [ 375, 375 ]
+ComboShinNumberY = [ 52, 608 ]
+ComboTextX = [ 391, 391 ]
+ComboTextY = [ 58, 614 ]
+ComboShinTextX = [ 381, 381 ]
+ComboShinTextY = [ 78, 634 ]
+ComboScoreX = [ 452, 460 ]
+ComboScoreY = [ 90, 650 ]
+ComboScorePadding = 20
+ComboScoreTextX = [ 478, 483 ]
+ComboScoreTextY = [ 90, 650 ]
+BalloonX = [ 428, 428 ]
+BalloonY = [ 137, 435 ]
+BalloonFrameX = [ 399, 399 ]
+BalloonFrameY = [ 34, 332 ]
+BalloonNumberX = [ 486, 486 ]
+BalloonNumberY = [ 133, 431 ]
+RollFrameX = [ 234, 234 ]
+RollFrameY = [ 9, 522 ]
+RollNumberX = [ 386, 386 ]
+RollNumberY = [ 129, 640 ]
+NumberSize = [ 64, 72 ]
+NumberPadding = 56
+RollNumberScale = 1.000
+BalloonNumberScale = 0.8
+
+[Game.Effect.Roll]
+StartPointX = [ 56, -10, 200, 345, 100, 451, 600, 260, -30, 534, 156, 363 ]
+StartPointY = [ 720 ]
+StartPointMultiX = [ [ 56, -10, 200, 345, 100, 451, 600, 260, -30, 534, 156, 363 ], [ 56, -10, 200, 345, 100, 451, 600, 260, -30, 534, 156, 363 ] ]
+StartPointMultiY = [ [ 240 ], [ 360 ] ]
+SpeedX = [ 0.6 ]
+SpeedY = [ -0.6 ]
+SpeedMultiX = [ [ 0.6 ], [ 0.6 ] ]
+SpeedMultiY = [ [ -0.6 ], [ 0.6 ] ]
+
+[Game.Effect.FireWorks]
+Width = 256
+Height = 256
+Ptn = 13
+Timer = 20
+AddBlend = true
+Timing = 20
+
+[Game.Effect.GoGoSplash]
+Width = 300
+Height = 400
+Ptn = 10
+X = [ 120, 300, 520, 760, 980, 1160 ]
+Y = [ 740, 730, 720, 720, 730, 740 ]
+Rotate = true
+Timer = 25
+AddBlend = true
+
+[Game.Effect.FlyingNotes]
+StartPointX = [ 414, 414 ]
+StartPointY = [ 260, 434 ]
+EndPointX = [ 1222, 1222 ]
+EndPointY = [ 164, 554 ]
+Sine = 220
+IsUsingEasing = true
+Timer = 3
+
+[Game.Effect.NotesFlash]
+Width = 180
+Height = 180
+Ptn = 12
+Timer = 20
+
+[Game.Effect.Fire]
+Width = 390
+Height = 390
+Ptn = 8
+AddBlend = true
+
+[Game.Effect.Rainbow]
+Timer = 7
+
+[Game.Effect.HitBase]
+Width = 150
+Height = 150
+
+[Game.Effect.HitExplosion]
+Width = 260
+Height = 260
+BigWidth = 230
+BigHeight = 230
+AddBlend = true
+BigAddBlend = true
 
 [Game.PuchiChara]
 Width = 250
@@ -76,15 +224,9 @@ Y = [ 100, 637 ]
 BalloonX = [ 310, 310 ]
 BalloonY = [ 260, 500 ]
 
-[Game.PanelFont]
-StageText = "n曲目"
-
 [Game.Background]
 ScrollPattern = [ 0, 0 ]
 
 [Game.DanC]
 NumberPadding = 41
 NumberSmallPadding = 23
-
-[Game.Effect.FlyingNotes]
-IsUsingEasing = false

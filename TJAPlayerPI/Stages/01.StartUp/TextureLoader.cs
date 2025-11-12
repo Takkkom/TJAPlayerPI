@@ -438,10 +438,10 @@ class TextureLoader
         Taiko_NamePlate[0] = TxC(GAME + TAIKO + @"1P_NamePlate.png");
         Taiko_NamePlate[1] = TxC(GAME + TAIKO + @"2P_NamePlate.png");
         Taiko_Base = TxC(GAME + TAIKO + @"Base.png");
-        Taiko_Don_Left = TxC(GAME + TAIKO + @"Don.png");
-        Taiko_Don_Right = TxC(GAME + TAIKO + @"Don.png");
-        Taiko_Ka_Left = TxC(GAME + TAIKO + @"Ka.png");
-        Taiko_Ka_Right = TxC(GAME + TAIKO + @"Ka.png");
+        Taiko_Don_Left = TxC(GAME + TAIKO + @"Don_L.png");
+        Taiko_Don_Right = TxC(GAME + TAIKO + @"Don_R.png");
+        Taiko_Ka_Left = TxC(GAME + TAIKO + @"Ka_L.png");
+        Taiko_Ka_Right = TxC(GAME + TAIKO + @"Ka_R.png");
         Taiko_LevelUp = TxC(GAME + TAIKO + @"LevelUp.png");
         Taiko_LevelDown = TxC(GAME + TAIKO + @"LevelDown.png");
         Couse_Symbol = new CTexture[(int)Difficulty.Total + 1]; // +1は真打ちモードの分
@@ -450,10 +450,8 @@ class TextureLoader
         {
             Couse_Symbol[i] = TxC(GAME + COURSESYMBOL + Couse_Symbols[i] + ".png");
         }
-        Taiko_Score = new CTexture[3];
-        Taiko_Score[0] = TxC(GAME + TAIKO + @"Score.png");
-        Taiko_Score[1] = TxC(GAME + TAIKO + @"Score_1P.png");
-        Taiko_Score[2] = TxC(GAME + TAIKO + @"Score_2P.png");
+        Taiko_Score_Base = TxC(GAME + TAIKO + @"Score_Base.png");
+        Taiko_Score = TxC(GAME + TAIKO + @"Score.png");
         Taiko_Combo = new CTexture[2];
         Taiko_Combo[0] = TxC(GAME + TAIKO + @"Combo.png");
         Taiko_Combo[1] = TxC(GAME + TAIKO + @"Combo_Big.png");
@@ -505,24 +503,37 @@ class TextureLoader
         Balloon_Combo = new CTexture[2];
         Balloon_Combo[0] = TxC(GAME + BALLOON + @"Combo_1P.png");
         Balloon_Combo[1] = TxC(GAME + BALLOON + @"Combo_2P.png");
+        Balloon_Combo_Shin = new CTexture[2];
+        Balloon_Combo_Shin[0] = TxC(GAME + BALLOON + @"Combo_Shin_1P.png");
+        Balloon_Combo_Shin[1] = TxC(GAME + BALLOON + @"Combo_Shin_2P.png");
         Balloon_Roll = TxC(GAME + BALLOON + @"Roll.png");
         Balloon_Balloon = TxC(GAME + BALLOON + @"Balloon.png");
         Balloon_Number_Roll = TxC(GAME + BALLOON + @"Number_Roll.png");
         Balloon_Number_Combo = TxC(GAME + BALLOON + @"Number_Combo.png");
+        Balloon_Number_Combo_Text = TxC(GAME + BALLOON + @"Number_Combo_Text.png");
+        Balloon_Number_Combo_Score = TxC(GAME + BALLOON + @"Number_Combo_Score.png");
+        Balloon_Number_Combo_Score_Flash = TxC(GAME + BALLOON + @"Number_Combo_Score_Flash.png");
+        Balloon_Number_Combo_Score_Text = TxC(GAME + BALLOON + @"Number_Combo_Score_Text.png");
 
-        Balloon_Breaking = new CTexture[6];
-        for (int i = 0; i < 6; i++)
+        Balloon_Breaking = new CTexture[7];
+        for (int i = 0; i < 7; i++)
         {
             Balloon_Breaking[i] = TxC(GAME + BALLOON + @"Breaking_" + i.ToString() + ".png");
         }
         #endregion
         #region エフェクト
+        Effects_Hit_Base = TxC(GAME + EFFECTS + @"Hit/Base.png");
         Effects_Hit_Explosion = TxC(GAME + EFFECTS + @"Hit/Explosion.png");
         if (Effects_Hit_Explosion is not null) Effects_Hit_Explosion.eBlendMode = TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitExplosion.AddBlend ? CTexture.EBlendMode.Addition : CTexture.EBlendMode.Normal;
         Effects_Hit_Explosion_Big = TxC(GAME + EFFECTS + @"Hit/Explosion_Big.png");
         if (Effects_Hit_Explosion_Big is not null) Effects_Hit_Explosion_Big.eBlendMode = TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitExplosion.BigAddBlend ? CTexture.EBlendMode.Addition : CTexture.EBlendMode.Normal;
-        Effects_Hit_FireWorks = TxC(GAME + EFFECTS + @"Hit/FireWorks.png");
-        if (Effects_Hit_FireWorks is not null) Effects_Hit_FireWorks.eBlendMode = TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.FireWorks.AddBlend ? CTexture.EBlendMode.Addition : CTexture.EBlendMode.Normal;
+
+        Effects_Hit_FireWorks = new CTexture[2];
+        for (int i = 0; i < 2; i++)
+        {
+            Effects_Hit_FireWorks[i] = TxC(GAME + EFFECTS + $"Hit/FireWorks_{i + 1}P.png");
+            if (Effects_Hit_FireWorks[i] is not null) Effects_Hit_FireWorks[i].eBlendMode = TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.FireWorks.AddBlend ? CTexture.EBlendMode.Addition : CTexture.EBlendMode.Normal;
+        }
 
 
         Effects_Fire = TxC(GAME + EFFECTS + @"Fire.png");
@@ -532,17 +543,6 @@ class TextureLoader
 
         Effects_GoGoSplash = TxC(GAME + EFFECTS + @"GoGoSplash.png");
         if (Effects_GoGoSplash is not null) Effects_GoGoSplash.eBlendMode = TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.GoGoSplash.AddBlend ? CTexture.EBlendMode.Addition : CTexture.EBlendMode.Normal;
-        Effects_Hit_Perfect = new CTexture[15];
-        Effects_Hit_Perfect_Big = new CTexture[15];
-        Effects_Hit_Good = new CTexture[15];
-        Effects_Hit_Good_Big = new CTexture[15];
-        for (int i = 0; i < 15; i++)
-        {
-            Effects_Hit_Perfect[i] = TxC(GAME + EFFECTS + @"Hit/" + @"Perfect/" + i.ToString() + ".png");
-            Effects_Hit_Perfect_Big[i] = TxC(GAME + EFFECTS + @"Hit/" + @"Perfect_Big/" + i.ToString() + ".png");
-            Effects_Hit_Good[i] = TxC(GAME + EFFECTS + @"Hit/" + @"Good/" + i.ToString() + ".png");
-            Effects_Hit_Good_Big[i] = TxC(GAME + EFFECTS + @"Hit/" + @"Good_Big/" + i.ToString() + ".png");
-        }
         TJAPlayerPI.app.Skin.Game_Effect_Roll_Ptn = TJAPlayerPI.t連番画像の枚数を数える(CSkin.Path(BASE + GAME + EFFECTS + @"Roll/"));
         Effects_Roll = new CTexture[TJAPlayerPI.app.Skin.Game_Effect_Roll_Ptn];
         for (int i = 0; i < TJAPlayerPI.app.Skin.Game_Effect_Roll_Ptn; i++)
@@ -874,6 +874,7 @@ class TextureLoader
         TJAPlayerPI.t安全にDisposeする(ref Taiko_LevelUp);
         TJAPlayerPI.t安全にDisposeする(ref Taiko_LevelDown);
         TJAPlayerPI.t安全にDisposeする(ref Couse_Symbol);
+        TJAPlayerPI.t安全にDisposeする(ref Taiko_Score_Base);
         TJAPlayerPI.t安全にDisposeする(ref Taiko_Score);
         TJAPlayerPI.t安全にDisposeする(ref Taiko_Combo);
         TJAPlayerPI.t安全にDisposeする(ref Taiko_Combo_Effect);
@@ -900,23 +901,25 @@ class TextureLoader
         #endregion
         #region 吹き出し
         TJAPlayerPI.t安全にDisposeする(ref Balloon_Combo);
+        TJAPlayerPI.t安全にDisposeする(ref Balloon_Combo_Shin);
         TJAPlayerPI.t安全にDisposeする(ref Balloon_Roll);
         TJAPlayerPI.t安全にDisposeする(ref Balloon_Balloon);
         TJAPlayerPI.t安全にDisposeする(ref Balloon_Number_Roll);
         TJAPlayerPI.t安全にDisposeする(ref Balloon_Number_Combo);
+        TJAPlayerPI.t安全にDisposeする(ref Balloon_Number_Combo_Text);
+        TJAPlayerPI.t安全にDisposeする(ref Balloon_Number_Combo_Score);
+        TJAPlayerPI.t安全にDisposeする(ref Balloon_Number_Combo_Score_Flash);
+        TJAPlayerPI.t安全にDisposeする(ref Balloon_Number_Combo_Score_Text);
         TJAPlayerPI.t安全にDisposeする(ref Balloon_Breaking);
         #endregion
         #region エフェクト
+        TJAPlayerPI.t安全にDisposeする(ref Effects_Hit_Base);
         TJAPlayerPI.t安全にDisposeする(ref Effects_Hit_Explosion);
         TJAPlayerPI.t安全にDisposeする(ref Effects_Hit_Explosion_Big);
         TJAPlayerPI.t安全にDisposeする(ref Effects_Hit_FireWorks);
         TJAPlayerPI.t安全にDisposeする(ref Effects_Fire);
         TJAPlayerPI.t安全にDisposeする(ref Effects_Rainbow);
         TJAPlayerPI.t安全にDisposeする(ref Effects_GoGoSplash);
-        TJAPlayerPI.t安全にDisposeする(ref Effects_Hit_Perfect);
-        TJAPlayerPI.t安全にDisposeする(ref Effects_Hit_Perfect_Big);
-        TJAPlayerPI.t安全にDisposeする(ref Effects_Hit_Good);
-        TJAPlayerPI.t安全にDisposeする(ref Effects_Hit_Good_Big);
         TJAPlayerPI.t安全にDisposeする(ref Effects_Roll);
 
         #endregion
@@ -1181,11 +1184,13 @@ class TextureLoader
         Taiko_LevelUp,
         Taiko_LevelDown,
         Taiko_Combo_Effect,
-        Taiko_Combo_Text;
+        Taiko_Combo_Text,
+        Taiko_Score_Base,
+        Taiko_Score;
     public CTexture?[] Couse_Symbol, // コースシンボル
         Taiko_PlayerNumber,
         Taiko_NamePlate; // ネームプレート
-    public CTexture?[] Taiko_Score,
+    public CTexture?[] 
         Taiko_Combo;
     #endregion
     #region ゲージ
@@ -1203,25 +1208,28 @@ class TextureLoader
     #endregion
     #region 吹き出し
     public CTexture?[] Balloon_Combo;
+    public CTexture?[] Balloon_Combo_Shin;
     public CTexture? Balloon_Roll,
         Balloon_Balloon,
         Balloon_Number_Roll,
-        Balloon_Number_Combo/*,*/
+        Balloon_Number_Combo,
+        Balloon_Number_Combo_Text,
+        Balloon_Number_Combo_Score,
+        Balloon_Number_Combo_Score_Flash,
+        Balloon_Number_Combo_Score_Text/*,*/
                             /*Balloon_Broken*/;
     public CTexture?[] Balloon_Breaking;
     #endregion
     #region エフェクト
-    public CTexture? Effects_Hit_Explosion,
+    public CTexture?
+        Effects_Hit_Base,
+        Effects_Hit_Explosion,
         Effects_Hit_Explosion_Big,
         Effects_Fire,
         Effects_Rainbow,
-        Effects_GoGoSplash,
+        Effects_GoGoSplash;
+    public CTexture?[] Effects_Roll,
         Effects_Hit_FireWorks;
-    public CTexture?[] Effects_Hit_Perfect,
-        Effects_Hit_Good,
-        Effects_Hit_Perfect_Big,
-        Effects_Hit_Good_Big;
-    public CTexture?[] Effects_Roll;
     #endregion
     #region レーン
     public CTexture?[] Lane_Base,

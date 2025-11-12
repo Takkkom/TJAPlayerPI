@@ -1,4 +1,5 @@
 ﻿using FDK;
+using static FDK.CTexture;
 
 namespace TJAPlayerPI;
 
@@ -32,7 +33,7 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
         this.nDefaultJudgePos[0, 1] = TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldY[0];
         this.nDefaultJudgePos[1, 0] = TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[1];
         this.nDefaultJudgePos[1, 1] = TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldY[1];
-        this.ctゴーゴー炎 = new CCounter(0, TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.Fire.Ptn, 50, TJAPlayerPI.app.Timer);
+        this.ctゴーゴー炎 = new CCounter(0, TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.Fire.Ptn - 1, 30, TJAPlayerPI.app.Timer);
         base.On活性化();
     }
 
@@ -218,6 +219,11 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
                 {
                     this.ctゴーゴー.t進行();
                 }
+
+                TJAPlayerPI.app.Tx.Lane_Background_GoGo.eBlendMode = CTexture.EBlendMode.Addition;
+
+                float opacity = 0.4f;
+                TJAPlayerPI.app.Tx.Lane_Background_GoGo.Opacity = (int)(opacity * 255);
 
                 if (this.ctゴーゴー.n現在の値 <= 4)
                 {
@@ -510,7 +516,7 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
             int[] ypos = new int[] { 326, 502 };
             for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
             {
-                TJAPlayerPI.app.Tx.Lane_Background_Sub.t2D描画(TJAPlayerPI.app.Device, 333, ypos[i]);
+                TJAPlayerPI.app.Tx.Lane_Background_Sub.t2D描画(TJAPlayerPI.app.Device, 332, ypos[i]);
             }
         }
 
@@ -613,28 +619,58 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
                 {
                     this.st状態[i].ct進行.t停止();
                 }
-                //if( this.txアタックエフェクトLower is not null )
+                if(TJAPlayerPI.app.Tx.Effects_Hit_Base is not null )
                 {
                     //this.txアタックエフェクトLower.b加算合成 = true;
-                    int n = this.st状態[i].nIsBig == 1 ? 520 : 0;
+
+                    float value = this.st状態[i].ct進行.n現在の値 / (float)this.st状態[i].ct進行.n終了値;
+                    float opacity = MathF.Cos(value * 0.5f * MathF.PI);
+                    TJAPlayerPI.app.Tx.Effects_Hit_Base.Opacity = (int)(opacity * 255);
+
+                    int x = TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[i];
+                    int y = TJAPlayerPI.app.Skin.SkinConfig.Game.JudgePointY[i];
 
                     switch (st状態[i].judge)
                     {
                         case EJudge.Perfect:
                         case EJudge.AutoPerfect:
                             //this.txアタックエフェクトLower.t2D描画( CDTXMania.app.Device, 285, 127, new Rectangle( this.st状態[ i ].ct進行.n現在の値 * 260, n, 260, 260 ) );
-                            if (this.st状態[i].nIsBig == 1 && TJAPlayerPI.app.Tx.Effects_Hit_Perfect_Big[this.st状態[i].ct進行.n現在の値] is not null)
+                            TJAPlayerPI.app.Tx.Effects_Hit_Base.t2D拡大率考慮描画(TJAPlayerPI.app.Device, RefPnt.Center, x, y, new Rectangle(
+                                    TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitBase.Width,
+                                    TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitBase.Height * this.st状態[i].nIsBig,
+                                    TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitBase.Width,
+                                    TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitBase.Height
+                                ));
+                            /*
+                            if (this.st状態[i].nIsBig == 1)
+                            {
                                 TJAPlayerPI.app.Tx.Effects_Hit_Perfect_Big[this.st状態[i].ct進行.n現在の値].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[i] - TJAPlayerPI.app.Tx.Effects_Hit_Perfect_Big[0].szTextureSize.Width / 2, TJAPlayerPI.app.Skin.SkinConfig.Game.JudgePointY[i] - TJAPlayerPI.app.Tx.Effects_Hit_Perfect_Big[0].szTextureSize.Width / 2);
+                            }
                             else if (TJAPlayerPI.app.Tx.Effects_Hit_Perfect[this.st状態[i].ct進行.n現在の値] is not null)
+                            {
                                 TJAPlayerPI.app.Tx.Effects_Hit_Perfect[this.st状態[i].ct進行.n現在の値].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[i] - TJAPlayerPI.app.Tx.Effects_Hit_Perfect[0].szTextureSize.Width / 2, TJAPlayerPI.app.Skin.SkinConfig.Game.JudgePointY[i] - TJAPlayerPI.app.Tx.Effects_Hit_Perfect[0].szTextureSize.Width / 2);
+                            }
+                            */
                             break;
 
                         case EJudge.Good:
                             //this.txアタックエフェクトLower.t2D描画( CDTXMania.app.Device, 285, 127, new Rectangle( this.st状態[ i ].ct進行.n現在の値 * 260, n + 260, 260, 260 ) );
-                            if (this.st状態[i].nIsBig == 1 && TJAPlayerPI.app.Tx.Effects_Hit_Good_Big[this.st状態[i].ct進行.n現在の値] is not null)
+                            TJAPlayerPI.app.Tx.Effects_Hit_Base.t2D拡大率考慮描画(TJAPlayerPI.app.Device, RefPnt.Center, x, y, new Rectangle(
+                                    0,
+                                    TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitBase.Height * this.st状態[i].nIsBig,
+                                    TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitBase.Width,
+                                    TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitBase.Height
+                                ));
+                            /*
+                            if (this.st状態[i].nIsBig == 1)
+                            {
                                 TJAPlayerPI.app.Tx.Effects_Hit_Good_Big[this.st状態[i].ct進行.n現在の値].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[i] - TJAPlayerPI.app.Tx.Effects_Hit_Good_Big[0].szTextureSize.Width / 2, TJAPlayerPI.app.Skin.SkinConfig.Game.JudgePointY[i] - TJAPlayerPI.app.Tx.Effects_Hit_Good_Big[0].szTextureSize.Width / 2);
-                            else if (TJAPlayerPI.app.Tx.Effects_Hit_Good[this.st状態[i].ct進行.n現在の値] is not null)
+                            }
+                            else
+                            {
                                 TJAPlayerPI.app.Tx.Effects_Hit_Good[this.st状態[i].ct進行.n現在の値].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[i] - TJAPlayerPI.app.Tx.Effects_Hit_Good[0].szTextureSize.Width / 2, TJAPlayerPI.app.Skin.SkinConfig.Game.JudgePointY[i] - TJAPlayerPI.app.Tx.Effects_Hit_Good[0].szTextureSize.Width / 2);
+                            }
+                            */
                             break;
 
                         case EJudge.Miss:

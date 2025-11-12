@@ -108,6 +108,14 @@ internal class CActJudgeString : CActivity
                     this.st状態[i].b使用中 = false;
                 }
                 int num2 = this.st状態[i].ct進行.n現在の値;
+
+                float fallValue = CConvert.InverseLerpClamp(0, 100, num2);
+                this.st状態[i].n相対Y座標 = (int)(fallValue * 13);
+
+                float opacityValue = CConvert.InverseLerpClamp(250, 300, num2);
+                float opacity = MathF.Cos(opacityValue * MathF.PI * 0.5f);
+                this.st状態[i].n透明度 = (int)(opacity * 255);
+                /*
                 if (this.st状態[i].judge != EJudge.Good)
                 {
                     this.st状態[i].n相対X座標 = 0;
@@ -165,6 +173,7 @@ internal class CActJudgeString : CActivity
                     this.st状態[i].n相対Y座標 = 15;
                     this.st状態[i].n透明度 = 0xff;
                 }
+                */
             }
         }
         for (int j = 0; j < 12; j++)
@@ -173,7 +182,9 @@ internal class CActJudgeString : CActivity
             {
                 int baseY = TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldY[this.st状態[j].nPlayer] - 53;
                 int x = TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[this.st状態[j].nPlayer] - TJAPlayerPI.app.Tx.Judge.szTextureSize.Width / 2;
+                x += this.st状態[j].n相対X座標;
                 int y = (baseY + this.st状態[j].n相対Y座標);
+                TJAPlayerPI.app.Tx.Judge.Opacity = this.st状態[j].n透明度;
                 TJAPlayerPI.app.Tx.Judge.t2D描画(TJAPlayerPI.app.Device, x, y, this.st判定文字列[(int)this.st状態[j].judge]);
             }
         }

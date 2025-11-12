@@ -63,7 +63,7 @@ internal class FireWorks : CActivity
                 if (FireWork[i].IsUsing)
                 {
                     FireWork[i].Counter.t進行();
-                    TJAPlayerPI.app.Tx.Effects_Hit_FireWorks.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Center, (float)FireWork[i].X, (float)FireWork[i].Y, new Rectangle(FireWork[i].Counter.n現在の値 * TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.FireWorks.Width, 0, TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.FireWorks.Width, TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.FireWorks.Height));
+                    TJAPlayerPI.app.Tx.Effects_Hit_FireWorks[FireWork[i].Player]?.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Center, (float)FireWork[i].X, (float)FireWork[i].Y, new Rectangle(FireWork[i].Counter.n現在の値 * TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.FireWorks.Width, 0, TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.FireWorks.Width, TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.FireWorks.Height));
                     if (FireWork[i].Counter.b終了値に達した)
                     {
                         FireWork[i].Counter.t停止();

@@ -30,4 +30,39 @@ public static class CConvert
     {
         return (int)(255.0 * num);
     }
+
+    public static float InverseLerp(float begin, float end, float value)
+    {
+        float val = value - begin;
+        float length = end - begin;
+        return val / length;
+    }
+
+    public static float InverseLerpClamp(float begin, float end, float value)
+    {
+        return InverseLerp(begin, end, Math.Clamp(value, begin, end));
+    }
+
+    public static float ZigZagWave(float value)
+    {
+        value -= (int)value;
+        if (value < 0.25f)
+        {
+            return InverseLerp(0.0f, 0.25f, value);
+        }
+        else if (value < 0.5f)
+        {
+            return 1.0f - InverseLerp(0.25f, 0.5f, value);
+        }
+        else if (value < 0.75f)
+        {
+            return -InverseLerp(0.5f, 0.75f, value);
+        }
+        else if (value < 0.75f)
+        {
+            return -1.0f + InverseLerp(0.75f, 1.0f, value);
+        }
+
+        return 0;
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using FDK;
+using Silk.NET.OpenAL;
 
 namespace TJAPlayerPI;
 
@@ -22,7 +23,7 @@ internal class CAct演奏DrumsチップファイアD : CActivity
             {
                 this.st状態[j].b使用中 = true;
                 //this.st状態[ n ].ct進行 = new CCounter( 0, 9, 20, CDTXMania.Timer );
-                this.st状態[j].ct進行 = new CCounter(0, 6, 25, TJAPlayerPI.app.Timer);
+                this.st状態[j].ct進行 = new CCounter(0, 3 + nOutLength, 25, TJAPlayerPI.app.Timer);
                 this.st状態[j].judge = judge;
                 this.st状態[j].nPlayer = player;
                 this.st状態_大[j].nPlayer = player;
@@ -37,7 +38,7 @@ internal class CAct演奏DrumsチップファイアD : CActivity
                     case 0x14:
                     case 0x1A:
                     case 0x1B:
-                        this.st状態_大[j].ct進行 = new CCounter(0, 9, 20, TJAPlayerPI.app.Timer);
+                        this.st状態_大[j].ct進行 = new CCounter(0, 240, 1, TJAPlayerPI.app.Timer);//20
                         this.st状態_大[j].judge = judge;
                         this.st状態_大[j].nIsBig = 1;
                         break;
@@ -89,24 +90,43 @@ internal class CAct演奏DrumsチップファイアD : CActivity
                         // and current judgment feedback near the judgment position.)
                         if (TJAPlayerPI.app.Tx.Effects_Hit_Explosion is not null && !TJAPlayerPI.IsPerformingCalibration)
                         {
-                            int n = this.st状態[i].nIsBig == 1 ? 520 : 0;
-                            int nX = (TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[this.st状態[i].nPlayer]) - ((TJAPlayerPI.app.Tx.Effects_Hit_Explosion.szTextureSize.Width / 7) / 2);
-                            int nY = (TJAPlayerPI.app.Skin.SkinConfig.Game.JudgePointY[this.st状態[i].nPlayer]) - ((TJAPlayerPI.app.Tx.Effects_Hit_Explosion.szTextureSize.Height / 4) / 2);
+                            int width = TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitExplosion.Width;
+                            int height = TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitExplosion.Height;
+
+                            int n = this.st状態[i].nIsBig == 1 ? (height * 2) : 0;
+                            int nX = (TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[this.st状態[i].nPlayer]) - (width / 2);
+                            int nY = (TJAPlayerPI.app.Skin.SkinConfig.Game.JudgePointY[this.st状態[i].nPlayer]) - (height / 2);
+
+                            float value = Math.Max(this.st状態[i].ct進行.n現在の値 - 3, 0);
+                            value /= nOutLength;
+
+                            float opacity = 1.0f - value;
+                            TJAPlayerPI.app.Tx.Effects_Hit_Explosion.Opacity = (int)(opacity * 255);
+
+                            int index = Math.Min(this.st状態[i].ct進行.n現在の値, 3);
 
                             switch (st状態[i].judge)
                             {
                                 case EJudge.Perfect:
                                 case EJudge.AutoPerfect:
                                     if (!this.st状態_大[i].ct進行.b停止中 && TJAPlayerPI.app.Tx.Effects_Hit_Explosion_Big is not null && this.st状態_大[i].nIsBig == 1)
-                                        TJAPlayerPI.app.Tx.Effects_Hit_Explosion.t2D描画(TJAPlayerPI.app.Device, nX, nY, new Rectangle(this.st状態[i].ct進行.n現在の値 * 260, n + 520, 260, 260));
+                                    {
+                                        TJAPlayerPI.app.Tx.Effects_Hit_Explosion.t2D描画(TJAPlayerPI.app.Device, nX, nY, new Rectangle(index * width, n + (height * 2), width, height));
+                                    }
                                     else
-                                        TJAPlayerPI.app.Tx.Effects_Hit_Explosion.t2D描画(TJAPlayerPI.app.Device, nX, nY, new Rectangle(this.st状態[i].ct進行.n現在の値 * 260, n, 260, 260));
+                                    {
+                                        TJAPlayerPI.app.Tx.Effects_Hit_Explosion.t2D描画(TJAPlayerPI.app.Device, nX, nY, new Rectangle(index * width, n, height, height));
+                                    }
                                     break;
                                 case EJudge.Good:
                                     if (!this.st状態_大[i].ct進行.b停止中 && TJAPlayerPI.app.Tx.Effects_Hit_Explosion_Big is not null && this.st状態_大[i].nIsBig == 1)
-                                        TJAPlayerPI.app.Tx.Effects_Hit_Explosion.t2D描画(TJAPlayerPI.app.Device, nX, nY, new Rectangle(this.st状態[i].ct進行.n現在の値 * 260, n + 780, 260, 260));
+                                    {
+                                        TJAPlayerPI.app.Tx.Effects_Hit_Explosion.t2D描画(TJAPlayerPI.app.Device, nX, nY, new Rectangle(index * width, n + (height * 3), width, height));
+                                    }
                                     else
-                                        TJAPlayerPI.app.Tx.Effects_Hit_Explosion.t2D描画(TJAPlayerPI.app.Device, nX, nY, new Rectangle(this.st状態[i].ct進行.n現在の値 * 260, n + 260, 260, 260));
+                                    {
+                                        TJAPlayerPI.app.Tx.Effects_Hit_Explosion.t2D描画(TJAPlayerPI.app.Device, nX, nY, new Rectangle(index * width, n + height, width, height));
+                                    }
                                     break;
                                 case EJudge.Miss:
                                 case EJudge.Bad:
@@ -128,27 +148,15 @@ internal class CAct演奏DrumsチップファイアD : CActivity
                     }
                     if (TJAPlayerPI.app.Tx.Effects_Hit_Explosion_Big is not null && this.st状態_大[i].nIsBig == 1)
                     {
+                        int x = TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[this.st状態_大[i].nPlayer];
+                        int y = TJAPlayerPI.app.Skin.SkinConfig.Game.JudgePointY[this.st状態[i].nPlayer];
 
-                        switch (st状態_大[i].judge)
+                        float value = this.st状態_大[i].ct進行.n現在の値 / 120.0f;
+
+                        DrawExpBig(x, y, value, 0.65f, 1.15f, 1.4f, st状態_大[i].judge, false);
+                        if (value >= 1)
                         {
-                            case EJudge.Perfect:
-                            case EJudge.AutoPerfect:
-                                if (this.st状態_大[i].nIsBig == 1)
-                                {
-                                    float f倍率 = 0.5f + ((this.st状態_大[i].ct進行.n現在の値 * 0.5f) / 10.0f);
-
-                                    TJAPlayerPI.app.Tx.Effects_Hit_Explosion_Big.Opacity = 255;
-                                    TJAPlayerPI.app.Tx.Effects_Hit_Explosion_Big.vcScaling = new Vector2(f倍率);
-                                    TJAPlayerPI.app.Tx.Effects_Hit_Explosion_Big.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Center, TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[this.st状態_大[i].nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.JudgePointY[this.st状態[i].nPlayer]);
-                                }
-                                break;
-
-                            case EJudge.Good:
-                                break;
-
-                            case EJudge.Miss:
-                            case EJudge.Bad:
-                                break;
+                            DrawExpBig(x, y, value - 1.0f, 0.4f, 0.95f, 1.0f, st状態_大[i].judge, true);
                         }
                     }
                 }
@@ -169,6 +177,8 @@ internal class CAct演奏DrumsチップファイアD : CActivity
     protected int[] nY座標 = new int[] { 172, 108, 50, 8, -10, -60, -5, 30, 90 };
     protected int[] nY座標P2 = new int[] { 172, 108, 50, 8, -10, -60, -5, 30, 90 };
 
+    private int nOutLength = 2;
+
     [StructLayout(LayoutKind.Sequential)]
     protected struct STSTATUS
     {
@@ -188,6 +198,66 @@ internal class CAct演奏DrumsチップファイアD : CActivity
         public int n透明度;
         public int nPlayer;
     }
+
+    private void DrawExpBig(int x, int y, float value, float scaleBegin, float scaleEnd, float length, EJudge eJudge, bool is2nd)
+    {
+        if (TJAPlayerPI.app.Tx.Effects_Hit_Explosion_Big is null) return;
+        if (value > length) return;
+
+        int width = TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitExplosion.BigWidth;
+        int height = TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.HitExplosion.BigHeight;
+
+        value /= length;
+
+        float endLength = 0.5f;
+        if (is2nd)
+        {
+            endLength = 0.0f;
+        }
+        else
+        {
+            value *= 1.0f + endLength;
+        }
+
+            float scaleValue = MathF.Min(value, 1.0f);
+        scaleValue = MathF.Sin(scaleValue * MathF.PI * 0.5f);
+        float scale = float.Lerp(scaleBegin, scaleEnd, scaleValue);
+
+        float opacityValue = 0.0f;
+        if (is2nd)
+        {
+            opacityValue = 1.0f - MathF.Cos(value * MathF.PI * 0.5f);
+        }
+        else
+        {
+            opacityValue = MathF.Max(value - 1.0f, 0.0f) / endLength;
+        }
+        float opacity = 1.0f - opacityValue;
+
+        TJAPlayerPI.app.Tx.Effects_Hit_Explosion_Big.Opacity = (int)(opacity * 255);
+        TJAPlayerPI.app.Tx.Effects_Hit_Explosion_Big.vcScaling = new Vector2(scale);
+
+        switch (eJudge)
+        {
+            case EJudge.Perfect:
+            case EJudge.AutoPerfect:
+                {
+                    TJAPlayerPI.app.Tx.Effects_Hit_Explosion_Big.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Center, x, y, new Rectangle(width, 0, width, height));
+                }
+                break;
+
+            case EJudge.Good:
+                {
+                    TJAPlayerPI.app.Tx.Effects_Hit_Explosion_Big.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Center, x, y, new Rectangle(0, 0, width, height));
+                }
+                break;
+
+            case EJudge.Miss:
+            case EJudge.Bad:
+                break;
+        }
+    }
+
     //-----------------
     #endregion
 }
