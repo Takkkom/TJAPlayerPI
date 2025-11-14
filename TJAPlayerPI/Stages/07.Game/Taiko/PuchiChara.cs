@@ -57,7 +57,8 @@ class PuchiChara : CActivity
         var sineY = Math.Sin(SineCounter.db現在の値 * (Math.PI / 180)) * (TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Sine * (isBalloon ? TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Scale[1] : TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Scale[0]));
         TJAPlayerPI.app.Tx.PuchiChara[nPlayer].vcScaling = new Vector2((isBalloon ? TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Scale[1] : TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Scale[0]));
         TJAPlayerPI.app.Tx.PuchiChara[nPlayer].Opacity = alpha;
-        TJAPlayerPI.app.Tx.PuchiChara[nPlayer].t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Center, x, y + (int)sineY, new Rectangle(Counter.n現在の値 * TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Width, (isGrowing ? TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Height : 0), TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Width, TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Height));
+        TJAPlayerPI.app.Tx.PuchiChara[nPlayer].t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Center, x, y + (int)sineY,
+            new Rectangle(Counter.n現在の値 * TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Width, 0, TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Width, TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Height));
         return base.On進行描画();
     }
 

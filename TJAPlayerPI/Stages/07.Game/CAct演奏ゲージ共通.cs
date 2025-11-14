@@ -1,5 +1,6 @@
 ﻿using FDK;
 using ManagedBass;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -21,20 +22,55 @@ internal class CAct演奏ゲージ共通 : CActivity
 
     public override void On活性化()
     {
-        this.ct炎 = new CCounter(0, 6, 50, TJAPlayerPI.app.Timer);
+        //this.ct炎 = new CCounter(0, 6, 50, TJAPlayerPI.app.Timer);
 
         if (TJAPlayerPI.app.Skin.SkinConfig.Game.Gauge.RainbowTimer <= 1)
         {
             throw new DivideByZeroException("SkinConfigの設定\"Game.Gauge.RainbowTimer\"を1以下にすることは出来ません。");
         }
-        this.ct虹アニメ = new CCounter(0, TJAPlayerPI.app.Skin.Game_Gauge_Rainbow_Ptn - 1, TJAPlayerPI.app.Skin.SkinConfig.Game.Gauge.RainbowTimer, TJAPlayerPI.app.Timer);
-        this.ct虹透明度 = new CCounter(0, TJAPlayerPI.app.Skin.SkinConfig.Game.Gauge.RainbowTimer - 1, 1, TJAPlayerPI.app.Timer);
+        //this.ct虹アニメ = new CCounter(0, TJAPlayerPI.app.Skin.Game_Gauge_Rainbow_Ptn - 1, TJAPlayerPI.app.Skin.SkinConfig.Game.Gauge.RainbowTimer, TJAPlayerPI.app.Timer);
+        //this.ct虹透明度 = new CCounter(0, TJAPlayerPI.app.Skin.SkinConfig.Game.Gauge.RainbowTimer - 1, 1, TJAPlayerPI.app.Timer);
+
+        for (int nPlayer = 0; nPlayer < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; nPlayer++)
+        {
+            Difficulty difficulty = (Difficulty)TJAPlayerPI.stage選曲.n確定された曲の難易度[nPlayer];
+            bool isDan = difficulty == Difficulty.Dan;
+            cGauge[nPlayer] = new CGauge(nPlayer, isDan);
+
+            cGauge[nPlayer].ClearIn += ClearIn;
+            cGauge[nPlayer].ClearOut += ClearOut;
+            cGauge[nPlayer].MaxIn += MaxIn;
+            cGauge[nPlayer].MaxOut += MaxOut;
+
+            switch(difficulty)
+            {
+                case Difficulty.Easy:
+                    cGauge[nPlayer].dbClearLine = 60;
+                    break;
+                case Difficulty.Normal:
+                case Difficulty.Hard:
+                    cGauge[nPlayer].dbClearLine = 70;
+                    break;
+                case Difficulty.Oni:
+                case Difficulty.Edit:
+                default:
+                    cGauge[nPlayer].dbClearLine = 80;
+                    break;
+            }
+        }
+
         base.On活性化();
     }
     public override void On非活性化()
     {
-        this.ct炎 = null;
-        this.ct虹アニメ = null;
+        //this.ct炎 = null;
+        //this.ct虹アニメ = null;
+
+        for (int nPlayer = 0; nPlayer < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; nPlayer++)
+        {
+            cGauge[nPlayer] = null;
+        }
+
         base.On非活性化();
     }
 
@@ -52,8 +88,16 @@ internal class CAct演奏ゲージ共通 : CActivity
             #endregion
 
 
-            int[] nRectX = new int[] { (int)(this.db現在のゲージ値[0] / 2) * 14, (int)(this.db現在のゲージ値[1] / 2) * 14 };
-            int 虹ベース = this.ct虹アニメ is not null ? (ct虹アニメ.n現在の値 + 1) % (ct虹アニメ.n終了値 + 1) : 0;
+            //int[] nRectX = new int[] { (int)(this.db現在のゲージ値[0] / 2) * 14, (int)(this.db現在のゲージ値[1] / 2) * 14 };
+            //int 虹ベース = this.ct虹アニメ is not null ? (ct虹アニメ.n現在の値 + 1) % (ct虹アニメ.n終了値 + 1) : 0;
+
+            for (int nPlayer = 0; nPlayer < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; nPlayer++)
+            {
+                cGauge[nPlayer].dbValue = this.db現在のゲージ値[nPlayer];
+                cGauge[nPlayer].Update();
+                cGauge[nPlayer].Draw(TJAPlayerPI.app.Skin.SkinConfig.Game.Gauge.X[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Gauge.Y[nPlayer], 1.0f, 255);
+            }
+
             /*
 
             新虹ゲージの仕様  2018/08/10 ろみゅ～？
@@ -67,7 +111,7 @@ internal class CAct演奏ゲージ共通 : CActivity
 
             */
 
-
+            /*
             if (TJAPlayerPI.stage選曲.n確定された曲の難易度[0] == (int)Difficulty.Dan)
             {
                 TJAPlayerPI.app.Tx.Gauge_Base_Danc?.t2D描画(TJAPlayerPI.app.Device, 492, 144, new Rectangle(0, 0, 700, 44));
@@ -175,6 +219,7 @@ internal class CAct演奏ゲージ共通 : CActivity
                     }
                 }
             }
+            */
 
         }
         return 0;
@@ -580,8 +625,15 @@ internal class CAct演奏ゲージ共通 : CActivity
     //-----------------
     #endregion
 
+    public EventHandler<CGauge.GaugeEventArgs> ClearIn;
+    public EventHandler<CGauge.GaugeEventArgs> ClearOut;
+    public EventHandler<CGauge.GaugeEventArgs> MaxIn;
+    public EventHandler<CGauge.GaugeEventArgs> MaxOut;
+
     public double[] db現在のゲージ値 { get; private set; } = new double[4];
-    private CCounter? ct炎;
-    private CCounter? ct虹アニメ;
-    private CCounter? ct虹透明度;
+    //private CCounter? ct炎;
+    //private CCounter? ct虹アニメ;
+    //private CCounter? ct虹透明度;
+
+    public CGauge[] cGauge { get; init; } = new CGauge[2];
 }

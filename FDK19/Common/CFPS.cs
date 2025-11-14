@@ -14,6 +14,11 @@ public class CFPS
         get;
         private set;
     }
+    public float fDelta
+    {
+        get;
+        private set;
+    }
 
 
     // コンストラクタ
@@ -21,6 +26,7 @@ public class CFPS
     public CFPS()
     {
         this.nFPS = 0;
+        this.fDelta = 0;
         this.timer = new CTimer();
         this.nBaseTimems = this.timer.n現在時刻ms;
         this.nLocalFPS = 0;
@@ -44,6 +50,9 @@ public class CFPS
             this.nBaseTimems += INTERVAL;
         }
         this.nLocalFPS++;
+
+        this.fDelta = (this.timer.n現在時刻ms - this.nPreviousTimems) * 0.001f;
+        this.nPreviousTimems = this.timer.n現在時刻ms;
     }
 
 
@@ -54,6 +63,7 @@ public class CFPS
     private CTimer timer;
     private long nBaseTimems;
     private int nLocalFPS;
+    private long nPreviousTimems;
     //-----------------
     #endregion
 }

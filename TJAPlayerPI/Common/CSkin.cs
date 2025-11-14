@@ -907,8 +907,8 @@ internal class CSkin : IDisposable
             public CCourseSymbol CourseSymbol { get; set; } = new();
             public class CCourseSymbol
             {
-                public int[] X { get; set; } = new int[] { 64, 64 };
-                public int[] Y { get; set; } = new int[] { 232, 410 };
+                public int[] X { get; set; } = new int[] { 15, 15 };
+                public int[] Y { get; set; } = new int[] { 232, 368 };
             }
             public CPanelFont PanelFont { get; set; } = new();
             public class CPanelFont
@@ -927,8 +927,8 @@ internal class CSkin : IDisposable
                 [IgnoreDataMember]
                 public EReferencePoint _SubTitleNameReferencePoint { get; set; } = EReferencePoint.Right;
 
-                public int GenreX { get; set; } = 1114;
-                public int GenreY { get; set; } = 74;
+                public int GenreX { get; set; } = 1116;
+                public int GenreY { get; set; } = 75;
                 public int LyricX { get; set; } = 640;
                 public int LyricY { get; set; } = 630;
                 public string LyricFontName { get; set; } = CFontRenderer.DefaultFontName;
@@ -962,14 +962,14 @@ internal class CSkin : IDisposable
             public CScore Score { get; set; } = new();
             public class CScore
             {
-                public int[] X { get; set; } = new int[] { 20, 20, 0, 0 };
-                public int[] Y { get; set; } = new int[] { 226, 530, 0, 0 };
-                public int[] AddX { get; set; } = new int[] { 20, 20, 0, 0 };
-                public int[] AddY { get; set; } = new int[] { 186, 570, 0, 0 };
-                public int[] AddBonusX { get; set; } = new int[] { 20, 20, 0, 0 };
-                public int[] AddBonusY { get; set; } = new int[] { 136, 626, 0, 0 };
+                public int[] X { get; set; } = new int[] { 19, 19, 0, 0 };
+                public int[] Y { get; set; } = new int[] { 229, 531, 0, 0 };
+                public int[] AddX { get; set; } = new int[] { 19, 19, 0, 0 };
+                public int[] AddY { get; set; } = new int[] { 192, 567, 0, 0 };
+                public int[] AddBonusX { get; set; } = new int[] { 19, 19, 0, 0 };
+                public int[] AddBonusY { get; set; } = new int[] { 139, 61, 0, 0 };
                 public int Padding { get; set; } = 20;
-                public int[] Size { get; set; } = new int[] { 24, 40 };
+                public int[] Size { get; set; } = new int[] { 32, 40 };
             }
             public CTaiko Taiko { get; set; } = new();
             public class CTaiko
@@ -982,43 +982,66 @@ internal class CSkin : IDisposable
                 public int[] NamePlateY { get; set; } = new int[] { 288, 368 };
                 public int[] PlayerNumberX { get; set; } = new int[] { 4, 4 };
                 public int[] PlayerNumberY { get; set; } = new int[] { 233, 435 };
-                public int[] X { get; set; } = new int[] { 190, 190 };
-                public int[] Y { get; set; } = new int[] { 190, 366 };
-                public int[] ComboX { get; set; } = new int[] { 268, 268 };
-                public int[] ComboY { get; set; } = new int[] { 270, 448 };
-                public int[] ComboExX { get; set; } = new int[] { 268, 268 };
-                public int[] ComboExY { get; set; } = new int[] { 270, 448 };
-                public int[] ComboEx4X { get; set; } = new int[] { 268, 268 };
-                public int[] ComboEx4Y { get; set; } = new int[] { 270, 448 };
-                public int[] ComboPadding { get; set; } = new int[] { 28, 30, 24 };
-                public int[] ComboSize { get; set; } = new int[] { 42, 48 };
-                public int[] ComboSizeEx { get; set; } = new int[] { 42, 56 };
-                public float[] ComboScale { get; set; } = new float[] { 1.0f, 1.0f, 0.8f };
-                public int[] ComboTextX { get; set; } = new int[] { 268, 268 };
-                public int[] ComboTextY { get; set; } = new int[] { 295, 472 };
+                public int[] X { get; set; } = new int[] { 176, 176 };
+                public int[] Y { get; set; } = new int[] { 187, 363 };
+                public int[] ComboX { get; set; } = new int[] { 249, 249 };
+                public int[] ComboY { get; set; } = new int[] { 271, 449 };
+                public int[] ComboExX { get; set; } = new int[] { 249, 249 };
+                public int[] ComboExY { get; set; } = new int[] { 269, 447 };
+                public int[] ComboEx4X { get; set; } = new int[] { 249, 249 };
+                public int[] ComboEx4Y { get; set; } = new int[] { 269, 447 };
+                public int[] ComboPadding { get; set; } = new int[] { 42, 48, 40 };
+                public int[] ComboSize { get; set; } = new int[] { 56, 64 };
+                public int[] ComboSizeEx { get; set; } = new int[] { 56, 64 };
+                public float[] ComboScale { get; set; } = new float[] { 1.0f, 1.0f, 0.85f };
+                public int[] ComboTextX { get; set; } = new int[] { 248, 248 };
+                public int[] ComboTextY { get; set; } = new int[] { 299, 475 };
                 public int[] ComboTextSize { get; set; } = new int[] { 100, 50 };
                 public bool ComboExIsJumping { get; set; } = true;
             }
             public CGauge Gauge { get; set; } = new();
             public class CGauge
             {
+                public int[] X { get; set; } = new int[] { 487, 487 };
+                public int[] Y { get; set; } = new int[] { 140, 528 };
+                public int[] EdgeX { get; set; } = new int[] { -160, -160 };
+                public int[] EdgeY { get; set; } = new int[] { -4, 0 };
+                public int[] LineX { get; set; } = new int[] { 4, 4 };
+                public int[] LineY { get; set; } = new int[] { 4, 4 };
+                public int[] LineSize { get; set; } = new int[] { 14, 44 };
+                public int[] FlashX { get; set; } = new int[] { -3, -3 };
+                public int[] FlashY { get; set; } = new int[] { -7, -5 };
+                public int[] FlashSize { get; set; } = new int[] { 24, 64 };
+                public int[] SoulFireX { get; set; } = new int[] { 735, 735 };
+                public int[] SoulFireY { get; set; } = new int[] { 25, 25 };
+                public int[] SoulFireSize { get; set; } = new int[] { 380, 380 };
+                public int SoulFireCount { get; set; } = 8;
+                public int[] SoulTextX { get; set; } = new int[] { 700, 700 };
+                public int[] SoulTextY { get; set; } = new int[] { -6, -6 };
+                public int[] SoulTextSize { get; set; } = new int[] { 72, 64 };
+                public int[] ClearTextX { get; set; } = new int[] { 5, 5 };
+                public int[] ClearTextY { get; set; } = new int[] { 4, 24 };
+                public int[] ClearTextSize { get; set; } = new int[] { 56, 24 };
+                public int Step { get; set; } = 14;
+                public int[] RainbowSize { get; set; } = new int[] { 704, 52 };
+                public int RainbowFrameCount { get; set; } = 8;
                 public int RainbowTimer { get; set; } = 50;
             }
             public CBalloon Balloon { get; set; } = new();
             public class CBalloon
             {
-                public int[] ComboX { get; set; } = new int[] { 253, 253 };
-                public int[] ComboY { get; set; } = new int[] { -11, 498 };
-                public int[] ComboShinX { get; set; } = new int[] { 253, 253 };
-                public int[] ComboShinY { get; set; } = new int[] { -11, 498 };
-                public int[] ComboNumberX { get; set; } = new int[] { 312, 312 };
-                public int[] ComboNumberY { get; set; } = new int[] { 34, 540 };
-                public int[] ComboShinNumberX { get; set; } = new int[] { 312, 312 };
-                public int[] ComboShinNumberY { get; set; } = new int[] { 34, 540 };
-                public int[] ComboTextX { get; set; } = new int[] { 471, 471 };
-                public int[] ComboTextY { get; set; } = new int[] { 55, 561 };
-                public int[] ComboShinTextX { get; set; } = new int[] { 471, 471 };
-                public int[] ComboShinTextY { get; set; } = new int[] { 55, 561 };
+                public int[] ComboX { get; set; } = new int[] { 264, 264 };
+                public int[] ComboY { get; set; } = new int[] { 16, 572 };
+                public int[] ComboShinX { get; set; } = new int[] { 254, 254 };
+                public int[] ComboShinY { get; set; } = new int[] { 16, 572 };
+                public int[] ComboNumberX { get; set; } = new int[] { 385, 385 };
+                public int[] ComboNumberY { get; set; } = new int[] { 32, 588 };
+                public int[] ComboShinNumberX { get; set; } = new int[] { 375, 375 };
+                public int[] ComboShinNumberY { get; set; } = new int[] { 52, 608 };
+                public int[] ComboTextX { get; set; } = new int[] { 391, 391 };
+                public int[] ComboTextY { get; set; } = new int[] { 58, 614 };
+                public int[] ComboShinTextX { get; set; } = new int[] { 381, 381 };
+                public int[] ComboShinTextY { get; set; } = new int[] { 78, 634 };
 
                 public int[] ComboScoreX { get; set; } = new int[] { 452, 460 };
                 public int[] ComboScoreY { get; set; } = new int[] { 90, 650 };
@@ -1026,20 +1049,20 @@ internal class CSkin : IDisposable
                 public int[] ComboScoreTextX { get; set; } = new int[] { 478, 483 };
                 public int[] ComboScoreTextY { get; set; } = new int[] { 90, 650 };
 
-                public int[] BalloonX { get; set; } = new int[] { 382, 382 };
-                public int[] BalloonY { get; set; } = new int[] { 115, 290 };
-                public int[] BalloonFrameX { get; set; } = new int[] { 382, 382 };
-                public int[] BalloonFrameY { get; set; } = new int[] { 80, 260 };
+                public int[] BalloonX { get; set; } = new int[] { 428, 428 };
+                public int[] BalloonY { get; set; } = new int[] { 137, 435 };
+                public int[] BalloonFrameX { get; set; } = new int[] { 399, 399 };
+                public int[] BalloonFrameY { get; set; } = new int[] { 34, 332 };
                 public int[] BalloonNumberX { get; set; } = new int[] { 486, 486 };
-                public int[] BalloonNumberY { get; set; } = new int[] { 187, 373 };
-                public int[] RollFrameX { get; set; } = new int[] { 218, 218 };
-                public int[] RollFrameY { get; set; } = new int[] { -3, 514 };
-                public int[] RollNumberX { get; set; } = new int[] { 392, 392 };
-                public int[] RollNumberY { get; set; } = new int[] { 128, 639 };
-                public int[] NumberSize { get; set; } = new int[] { 62, 80 };
-                public int NumberPadding { get; set; } = 60;
+                public int[] BalloonNumberY { get; set; } = new int[] { 133, 431 };
+                public int[] RollFrameX { get; set; } = new int[] { 234, 234 };
+                public int[] RollFrameY { get; set; } = new int[] { 9, 522 };
+                public int[] RollNumberX { get; set; } = new int[] { 386, 386 };
+                public int[] RollNumberY { get; set; } = new int[] { 129, 640 };
+                public int[] NumberSize { get; set; } = new int[] { 64, 72 };
+                public int NumberPadding { get; set; } = 56;
                 public float RollNumberScale { get; set; } = 1.000f;
-                public float BalloonNumberScale { get; set; } = 0.879f;
+                public float BalloonNumberScale { get; set; } = 0.8f;
             }
             public CEffect Effect { get; set; } = new();
             public class CEffect
@@ -1059,12 +1082,12 @@ internal class CSkin : IDisposable
                 public CFireWorks FireWorks { get; set; } = new();
                 public class CFireWorks
                 {
-                    public int Width { get; set; } = 180;
-                    public int Height { get; set; } = 180;
-                    public int Ptn { get; set; } = 10;
-                    public int Timer { get; set; } = 5;
+                    public int Width { get; set; } = 256;
+                    public int Height { get; set; } = 256;
+                    public int Ptn { get; set; } = 13;
+                    public int Timer { get; set; } = 20;
                     public bool AddBlend { get; set; } = true;
-                    public int Timing { get; set; } = 8;
+                    public int Timing { get; set; } = 20;
                 }
                 public CGoGoSplash GoGoSplash { get; set; } = new();
                 public class CGoGoSplash
@@ -1084,25 +1107,17 @@ internal class CSkin : IDisposable
                     // super-flying-notes AioiLight
                     public int[] StartPointX { get; set; } = new int[] { 414, 414 };
                     public int[] StartPointY { get; set; } = new int[] { 260, 434 };
-                    public int[] EndPointX { get; set; } = new int[] { 1222, 1222 };
+                    public int[] EndPointX { get; set; } = new int[] { 1225, 1225 };
                     public int[] EndPointY { get; set; } = new int[] { 164, 554 };
                     public int Sine { get; set; } = 220;
                     public bool IsUsingEasing { get; set; } = true;
                     public int Timer { get; set; } = 3;
                 }
-                public CNotesFlash NotesFlash { get; set; } = new();
-                public class CNotesFlash
-                {
-                    public int Width { get; set; } = 180;
-                    public int Height { get; set; } = 180;
-                    public int Ptn { get; set; } = 12;
-                    public int Timer { get; set; } = 20;
-                }
                 public CFire Fire { get; set; } = new();
                 public class CFire
                 {
-                    public int Width { get; set; } = 230;
-                    public int Height { get; set; } = 230;
+                    public int Width { get; set; } = 390;
+                    public int Height { get; set; } = 390;
                     public int Ptn { get; set; } = 8;
                     public bool AddBlend { get; set; } = true;
                 }
@@ -1131,9 +1146,6 @@ internal class CSkin : IDisposable
             public CRunner Runner { get; set; } = new();
             public class CRunner
             {
-                public int[] Size { get; set; } = new int[] { 60, 125 };
-                public int Ptn { get; set; } = 48;
-                public int Type { get; set; } = 4;
                 public int[] StartPointX { get; set; } = new int[] { 175, 175 };
                 public int[] StartPointY { get; set; } = new int[] { 40, 560 };
                 public int Timer { get; set; } = 16;

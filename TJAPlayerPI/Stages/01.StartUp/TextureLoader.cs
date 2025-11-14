@@ -5,7 +5,7 @@ namespace TJAPlayerPI;
 
 class TextureLoader
 {
-    const string BASE = @"Graphics/";
+    public const string BASE = @"Graphics/";
 
     // Stage
     const string TITLE = @"1_Title/";
@@ -14,7 +14,7 @@ class TextureLoader
     const string SONGSELECTV2 = @"3_SongSelect_v2/";
     const string SONGLOADING = @"4_SongLoading/";
     const string SONGLOADINGV2 = @"4_SongLoading_v2/";
-    const string GAME = @"5_Game/";
+    public const string GAME = @"5_Game/";
     const string RESULT = @"6_Result/";
     const string RESULTV2 = @"6_Result_v2/";
     const string EXIT = @"7_Exit/";
@@ -39,7 +39,7 @@ class TextureLoader
     const string GENRE = @"13_Genre/";
     const string GAMEMODE = @"14_GameMode/";
     const string FAILED = @"15_Failed/";
-    const string RUNNER = @"16_Runner/";
+    public const string RUNNER = @"16_Runner/";
     const string PUCHICHARA = @"18_PuchiChara/";
     const string TRAINING = @"19_Training/";
     const string DANC = @"17_DanC/";
@@ -459,6 +459,49 @@ class TextureLoader
         Taiko_Combo_Text = TxC(GAME + TAIKO + @"Combo_Text.png");
         #endregion
         #region ゲージ
+        Gauge_Base_Lv1 = new CTexture[2];
+        Gauge_Base_Lv1[0] = TxC(GAME + GAUGE + @"Base_Lv1_1P.png");
+        Gauge_Base_Lv1[1] = TxC(GAME + GAUGE + @"Base_Lv1_2P.png");
+        Gauge_Base_Lv2 = new CTexture[2];
+        Gauge_Base_Lv2[0] = TxC(GAME + GAUGE + @"Base_Lv2_1P.png");
+        Gauge_Base_Lv2[1] = TxC(GAME + GAUGE + @"Base_Lv2_2P.png");
+        Gauge_Base_Lv3 = new CTexture[2];
+        Gauge_Base_Lv3[0] = TxC(GAME + GAUGE + @"Base_Lv3_1P.png");
+        Gauge_Base_Lv3[1] = TxC(GAME + GAUGE + @"Base_Lv3_2P.png");
+        Gauge_Base_LvDan = new CTexture[2];
+        Gauge_Base_LvDan[0] = TxC(GAME + GAUGE + @"Base_LvDan_1P.png");
+        Gauge_Base_LvDan[1] = TxC(GAME + GAUGE + @"Base_LvDan_2P.png");
+        Gauge_Line = new CTexture[2];
+        Gauge_Line[0] = TxC(GAME + GAUGE + @"Line_1P.png");
+        Gauge_Line[1] = TxC(GAME + GAUGE + @"Line_2P.png");
+        Gauge_Flash = new CTexture[2];
+        Gauge_Flash[0] = TxC(GAME + GAUGE + @"Flash_1P.png");
+        if (Gauge_Flash[0] is not null)
+        {
+            Gauge_Flash[0].eBlendMode = CTexture.EBlendMode.Addition;
+        }
+        Gauge_Flash[1] = TxC(GAME + GAUGE + @"Flash_2P.png");
+        if (Gauge_Flash[1] is not null)
+        {
+            Gauge_Flash[1].eBlendMode = CTexture.EBlendMode.Addition;
+        }
+        Gauge_Rainbow_Lv1 = TxC(GAME + GAUGE + @"Rainbow_Lv1.png");
+        Gauge_Rainbow_Lv2 = TxC(GAME + GAUGE + @"Rainbow_Lv2.png");
+        Gauge_Rainbow_Lv3 = TxC(GAME + GAUGE + @"Rainbow_Lv3.png");
+        Gauge_Rainbow_LvDan = TxC(GAME + GAUGE + @"Rainbow_LvDan.png");
+        Gauge_Edge_Lv1 = TxC(GAME + GAUGE + @"Edge_Lv1.png");
+        Gauge_Edge_Lv2 = TxC(GAME + GAUGE + @"Edge_Lv2.png");
+        Gauge_Edge_Lv3 = TxC(GAME + GAUGE + @"Edge_Lv3.png");
+        Gauge_Edge_LvDan = TxC(GAME + GAUGE + @"Edge_LvDan.png");
+        Gauge_Frame_Lv1 = TxC(GAME + GAUGE + @"Frame_Lv1.png");
+        Gauge_Frame_Lv2 = TxC(GAME + GAUGE + @"Frame_Lv2.png");
+        Gauge_Frame_Lv3 = TxC(GAME + GAUGE + @"Frame_Lv3.png");
+        Gauge_Frame_LvDan = TxC(GAME + GAUGE + @"Frame_LvDan.png");
+        Gauge_ClearText = TxC(GAME + GAUGE + @"Clear_Text.png");
+        Gauge_SoulFire = TxC(GAME + GAUGE + @"Soul_Fire.png");
+        Gauge_SoulText = TxC(GAME + GAUGE + @"Soul_Text.png");
+        Gauge_Explosion = TxC(GAME + GAUGE + @"Explosion.png");
+        /*
         Gauge = new CTexture[2];
         Gauge[0] = TxC(GAME + GAUGE + @"1P.png");
         Gauge[1] = TxC(GAME + GAUGE + @"2P.png");
@@ -482,8 +525,10 @@ class TextureLoader
         Gauge_Soul_Explosion = new CTexture[2];
         Gauge_Soul_Explosion[0] = TxC(GAME + GAUGE + @"1P_Explosion.png");
         Gauge_Soul_Explosion[1] = TxC(GAME + GAUGE + @"2P_Explosion.png");
+        */
 
         #region[Gauge_DanC]
+        /*
         Gauge_Danc = TxC(GAME + GAUGE + @"DanC/" + @"1P.png");
         Gauge_Base_Danc = TxC(GAME + GAUGE + @"DanC/" + @"1P_Base.png");
         Gauge_Line_Danc = TxC(GAME + GAUGE + @"DanC/" + @"1P_Line.png");
@@ -496,6 +541,7 @@ class TextureLoader
                 Gauge_Rainbow_Danc[i] = TxC(GAME + GAUGE + @"DanC/" + @"Rainbow/" + i.ToString() + ".png");
             }
         }
+        */
         #endregion
 
         #endregion
@@ -609,9 +655,6 @@ class TextureLoader
         #region ステージ失敗
         Failed_Game = TxC(GAME + FAILED + @"Game.png");
         Failed_Stage = TxC(GAME + FAILED + @"Stage.png");
-        #endregion
-        #region ランナー
-        Runner = TxC(GAME + RUNNER + @"0.png");
         #endregion
         #region DanC
         DanC_Background = TxC(GAME + DANC + @"Background.png");
@@ -881,6 +924,29 @@ class TextureLoader
         TJAPlayerPI.t安全にDisposeする(ref Taiko_Combo_Text);
         #endregion
         #region ゲージ
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Base_Lv1);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Base_Lv2);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Base_Lv3);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Base_LvDan);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Line);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Flash);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Rainbow_Lv1);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Rainbow_Lv2);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Rainbow_Lv3);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Rainbow_LvDan);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Edge_Lv1);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Edge_Lv2);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Edge_Lv3);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Edge_LvDan);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Frame_Lv1);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Frame_Lv2);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Frame_Lv3);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Frame_LvDan);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_ClearText);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_SoulFire);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_SoulText);
+        TJAPlayerPI.t安全にDisposeする(ref Gauge_Explosion);
+        /*
         TJAPlayerPI.t安全にDisposeする(ref Gauge);
         TJAPlayerPI.t安全にDisposeする(ref Gauge);
         TJAPlayerPI.t安全にDisposeする(ref Gauge_Base);
@@ -889,13 +955,15 @@ class TextureLoader
         TJAPlayerPI.t安全にDisposeする(ref Gauge_Soul);
         TJAPlayerPI.t安全にDisposeする(ref Gauge_Soul_Fire);
         TJAPlayerPI.t安全にDisposeする(ref Gauge_Soul_Explosion);
+        */
 
         #region[Gauge_DanC]
+        /*
         TJAPlayerPI.t安全にDisposeする(ref Gauge_Danc);
         TJAPlayerPI.t安全にDisposeする(ref Gauge_Base_Danc);
         TJAPlayerPI.t安全にDisposeする(ref Gauge_Line_Danc);
         TJAPlayerPI.t安全にDisposeする(ref Gauge_Rainbow_Danc);
-
+        */
         #endregion
 
         #endregion
@@ -959,9 +1027,6 @@ class TextureLoader
         #region ステージ失敗
         TJAPlayerPI.t安全にDisposeする(ref Failed_Game);
         TJAPlayerPI.t安全にDisposeする(ref Failed_Stage);
-        #endregion
-        #region ランナー
-        TJAPlayerPI.t安全にDisposeする(ref Runner);
         #endregion
         #region DanC
         TJAPlayerPI.t安全にDisposeする(ref DanC_Background);
@@ -1194,17 +1259,43 @@ class TextureLoader
         Taiko_Combo;
     #endregion
     #region ゲージ
+    public CTexture?[] Gauge_Base_Lv1;
+    public CTexture?[] Gauge_Base_Lv2;
+    public CTexture?[] Gauge_Base_Lv3;
+    public CTexture?[] Gauge_Base_LvDan;
+    public CTexture?[] Gauge_Line;
+    public CTexture?[] Gauge_Flash;
+    public CTexture? Gauge_Rainbow_Lv1;
+    public CTexture? Gauge_Rainbow_Lv2;
+    public CTexture? Gauge_Rainbow_Lv3;
+    public CTexture? Gauge_Rainbow_LvDan;
+    public CTexture? Gauge_Edge_Lv1;
+    public CTexture? Gauge_Edge_Lv2;
+    public CTexture? Gauge_Edge_Lv3;
+    public CTexture? Gauge_Edge_LvDan;
+    public CTexture? Gauge_Frame_Lv1;
+    public CTexture? Gauge_Frame_Lv2;
+    public CTexture? Gauge_Frame_Lv3;
+    public CTexture? Gauge_Frame_LvDan;
+    public CTexture? Gauge_ClearText;
+    public CTexture? Gauge_SoulFire;
+    public CTexture? Gauge_SoulText;
+    public CTexture? Gauge_Explosion;
+    /*
     public CTexture?[] Gauge,
         Gauge_Base,
         Gauge_Line,
         Gauge_Rainbow,
         Gauge_Soul_Explosion,
         Gauge_Rainbow_Danc;
+    */
+    /*
     public CTexture? Gauge_Soul,
         Gauge_Danc,
         Gauge_Base_Danc,
         Gauge_Line_Danc,
         Gauge_Soul_Fire;
+    */
     #endregion
     #region 吹き出し
     public CTexture?[] Balloon_Combo;
@@ -1266,9 +1357,6 @@ class TextureLoader
     #region ステージ失敗
     public CTexture? Failed_Game,
         Failed_Stage;
-    #endregion
-    #region ランナー
-    public CTexture? Runner;
     #endregion
     #region DanC
     public CTexture? DanC_Background;

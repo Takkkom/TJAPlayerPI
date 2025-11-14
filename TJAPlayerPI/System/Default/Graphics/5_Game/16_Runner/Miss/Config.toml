@@ -1,0 +1,12 @@
+X = [ 244, 244 ]
+Y = [ 117, 654 ]
+Width = 120
+Height = 64
+InJumpWave = [0, 0]
+Wave = 20
+InPtn = 5
+InSpeed = 40
+LoopPtn = 1
+LoopSpeed = 8
+Variant = 1
+Style = "Miss"

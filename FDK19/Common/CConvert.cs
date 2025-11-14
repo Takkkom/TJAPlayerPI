@@ -58,7 +58,7 @@ public static class CConvert
         {
             return -InverseLerp(0.5f, 0.75f, value);
         }
-        else if (value < 0.75f)
+        else
         {
             return -1.0f + InverseLerp(0.75f, 1.0f, value);
         }

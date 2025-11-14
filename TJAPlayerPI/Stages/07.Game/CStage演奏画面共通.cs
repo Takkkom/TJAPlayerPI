@@ -1,5 +1,6 @@
 ﻿using FDK;
 using SkiaSharp;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -18,7 +19,13 @@ internal class CStage演奏画面共通 : CStage
         base.listChildren.Add(this.actCombo = new CAct演奏Combo共通());
         base.listChildren.Add(this.actChipFireD = new CAct演奏DrumsチップファイアD());
         base.listChildren.Add(this.Rainbow = new Rainbow());
-        base.listChildren.Add(this.actGauge = new CAct演奏ゲージ共通());
+        base.listChildren.Add(this.actGauge = new CAct演奏ゲージ共通()
+        {
+            ClearIn = tClearIn,
+            ClearOut = tClearOut,
+            MaxIn = tMaxIn,
+            MaxOut = tMaxOut
+        });
         base.listChildren.Add(this.actJudgeString = new CActJudgeString());
         base.listChildren.Add(this.actTaikoLaneFlash = new TaikoLaneFlash());
         base.listChildren.Add(this.actScore = new CActScore());
@@ -257,8 +264,6 @@ internal class CStage演奏画面共通 : CStage
         //          this.sw2 = new Stopwatch();
         //			this.gclatencymode = GCSettings.LatencyMode;
         //			GCSettings.LatencyMode = GCLatencyMode.Batch;	// 演奏画面中はGCを抑止する
-        this.bIsAlreadyCleared = new bool[2];
-        this.bIsAlreadyMaxed = new bool[2];
 
         this.ListDan_Number = 0;
         this.IsDanFailed = false;
@@ -733,8 +738,8 @@ internal class CStage演奏画面共通 : CStage
     }.ToFrozenDictionary();
 
     public bool bPAUSE;
-    public bool[] bIsAlreadyCleared;
-    public bool[] bIsAlreadyMaxed;
+    public bool[] bIsAlreadyCleared => new bool[] { actGauge.cGauge[0]?.bIsCleared ?? false, actGauge.cGauge[1]?.bIsCleared ?? false };
+    public bool[] bIsAlreadyMaxed => new bool[] { actGauge.cGauge[0]?.bIsMaxed ?? false, actGauge.cGauge[1]?.bIsMaxed ?? false };
     protected bool b演奏にMIDIInputを使った;
     protected bool b演奏にKeyBoardを使った;
     protected bool b演奏にJoypadを使った;
@@ -798,6 +803,52 @@ internal class CStage演奏画面共通 : CStage
     private int ListDan_Number;
     private bool IsDanFailed;
     private readonly int[] NowProcessingChip = new int[] { 0, 0 };
+
+
+    private void tClearIn(object? sender, CGauge.GaugeEventArgs args)
+    {
+        int nPlayer = args.nPlayer;
+        double dbUnit = (60.0 / (TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.dbBPM)) * TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed / 20.0;
+
+        if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_ClearIn[nPlayer] != 0 && actChara.CharaAction_Balloon_Delay[nPlayer].b終了値に達した)
+        {
+            this.actChara.アクションタイマーリセット(nPlayer);
+            this.actChara.ctキャラクターアクション_ノルマ[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_ClearIn[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_ClearIn[nPlayer]) * 2, CSoundManager.rc演奏用タイマ);
+            this.actChara.ctキャラクターアクション_ノルマ[nPlayer].t進行db();
+            this.actChara.ctキャラクターアクション_ノルマ[nPlayer].db現在の値 = 0D;
+            this.actChara.bマイどんアクション中[nPlayer] = true;
+        }
+        TJAPlayerPI.stage演奏ドラム画面.actBackground.ClearIn(nPlayer);
+    }
+
+    private void tClearOut(object? sender, CGauge.GaugeEventArgs args)
+    {
+        int nPlayer = args.nPlayer;
+        double dbUnit = (((60.0 / (TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.dbBPM))));
+
+
+    }
+
+    private void tMaxIn(object? sender, CGauge.GaugeEventArgs args)
+    {
+        int nPlayer = args.nPlayer;
+        double dbUnit = (60.0 / (TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.dbBPM)) * TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed / 20.0;
+
+        if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_SoulIn[nPlayer] != 0 && actChara.CharaAction_Balloon_Delay[nPlayer].b終了値に達した)
+        {
+            this.actChara.アクションタイマーリセット(nPlayer);
+            this.actChara.ctキャラクターアクション_魂MAX[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_SoulIn[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_SoulIn[nPlayer]) * 2, CSoundManager.rc演奏用タイマ);
+            this.actChara.ctキャラクターアクション_魂MAX[nPlayer].t進行db();
+            this.actChara.ctキャラクターアクション_魂MAX[nPlayer].db現在の値 = 0D;
+            this.actChara.bマイどんアクション中[nPlayer] = true;
+        }
+    }
+
+    private void tMaxOut(object? sender, CGauge.GaugeEventArgs args)
+    {
+        int nPlayer = args.nPlayer;
+        double dbUnit = (60.0 / (TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.dbBPM)) * TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed / 20.0;
+    }
 
 
     public void AddMixer(CSound cs, bool _b演奏終了後も再生が続くチップである)
@@ -1268,50 +1319,14 @@ internal class CStage演奏画面共通 : CStage
 
         if (eJudgeResult != EJudge.Bad && eJudgeResult != EJudge.Miss)
         {
-            double dbUnit = (((60.0 / (TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.dbBPM))));
-
             // ランナー(たたけたやつ)
             this.actRunner.Start(nPlayer, false, pChip);
-
-            if ((int)actGauge.db現在のゲージ値[nPlayer] >= 100 && this.bIsAlreadyMaxed[nPlayer] == false)
-            {
-                if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_SoulIn[nPlayer] != 0 && actChara.CharaAction_Balloon_Delay[nPlayer].b終了値に達した)
-                {
-                    this.actChara.アクションタイマーリセット(nPlayer);
-                    this.actChara.ctキャラクターアクション_魂MAX[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_SoulIn[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_SoulIn[nPlayer]) * 2, CSoundManager.rc演奏用タイマ);
-                    this.actChara.ctキャラクターアクション_魂MAX[nPlayer].t進行db();
-                    this.actChara.ctキャラクターアクション_魂MAX[nPlayer].db現在の値 = 0D;
-                    this.actChara.bマイどんアクション中[nPlayer] = true;
-                }
-                this.bIsAlreadyMaxed[nPlayer] = true;
-            }
-            if ((int)actGauge.db現在のゲージ値[nPlayer] >= 80 && this.bIsAlreadyCleared[nPlayer] == false)
-            {
-                if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_ClearIn[nPlayer] != 0 && actChara.CharaAction_Balloon_Delay[nPlayer].b終了値に達した)
-                {
-                    this.actChara.アクションタイマーリセット(nPlayer);
-                    this.actChara.ctキャラクターアクション_ノルマ[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_ClearIn[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_ClearIn[nPlayer]) * 2, CSoundManager.rc演奏用タイマ);
-                    this.actChara.ctキャラクターアクション_ノルマ[nPlayer].t進行db();
-                    this.actChara.ctキャラクターアクション_ノルマ[nPlayer].db現在の値 = 0D;
-                    this.actChara.bマイどんアクション中[nPlayer] = true;
-                }
-                this.bIsAlreadyCleared[nPlayer] = true;
-                TJAPlayerPI.stage演奏ドラム画面.actBackground.ClearIn(nPlayer);
-            }
         }
 
         if (eJudgeResult == EJudge.Bad || eJudgeResult == EJudge.Miss)
         {
             // ランナー(みすったやつ)
             this.actRunner.Start(nPlayer, true, pChip);
-            if ((int)actGauge.db現在のゲージ値[nPlayer] < 100 && this.bIsAlreadyMaxed[nPlayer] == true)
-            {
-                this.bIsAlreadyMaxed[nPlayer] = false;
-            }
-            if ((int)actGauge.db現在のゲージ値[nPlayer] < 80 && this.bIsAlreadyCleared[nPlayer] == true)
-            {
-                this.bIsAlreadyCleared[nPlayer] = false;
-            }
         }
 
 
@@ -1393,7 +1408,7 @@ internal class CStage演奏画面共通 : CStage
                 {
                     if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo[nPlayer] != 0 && !this.actChara.ctキャラクターアクション_ノルマ[nPlayer].b進行中db && actChara.CharaAction_Balloon_Delay[nPlayer].b終了値に達した)
                     {
-                        if (TJAPlayerPI.stage演奏ドラム画面.actGauge.db現在のゲージ値[nPlayer] < 100)
+                        if (!TJAPlayerPI.stage演奏ドラム画面.actGauge.cGauge[nPlayer].bIsMaxed)
                         {
                             // 魂ゲージMAXではない
                             // ジャンプ_ノーマル
@@ -1407,7 +1422,7 @@ internal class CStage演奏画面共通 : CStage
                     }
                     if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo_Max[nPlayer] != 0 && !this.actChara.ctキャラクターアクション_魂MAX[nPlayer].b進行中db && actChara.CharaAction_Balloon_Delay[nPlayer].b終了値に達した)
                     {
-                        if (TJAPlayerPI.stage演奏ドラム画面.actGauge.db現在のゲージ値[nPlayer] >= 100)
+                        if (TJAPlayerPI.stage演奏ドラム画面.actGauge.cGauge[nPlayer].bIsMaxed)
                         {
                             // 魂ゲージMAX
                             // ジャンプ_MAX
@@ -3233,7 +3248,7 @@ internal class CStage演奏画面共通 : CStage
                         double dbUnit = (((60.0 / pChip.dbBPM)));
                         if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGoStart[nPlayer] != 0 && actChara.CharaAction_Balloon_Delay[nPlayer].b終了値に達した)
                         {
-                            if (TJAPlayerPI.stage演奏ドラム画面.actGauge.db現在のゲージ値[nPlayer] < 100)
+                            if (!TJAPlayerPI.stage演奏ドラム画面.actGauge.cGauge[nPlayer].bIsMaxed)
                             {
                                 // 魂ゲージMAXではない
                                 // ゴーゴースタート_ノーマル
@@ -3247,7 +3262,7 @@ internal class CStage演奏画面共通 : CStage
                         }
                         if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGoStart_Max[nPlayer] != 0 && actChara.CharaAction_Balloon_Delay[nPlayer].b終了値に達した)
                         {
-                            if (TJAPlayerPI.stage演奏ドラム画面.actGauge.db現在のゲージ値[nPlayer] >= 100)
+                            if (TJAPlayerPI.stage演奏ドラム画面.actGauge.cGauge[nPlayer].bIsMaxed)
                             {
                                 // 魂ゲージMAX
                                 // ゴーゴースタート_MAX

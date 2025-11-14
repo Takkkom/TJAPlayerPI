@@ -229,6 +229,7 @@ public class TJAPlayerPI : Game
     {
         TJAPlayerPI.app = this;
 
+        RemoveDefaultSkin();
         ExportEmbeddedFiles();
         Renderer = this.RendererName;
         #region [ Config.toml の読み込み ]
@@ -1673,6 +1674,12 @@ public class TJAPlayerPI : Game
         TJAPlayerPI.app.Tx.LoadTexture();
 
         TJAPlayerPI.app.act文字コンソール.On活性化();
+    }
+
+    private void RemoveDefaultSkin()
+    {
+        string skinDir = Path.Combine(strEXEのあるフォルダ, "System/Default");
+        //Directory.Delete(skinDir, true);
     }
 
     private void ExportEmbeddedFiles()

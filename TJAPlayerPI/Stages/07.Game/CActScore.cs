@@ -4,6 +4,9 @@ namespace TJAPlayerPI;
 
 internal class CActScore : CActivity
 {
+    public static readonly Color ColorP1 = Color.FromArgb(255, 100, 0);
+    public static readonly Color ColorP2 = Color.FromArgb(100, 215, 213);
+
     // プロパティ
 
     protected long[] nスコアの増分;
@@ -19,6 +22,7 @@ internal class CActScore : CActivity
 
     protected STスコア[] stScore;
     protected int n現在表示中のAddScore;
+
 
     [StructLayout(LayoutKind.Sequential)]
     protected struct STスコア
@@ -389,7 +393,7 @@ internal class CActScore : CActivity
                             {
                                 tx_score.Opacity = alpha;
                                 tx_score.vcScaling.Y = 1;
-                                tx_score.color = Color.FromArgb(255, 100, 0);
+                                tx_score.color = ColorP1;
                                 tx_score.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.DownLeft, x, y, rectangle);
                                 tx_score.color = Color.White;
                             }
@@ -401,7 +405,7 @@ internal class CActScore : CActivity
                             {
                                 tx_score.Opacity = alpha;
                                 tx_score.vcScaling.Y = 1;
-                                tx_score.color = Color.FromArgb(100, 215, 213);
+                                tx_score.color = ColorP2;
                                 tx_score.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.DownLeft, x, y, rectangle);
                                 tx_score.color = Color.White;
                             }

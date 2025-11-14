@@ -235,6 +235,7 @@ internal class CActResultParameterPanel : CActivity
 
             for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
             {
+                /*
                 if (TJAPlayerPI.app.Tx.Result_Panel is not null)
                 {
                     TJAPlayerPI.app.Tx.Result_Panel.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Result.PanelX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.PanelY[i]);
@@ -367,6 +368,8 @@ internal class CActResultParameterPanel : CActivity
                         TJAPlayerPI.app.Tx.Gauge_Soul_Fire.t2D描画(TJAPlayerPI.app.Device, 1100, y_Fire[i], new Rectangle(0, 0, 230, 230));
                     TJAPlayerPI.app.Tx.Gauge_Soul.t2D描画(TJAPlayerPI.app.Device, 1174, y_Soul[i], new Rectangle(0, 0, 80, 80));
                 }
+                */
+
                 //演奏中のやつ使いまわせなかった。ファック。
                 this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.ScoreX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.ScoreY[i], TJAPlayerPI.stageResult.cRecords[i].Score, true, EPhase.Score, i);
                 this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.PerfectX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.PerfectY[i], TJAPlayerPI.stageResult.cRecords[i].PerfectCount, false, EPhase.Perfect, i);

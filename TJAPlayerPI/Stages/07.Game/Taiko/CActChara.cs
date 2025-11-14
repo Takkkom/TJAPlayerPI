@@ -132,11 +132,11 @@ internal class CActChara : CActivity
             {
                 if (!TJAPlayerPI.stage演奏ドラム画面.bIsGOGOTIME[nPlayer])
                 {
-                    if (TJAPlayerPI.stage演奏ドラム画面.actGauge.db現在のゲージ値[nPlayer] >= 100.0 && TJAPlayerPI.app.Skin.Game_Chara_Ptn_Clear[nPlayer] != 0)
+                    if (TJAPlayerPI.stage演奏ドラム画面.actGauge.cGauge[nPlayer].bIsMaxed && TJAPlayerPI.app.Skin.Game_Chara_Ptn_Clear[nPlayer] != 0)
                     {
                         TJAPlayerPI.app.Tx.Chara_Normal_Maxed[nPlayer][this.arクリアモーション番号[nPlayer][(int)this.ctChara_Clear[nPlayer].db現在の値]].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.X[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.Y[nPlayer]);
                     }
-                    else if (TJAPlayerPI.stage演奏ドラム画面.actGauge.db現在のゲージ値[nPlayer] >= 80.0 && TJAPlayerPI.app.Skin.Game_Chara_Ptn_Clear[nPlayer] != 0)
+                    else if (TJAPlayerPI.stage演奏ドラム画面.actGauge.cGauge[nPlayer].bIsCleared && TJAPlayerPI.app.Skin.Game_Chara_Ptn_Clear[nPlayer] != 0)
                     {
                         TJAPlayerPI.app.Tx.Chara_Normal_Cleared[nPlayer][this.arクリアモーション番号[nPlayer][(int)this.ctChara_Clear[nPlayer].db現在の値]].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.X[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.Y[nPlayer]);
                     }
@@ -149,7 +149,7 @@ internal class CActChara : CActivity
                 {
                     if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGo[nPlayer] != 0)
                     {
-                        if (TJAPlayerPI.stage演奏ドラム画面.actGauge.db現在のゲージ値[nPlayer] >= 100.0)
+                        if (TJAPlayerPI.stage演奏ドラム画面.actGauge.cGauge[nPlayer].bIsMaxed)
                         {
                             TJAPlayerPI.app.Tx.Chara_GoGoTime_Maxed[nPlayer][this.arゴーゴーモーション番号[nPlayer][(int)this.ctChara_GoGo[nPlayer].db現在の値]].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.X[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.Y[nPlayer]);
                         }

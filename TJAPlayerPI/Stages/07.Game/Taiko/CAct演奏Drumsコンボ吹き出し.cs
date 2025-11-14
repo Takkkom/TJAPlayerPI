@@ -75,11 +75,6 @@ internal class CAct演奏Drumsコンボ吹き出し : CActivity
                 }
             }
 
-            if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Space))
-            {
-                Start(100, i);
-            }
-
             ctIn[i].t進行();
             ctWait[i].t進行();
             ctOut[i].t進行();

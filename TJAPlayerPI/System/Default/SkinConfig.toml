@@ -1,7 +1,7 @@
 [General]
 Name = "Default"
 Version = "0.9"
-Creator = "Mr-Ojii"
+Creator = "Takkkom"
 
 [Genre]
 "J-POP" = 1
@@ -32,8 +32,13 @@ ScrollFieldBGY = [ 192, 368 ]
 NotesAnime = true
 
 [Game.Chara]
+X = [ 0, 0 ]
+Y = [ 0, 537 ]
 BalloonX = [ 210, 210 ]
 BalloonY = [ 0, 298 ]
+BalloonTimer = [ 25, 25 ]
+BalloonDelay = [ 400, 400 ]
+BalloonFadeOut = [ 84, 84 ]
 BeatNormal = [ 1, 1 ]
 BeatClear = [ 2, 2 ]
 BeatGoGo = [ 2, 2 ]
@@ -180,17 +185,11 @@ AddBlend = true
 [Game.Effect.FlyingNotes]
 StartPointX = [ 414, 414 ]
 StartPointY = [ 260, 434 ]
-EndPointX = [ 1222, 1222 ]
+EndPointX = [ 1225, 1225 ]
 EndPointY = [ 164, 554 ]
 Sine = 220
 IsUsingEasing = true
 Timer = 3
-
-[Game.Effect.NotesFlash]
-Width = 180
-Height = 180
-Ptn = 12
-Timer = 20
 
 [Game.Effect.Fire]
 Width = 390

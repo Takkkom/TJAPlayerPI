@@ -1,0 +1,12 @@
+X = [ 226, 226 ]
+Y = [ 104, 641 ]
+Width = 128
+Height = 128
+InJumpWave = [172, -46]
+Wave = -10
+InPtn = 0
+InSpeed = 40
+LoopPtn = 10
+LoopSpeed = 2.5
+Variant = 2
+Style = "Paper_Crane"

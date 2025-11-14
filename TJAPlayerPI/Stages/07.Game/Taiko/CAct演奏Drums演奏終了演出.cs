@@ -42,29 +42,25 @@ internal class CAct演奏Drums演奏終了演出 : CActivity
             // 今の段階では魂ゲージ80%以上でチェック。
             for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
             {
-                if (TJAPlayerPI.stage演奏ドラム画面.actGauge.db現在のゲージ値[i] < 80)
+                if (!TJAPlayerPI.stage演奏ドラム画面.actGauge.cGauge[i].bIsCleared)
                 {
                     this.Mode[i] = EndMode.StageFailed;
-                    if (i == 0)
-                        this.soundFailed?.t再生を開始する();
+                    this.soundFailed?.t再生を開始する();
                 }
                 else if (TJAPlayerPI.stage演奏ドラム画面.nヒット数[i].Miss != 0 || TJAPlayerPI.stage演奏ドラム画面.nヒット数[i].Bad != 0)
                 {
                     this.Mode[i] = EndMode.StageCleared;
-                    if (i == 0)
-                        this.soundClear?.t再生を開始する();
+                    this.soundClear?.t再生を開始する();
                 }
                 else if (TJAPlayerPI.stage演奏ドラム画面.nヒット数[i].Good != 0)
                 {
                     this.Mode[i] = EndMode.StageFullCombo;
-                    if (i == 0)
-                        this.soundFullCombo?.t再生を開始する();
+                    this.soundFullCombo?.t再生を開始する();
                 }
                 else
                 {
                     this.Mode[i] = EndMode.StageDonderFullCombo;
-                    if (i == 0)
-                        this.soundDonderFullCombo?.t再生を開始する();
+                    this.soundDonderFullCombo?.t再生を開始する();
                 }
             }
         }
