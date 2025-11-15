@@ -18,9 +18,9 @@ jobs:
           git pull --unshallow
           git remote add upstream https://github.com/Takkkom/TJAPlayerPI.git
           git fetch upstream
-          git checkout auto
+          git checkout main
           git merge --no-edit upstream/main
-          git push origin auto
+          git push origin main
         env:
           NAME: ${GITHUB_ACTOR}
           EMAIL: ${GITHUB_ACTOR}@users.noreply.github.com
