@@ -16,7 +16,7 @@ jobs:
           git config --global user.email ${EMAIL}
           git config --global pull.rebase merges
           git pull --unshallow
-          git remote add upstream https://github.com/Takkkom/TJAPlayerPI
+          git remote add upstream https://github.com/Takkkom/TJAPlayerPI.git
           git fetch upstream
           git checkout auto
           git merge --no-edit upstream/main
