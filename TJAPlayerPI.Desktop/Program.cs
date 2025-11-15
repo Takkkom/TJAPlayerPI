@@ -12,7 +12,7 @@ namespace TJAPlayerPI.Desktop
             if (version is not null)
                 version_string = version.ToString();
 
-            Mutex mutex = new Mutex(false, "Global\\TJAPlayer3-f-Ver." + version_string);
+            Mutex mutex = new Mutex(false, "Global\\TJAPlayerPI-Ver." + version_string);
 
             if (mutex.WaitOne(0, false))
             {
@@ -24,7 +24,7 @@ namespace TJAPlayerPI.Desktop
                 else if (OperatingSystem.IsLinux())
                     osplatform = "linux";
                 else
-                    throw new PlatformNotSupportedException("TJAPlayer3-f does not support this OS.");
+                    throw new PlatformNotSupportedException("TJAPlayerPI does not support this OS.");
 
                 string platform = "";
 
@@ -43,7 +43,7 @@ namespace TJAPlayerPI.Desktop
                         platform = "arm64";
                         break;
                     default:
-                        throw new PlatformNotSupportedException($"TJAPlayer3-f does not support this Architecture. ({RuntimeInformation.ProcessArchitecture})");
+                        throw new PlatformNotSupportedException($"TJAPlayerPI does not support this Architecture. ({RuntimeInformation.ProcessArchitecture})");
                 }
 
                 FFmpeg.AutoGen.ffmpeg.RootPath = AppContext.BaseDirectory + @"FFmpeg/" + osplatform + "-" + platform + "/";
@@ -136,11 +136,14 @@ namespace TJAPlayerPI.Desktop
                         writer.WriteLine("</head>");
                         writer.WriteLine("<body>");
                         writer.WriteLine("<h1>An error has occurred.(エラーが発生しました。)</h1>");
+                        /*
 #if PUBLISH
                     writer.WriteLine("<p>Error information has been sent.(エラー情報を送信しました。)</p>");
 #else
                         writer.WriteLine("<p>It is a local build, so it did not send any error information.(ローカルビルドのため、エラー情報を送信しませんでした。)</p>");
 #endif
+                        */
+                        writer.WriteLine("<p>It is a local build, so it did not send any error information.(ローカルビルドのため、エラー情報を送信しませんでした。)</p>");
                         writer.WriteLine("<table>");
                         writer.WriteLine("<tbody>");
                         writer.Write("<tr>");
@@ -162,15 +165,17 @@ namespace TJAPlayerPI.Desktop
                     }
                     CWebOpen.Open(AppContext.BaseDirectory + "Error.html");
 
+                    /*
 #if PUBLISH
-                //エラーの送信
-                using (var client = new HttpClient())
-                {
-                    var content = new StringContent(JsonSerializer.Serialize(errorjsonobject, new JsonSerializerOptions() { DictionaryKeyPolicy = new LowerCaseJsonNamingPolicy() }), Encoding.UTF8, "application/json");
+                    //エラーの送信
+                    using (var client = new HttpClient())
+                    {
+                        var content = new StringContent(JsonSerializer.Serialize(errorjsonobject, new JsonSerializerOptions() { DictionaryKeyPolicy = new LowerCaseJsonNamingPolicy() }), Encoding.UTF8, "application/json");
 
-                    var resString = client.PostAsync("https://script.google.com/macros/s/AKfycbzPWvX1cd5aDcDjs0ohgBveIxBh6wZPvGk0Xvg7xFsEsoXXUFCSUeziaVsn7uoMtm_3/exec", content).Result;
-                }
+                        var resString = client.PostAsync("https://script.google.com/macros/s/AKfycbzPWvX1cd5aDcDjs0ohgBveIxBh6wZPvGk0Xvg7xFsEsoXXUFCSUeziaVsn7uoMtm_3/exec", content).Result;
+                    }
 #endif
+                    */
                 }
 
                 if (Trace.Listeners.Count > 1)
@@ -182,8 +187,8 @@ namespace TJAPlayerPI.Desktop
             {
                 unsafe
                 {
-                    var msg = Encoding.UTF8.GetBytes($"TJAPlayer3-f(Ver.{Assembly.GetExecutingAssembly().GetName().Version}) is already running.");
-                    var app = "TJAPlayer3-f"u8;
+                    var msg = Encoding.UTF8.GetBytes($"TJAPlayerPI(Ver.{Assembly.GetExecutingAssembly().GetName().Version}) is already running.");
+                    var app = "TJAPlayerPI"u8;
                     fixed (byte* pmsg = msg)
                     fixed (byte* papp = app)
                     {
