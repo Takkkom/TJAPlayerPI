@@ -1,0 +1,1 @@
+dotnet publish TJAPlayerPI.Desktop/TJAPlayerPI.Desktop.csproj --configuration Release --self-contained -p:PublishSingleFile=true --runtime win-x86
