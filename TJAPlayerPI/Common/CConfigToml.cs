@@ -86,6 +86,7 @@ public class CConfigToml
         public string FFmpegPath { get; set; } = "";
         public string FontName { get; set; } = CFontRenderer.DefaultFontName;
         public string ScreenShotExt { get; set; } = ".png";
+        public string[] SaveFile { get; set; } = new string[] { "P1", "P2" };
     }
 
     public CWindow Window { get; set; } = new();
@@ -469,6 +470,9 @@ public class CConfigToml
             sw.WriteLine("# スクリーンショットの拡張子 (\".bmp\" or \".jpg\" or \".png\" or \".webp\")");
             sw.WriteLine("# Extension for screen shot file. (\".bmp\" or \".jpg\" or \".png\" or \".webp\")");
             sw.WriteLine("{0} = \"{1}\"", nameof(this.General.ScreenShotExt), this.General.ScreenShotExt);
+            sw.WriteLine();
+            sw.WriteLine("# セーブデータのファイル名");
+            sw.WriteLine("{0} = [ {1} ]", nameof(this.General.SaveFile), string.Join(", ", this.General.SaveFile.Select(x => $"\"{x}\"")));
             sw.WriteLine();
             sw.WriteLine("[{0}]", nameof(this.Window));
             sw.WriteLine("# フルスクリーンにするか");

@@ -715,6 +715,8 @@ internal class CSkin : IDisposable
         public CFont Font { get; set; } = new();
         public class CFont
         {
+            public string MainFontName { get; set; } = "";
+            public string LyricFontName { get; set; } = "";
             public int EdgeRatio { get; set; } = 30;
             public int EdgeRatioVertical { get; set; } = 30;
         }
@@ -722,6 +724,33 @@ internal class CSkin : IDisposable
         public class CSound
         {
             public string[] SENames { get; set; } = new string[] { };
+        }
+        public COverlay Overlay { get; set; } = new();
+        public class COverlay
+        {
+            public int NetworkConnectionX { get; set; } = 1224;
+            public int NetworkConnectionY { get; set; } = 665;
+            public int[] NetworkConnectionSize { get; set; } = new int[2] { 40, 40 };
+        }
+        public CNamePlate NamePlate { get; set; } = new();
+        public class CNamePlate
+        {
+            public int ShadowX { get; set; } = 1;
+            public int ShadowY { get; set; } = 2;
+            public int PlayerNumberX { get; set; } = 0;
+            public int PlayerNumberY { get; set; } = 0;
+            public int DanBaseX { get; set; } = 0;
+            public int DanBaseY { get; set; } = 27;
+            public int NameSize { get; set; } = 17;
+            public int NameX { get; set; } = 151;
+            public int NameY { get; set; } = 45;
+            public int NameWithDanX { get; set; } = 184;
+            public int NameWithDanY { get; set; } = 45;
+            public int TitleSize { get; set; } = 16;
+            public int TitleBaseX { get; set; } = 0;
+            public int TitleBaseY { get; set; } = 0;
+            public int TitleX { get; set; } = 151;
+            public int TitleY { get; set; } = 16;
         }
         public CTitle Title { get; set; } = new();
         public class CTitle
@@ -913,8 +942,8 @@ internal class CSkin : IDisposable
             public CPanelFont PanelFont { get; set; } = new();
             public class CPanelFont
             {
-                public int MusicNameX { get; set; } = 1254;
-                public int MusicNameY { get; set; } = 14;
+                public int MusicNameX { get; set; } = 1251;
+                public int MusicNameY { get; set; } = 26;
                 public int MusicNameFontSize { get; set; } = 30;
                 public int MusicNameReferencePoint { get { return (int)this._MusicNameReferencePoint; } set { this._MusicNameReferencePoint = (EReferencePoint)value; } }
                 [IgnoreDataMember]
@@ -931,7 +960,6 @@ internal class CSkin : IDisposable
                 public int GenreY { get; set; } = 75;
                 public int LyricX { get; set; } = 640;
                 public int LyricY { get; set; } = 630;
-                public string LyricFontName { get; set; } = CFontRenderer.DefaultFontName;
                 public int LyricFontSize { get; set; } = 38;
                 public int LyricReferencePoint { get { return (int)this._LyricReferencePoint; } set { this._LyricReferencePoint = (EReferencePoint)value; } }
                 [IgnoreDataMember]
@@ -978,10 +1006,10 @@ internal class CSkin : IDisposable
                 public int[] BackGroundY { get; set; } = new int[] { 184, 360 };
                 public int[] ScoreBaseX { get; set; } = new int[] { 0, 0 };
                 public int[] ScoreBaseY { get; set; } = new int[] { 192, 488 };
-                public int[] NamePlateX { get; set; } = new int[] { 0, 0 };
-                public int[] NamePlateY { get; set; } = new int[] { 288, 368 };
-                public int[] PlayerNumberX { get; set; } = new int[] { 4, 4 };
-                public int[] PlayerNumberY { get; set; } = new int[] { 233, 435 };
+                public int[] NamePlateX { get; set; } = new int[] { 320, 320 };
+                public int[] NamePlateY { get; set; } = new int[] { 20, 636 };
+                public int[] PlayerNumberX { get; set; } = new int[] { 0, 0 };
+                public int[] PlayerNumberY { get; set; } = new int[] { 192, 368 };
                 public int[] X { get; set; } = new int[] { 176, 176 };
                 public int[] Y { get; set; } = new int[] { 187, 363 };
                 public int[] ComboX { get; set; } = new int[] { 249, 249 };
@@ -1356,8 +1384,6 @@ internal class CSkin : IDisposable
         Game_Chara_Ptn_Balloon_Miss = new int[2];
     public int Game_Dancer_Ptn = 0;
     public int Game_Mob_Ptn = 0;
-    public int Game_Gauge_Rainbow_Ptn;
-    public int Game_Gauge_Rainbow_Danc_Ptn;
     public int Game_Effect_Roll_Ptn;
 
     public int SECount = 0;

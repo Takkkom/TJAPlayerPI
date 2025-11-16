@@ -1,5 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using FDK;
+﻿using FDK;
+using System.Runtime.CompilerServices;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -442,8 +443,8 @@ internal class CActSelect曲リスト : CActivity
         // enter or return to the song select screen.
         TJAPlayerPI.IsPerformingCalibration = false;
 
-        this.pfMusicName = new CCachedFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 30);
-        this.pfSubtitle = new CCachedFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 23);
+        this.pfMusicName = CFontHelper.tCreateFont(30);
+        this.pfSubtitle = CFontHelper.tCreateFont(23);
 
         this.n目標のスクロールカウンタ = 0;
         this.n現在のスクロールカウンタ = 0;
@@ -473,7 +474,7 @@ internal class CActSelect曲リスト : CActivity
         {
             string[] s1 = { "曲データが見つかりません。\n曲データをTJAPlayer3-f以下の\nフォルダにインストールして下さい。", "Songs not found.\nYou need to install songs." };
 
-            using (CFontRenderer pffont = new CFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 32))
+            using (CFontRenderer pffont = CFontHelper.tCreateFont(32))
             {
                 this.txSongNotFound = TJAPlayerPI.app.tCreateTexture(pffont.DrawText(s1[c], Color.White));
                 if (this.txSongNotFound is not null)
@@ -492,7 +493,7 @@ internal class CActSelect曲リスト : CActivity
         {
             string[] s1 = { "曲データを検索しています。\nそのまましばらくお待ち下さい。", "Now enumerating songs.\nPlease wait..." };
 
-            using (CFontRenderer pffont = new CFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 32))
+            using (CFontRenderer pffont = CFontHelper.tCreateFont(32))
             {
                 this.txEnumeratingSongs = TJAPlayerPI.app.tCreateTexture(pffont.DrawText(s1[c], Color.White));
                 if (this.txEnumeratingSongs is not null)

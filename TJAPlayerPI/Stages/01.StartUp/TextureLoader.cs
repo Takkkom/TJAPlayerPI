@@ -18,6 +18,7 @@ class TextureLoader
     const string RESULT = @"6_Result/";
     const string RESULTV2 = @"6_Result_v2/";
     const string EXIT = @"7_Exit/";
+    const string NAMEPLATE = @"XX_NamePlate/";
 
     // InSongSelect
     const string DIFFICULITY = @"1_Difficulty_Select/";
@@ -74,11 +75,25 @@ class TextureLoader
         Network_Connection = TxC(@"Network_Connection.png");
         Crown_t = TxC(@"Crown.png");
         DanC_Crown_t = TxC(@"DanC_Crown.png");
-        NamePlate = new CTexture[2];
-        NamePlate[0] = TxC(@"1P_NamePlate.png");
-        NamePlate[1] = TxC(@"2P_NamePlate.png");
         Difficulty_Icons = TxC(@"Difficulty_Icons.png");
         #endregion
+
+        #region NamePlate
+        NamePlate_Shadow = TxC($"{NAMEPLATE}Shadow.png");
+        NamePlate_Base = TxC($"{NAMEPLATE}Base.png");
+        NamePlate_DanBase = TxC($"{NAMEPLATE}Dan_Base.png");
+        NamePlate_PlayerNumber = new CTexture[2];
+        NamePlate_PlayerNumber[0] = TxC($"{NAMEPLATE}Number_1P.png");
+        NamePlate_PlayerNumber[1] = TxC($"{NAMEPLATE}Number_2P.png");
+        NamePlate_TitleBase_Player = new CTexture[2];
+        NamePlate_TitleBase_Player[0] = TxC($"{NAMEPLATE}Title_Base/1P.png");
+        NamePlate_TitleBase_Player[1] = TxC($"{NAMEPLATE}Title_Base/2P.png");
+        NamePlate_TitleBase_Wood = TxC($"{NAMEPLATE}Title_Base/Wood.png");
+        NamePlate_TitleBase_Gold = TxC($"{NAMEPLATE}Title_Base/Gold.png");
+        NamePlate_TitleBase_Purple = TxC($"{NAMEPLATE}Title_Base/Purple.png");
+        NamePlate_TitleBase_Rainbow = TxC($"{NAMEPLATE}Title_Base/Rainbow.png");
+        #endregion
+
         #region 1_タイトル画面
         Title_Background = TxC(TITLE + @"Background.png");
         Title_AcBar = TxC(TITLE + @"ActiveBar.png");
@@ -434,9 +449,6 @@ class TextureLoader
         Taiko_PlayerNumber = new CTexture[2];
         Taiko_PlayerNumber[0] = TxC(GAME + TAIKO + @"1P_PlayerNumber.png");
         Taiko_PlayerNumber[1] = TxC(GAME + TAIKO + @"2P_PlayerNumber.png");
-        Taiko_NamePlate = new CTexture[2];
-        Taiko_NamePlate[0] = TxC(GAME + TAIKO + @"1P_NamePlate.png");
-        Taiko_NamePlate[1] = TxC(GAME + TAIKO + @"2P_NamePlate.png");
         Taiko_Base = TxC(GAME + TAIKO + @"Base.png");
         Taiko_Don_Left = TxC(GAME + TAIKO + @"Don_L.png");
         Taiko_Don_Right = TxC(GAME + TAIKO + @"Don_R.png");
@@ -501,48 +513,6 @@ class TextureLoader
         Gauge_SoulFire = TxC(GAME + GAUGE + @"Soul_Fire.png");
         Gauge_SoulText = TxC(GAME + GAUGE + @"Soul_Text.png");
         Gauge_Explosion = TxC(GAME + GAUGE + @"Explosion.png");
-        /*
-        Gauge = new CTexture[2];
-        Gauge[0] = TxC(GAME + GAUGE + @"1P.png");
-        Gauge[1] = TxC(GAME + GAUGE + @"2P.png");
-        Gauge_Base = new CTexture[2];
-        Gauge_Base[0] = TxC(GAME + GAUGE + @"1P_Base.png");
-        Gauge_Base[1] = TxC(GAME + GAUGE + @"2P_Base.png");
-        Gauge_Line = new CTexture[2];
-        Gauge_Line[0] = TxC(GAME + GAUGE + @"1P_Line.png");
-        Gauge_Line[1] = TxC(GAME + GAUGE + @"2P_Line.png");
-        TJAPlayerPI.app.Skin.Game_Gauge_Rainbow_Ptn = TJAPlayerPI.t連番画像の枚数を数える(CSkin.Path(BASE + GAME + GAUGE + @"Rainbow/"));
-        if (TJAPlayerPI.app.Skin.Game_Gauge_Rainbow_Ptn != 0)
-        {
-            Gauge_Rainbow = new CTexture[TJAPlayerPI.app.Skin.Game_Gauge_Rainbow_Ptn];
-            for (int i = 0; i < TJAPlayerPI.app.Skin.Game_Gauge_Rainbow_Ptn; i++)
-            {
-                Gauge_Rainbow[i] = TxC(GAME + GAUGE + @"Rainbow/" + i.ToString() + ".png");
-            }
-        }
-        Gauge_Soul = TxC(GAME + GAUGE + @"Soul.png");
-        Gauge_Soul_Fire = TxC(GAME + GAUGE + @"Fire.png");
-        Gauge_Soul_Explosion = new CTexture[2];
-        Gauge_Soul_Explosion[0] = TxC(GAME + GAUGE + @"1P_Explosion.png");
-        Gauge_Soul_Explosion[1] = TxC(GAME + GAUGE + @"2P_Explosion.png");
-        */
-
-        #region[Gauge_DanC]
-        /*
-        Gauge_Danc = TxC(GAME + GAUGE + @"DanC/" + @"1P.png");
-        Gauge_Base_Danc = TxC(GAME + GAUGE + @"DanC/" + @"1P_Base.png");
-        Gauge_Line_Danc = TxC(GAME + GAUGE + @"DanC/" + @"1P_Line.png");
-        TJAPlayerPI.app.Skin.Game_Gauge_Rainbow_Danc_Ptn = TJAPlayerPI.t連番画像の枚数を数える(CSkin.Path(BASE + GAME + GAUGE + @"DanC/" + @"Rainbow/"));
-        if (TJAPlayerPI.app.Skin.Game_Gauge_Rainbow_Danc_Ptn != 0)
-        {
-            Gauge_Rainbow_Danc = new CTexture[TJAPlayerPI.app.Skin.Game_Gauge_Rainbow_Danc_Ptn];
-            for (int i = 0; i < TJAPlayerPI.app.Skin.Game_Gauge_Rainbow_Danc_Ptn; i++)
-            {
-                Gauge_Rainbow_Danc[i] = TxC(GAME + GAUGE + @"DanC/" + @"Rainbow/" + i.ToString() + ".png");
-            }
-        }
-        */
-        #endregion
 
         #endregion
         #region 吹き出し
@@ -758,8 +728,18 @@ class TextureLoader
         TJAPlayerPI.t安全にDisposeする(ref Crown_t);
         TJAPlayerPI.t安全にDisposeする(ref DanC_Crown_t);
         TJAPlayerPI.t安全にDisposeする(ref Difficulty_Icons);
-        TJAPlayerPI.t安全にDisposeする(ref NamePlate);
+        #endregion
 
+        #region NamePlate
+        TJAPlayerPI.t安全にDisposeする(ref NamePlate_Shadow);
+        TJAPlayerPI.t安全にDisposeする(ref NamePlate_Base);
+        TJAPlayerPI.t安全にDisposeする(ref NamePlate_DanBase);
+        TJAPlayerPI.t安全にDisposeする(ref NamePlate_PlayerNumber);
+        TJAPlayerPI.t安全にDisposeする(ref NamePlate_TitleBase_Player);
+        TJAPlayerPI.t安全にDisposeする(ref NamePlate_TitleBase_Wood);
+        TJAPlayerPI.t安全にDisposeする(ref NamePlate_TitleBase_Gold);
+        TJAPlayerPI.t安全にDisposeする(ref NamePlate_TitleBase_Purple);
+        TJAPlayerPI.t安全にDisposeする(ref NamePlate_TitleBase_Rainbow);
         #endregion
 
         #region 1_タイトル画面
@@ -908,7 +888,6 @@ class TextureLoader
         TJAPlayerPI.t安全にDisposeする(ref Taiko_Background);
         TJAPlayerPI.t安全にDisposeする(ref Taiko_Frame);
         TJAPlayerPI.t安全にDisposeする(ref Taiko_PlayerNumber);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_NamePlate);
         TJAPlayerPI.t安全にDisposeする(ref Taiko_Base);
         TJAPlayerPI.t安全にDisposeする(ref Taiko_Don_Left);
         TJAPlayerPI.t安全にDisposeする(ref Taiko_Don_Right);
@@ -1108,7 +1087,18 @@ class TextureLoader
         Crown_t,
         DanC_Crown_t,
         Difficulty_Icons;
-    public CTexture?[] NamePlate;
+    #endregion
+
+    #region NamePlate
+    public CTexture? NamePlate_Shadow;
+    public CTexture? NamePlate_Base;
+    public CTexture? NamePlate_DanBase;
+    public CTexture?[] NamePlate_PlayerNumber;
+    public CTexture?[] NamePlate_TitleBase_Player;
+    public CTexture? NamePlate_TitleBase_Wood;
+    public CTexture? NamePlate_TitleBase_Gold;
+    public CTexture? NamePlate_TitleBase_Purple;
+    public CTexture? NamePlate_TitleBase_Rainbow;
     #endregion
 
     #region 1_タイトル画面
@@ -1253,8 +1243,7 @@ class TextureLoader
         Taiko_Score_Base,
         Taiko_Score;
     public CTexture?[] Couse_Symbol, // コースシンボル
-        Taiko_PlayerNumber,
-        Taiko_NamePlate; // ネームプレート
+        Taiko_PlayerNumber;
     public CTexture?[] 
         Taiko_Combo;
     #endregion

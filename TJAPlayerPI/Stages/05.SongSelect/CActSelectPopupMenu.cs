@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Common;
 
 
 namespace TJAPlayerPI;
@@ -74,7 +75,7 @@ internal class CActSelectPopupMenu : CActivity
     {
         if (prvFont is null)
         {
-            prvFont = new CCachedFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 18);
+            prvFont = CFontHelper.tCreateFont(18);
         }
     }
 

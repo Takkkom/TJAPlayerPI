@@ -1,5 +1,6 @@
 ﻿using FDK;
 using SkiaSharp;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -978,7 +979,7 @@ internal class CActConfigList : CActivity
         nSkinSampleIndex = -1;
         #endregion
 
-        this.prvFont = new CCachedFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 20);	// t項目リストの設定 の前に必要
+        this.prvFont = CFontHelper.tCreateFont(20);	// t項目リストの設定 の前に必要
 
         //			this.listMenu = new List<stMenuItemRight>();
 

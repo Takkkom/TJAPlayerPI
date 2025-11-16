@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -28,7 +29,7 @@ class CActSelectChangeSE : CActivity
         this.NameMoving = new CTexture[2];
         this.SENameList = new CTexture[TJAPlayerPI.app.Skin.SECount];
 
-        using (var font = new CFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 30))
+        using (var font = CFontHelper.tCreateFont(30))
             for (int i = 0; i < TJAPlayerPI.app.Skin.SECount; i++)
             {
                 string SEName = "Untitled";

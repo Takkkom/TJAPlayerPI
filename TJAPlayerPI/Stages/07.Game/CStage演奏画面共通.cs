@@ -211,7 +211,7 @@ internal class CStage演奏画面共通 : CStage
         this.n分岐した回数 = new int[4];
         this.ShownLyric = 0;
         this.ShownLyric2 = 0;
-        using (var fontLyric = new CCachedFontRenderer(TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.LyricFontName, TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.LyricFontSize))
+        using (var fontLyric = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.LyricFontSize, fontType: CFontHelper.FontType.Lyric))
         {
             foreach (var lyric in TJAPlayerPI.DTX[0].listLyric)
             {

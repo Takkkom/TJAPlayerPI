@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -43,7 +44,7 @@ internal class CStageConfig : CStage
         {
             this.n現在のメニュー番号 = 0;                                                    //
 
-            this.privatefont = new CCachedFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 14, CFontRenderer.FontStyle.Bold);
+            this.privatefont = CFontHelper.tCreateFont(14, CFontRenderer.FontStyle.Bold);
 
             for (int i = 0; i < 4; i++)													//
             {																				//
@@ -54,7 +55,7 @@ internal class CStageConfig : CStage
 
             string[] strMenuItem = { "System", "Drums", "Exit" };
             txMenuItemLeft = new CTexture?[strMenuItem.Length, 2];
-            using (var prvFont = new CFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 20))
+            using (var prvFont = CFontHelper.tCreateFont(20))
             {
                 for (int i = 0; i < strMenuItem.Length; i++)
                 {

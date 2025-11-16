@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -14,7 +15,7 @@ internal class CActSelectHistoryPanel : CActivity
 
     public override void On活性化()
     {
-        this.Font = new CCachedFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 40);
+        this.Font = CFontHelper.tCreateFont(40);
         tSongChange();
         base.On活性化();
     }

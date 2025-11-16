@@ -315,10 +315,7 @@ internal class CStage選曲 : CStage
             #region ネームプレート
             for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
             {
-                if (TJAPlayerPI.app.Tx.NamePlate[i] is not null)
-                {
-                    TJAPlayerPI.app.Tx.NamePlate[i].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.SongSelect.NamePlateX[i], TJAPlayerPI.app.Skin.SkinConfig.SongSelect.NamePlateY[i]);
-                }
+                TJAPlayerPI.actNamePlate.On進行描画(TJAPlayerPI.app.Skin.SkinConfig.SongSelect.NamePlateX[i], TJAPlayerPI.app.Skin.SkinConfig.SongSelect.NamePlateY[i], i);
             }
             if (TJAPlayerPI.app.Tx.SongSelect_Auto is not null)
             {

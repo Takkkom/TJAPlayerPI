@@ -30,6 +30,10 @@ public class CFontRenderer : IDisposable
         if (list is not null)
             Rotate_Chara_List_Vertical = list.Where(c => c is not null).ToArray();
     }
+    public static bool FontExists(string fontpath)
+    {
+        return SKFontManager.Default.FontFamilies.Contains(fontpath) || File.Exists(fontpath);
+    }
 
     private static string[] CorrectionX_Chara_List_Vertical = new string[0];
     private static int[] CorrectionX_Chara_List_Value_Vertical = new int[0];

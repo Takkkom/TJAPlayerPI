@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -189,7 +190,7 @@ internal class CActSelectPlayOption : CActivity
 
     public override void On活性化()
     {
-        this.Font = new CCachedFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 20);
+        this.Font = CFontHelper.tCreateFont(20);
         lci = new List<CItemBase>[2];
         for (int nPlayer = 0; nPlayer < 2; nPlayer++)
         {

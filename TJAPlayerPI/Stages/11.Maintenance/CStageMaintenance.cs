@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -22,7 +23,7 @@ class CStageMaintenance : CStage
             don = TJAPlayerPI.app.ColorTexture("#ff4000", Width, Height);
             ka = TJAPlayerPI.app.ColorTexture("#00c8ff", Width, Height);
             string[] txt = new string[4] { "左ふち", "左面", "右面", "右ふち" };
-            using (var pf = new CFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, fontsize))
+            using (var pf = CFontHelper.tCreateFont(fontsize))
             {
                 for (int ind = 0; ind < 4; ind++)
                 {

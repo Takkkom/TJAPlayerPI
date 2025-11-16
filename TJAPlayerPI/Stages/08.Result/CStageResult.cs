@@ -244,10 +244,7 @@ internal class CStageResult : CStage
             #region ネームプレート
             for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
             {
-                if (TJAPlayerPI.app.Tx.NamePlate[i] is not null)
-                {
-                    TJAPlayerPI.app.Tx.NamePlate[i].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.ConfigToml.EnableSkinV2 ? TJAPlayerPI.app.Skin.SkinConfig.Result.v2NamePlateX[i] : TJAPlayerPI.app.Skin.SkinConfig.Result.NamePlateX[i], TJAPlayerPI.app.ConfigToml.EnableSkinV2 ? TJAPlayerPI.app.Skin.SkinConfig.Result.v2NamePlateY[i] : TJAPlayerPI.app.Skin.SkinConfig.Result.NamePlateY[i]);
-                }
+                TJAPlayerPI.actNamePlate.On進行描画(TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.NamePlateX[i], TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.NamePlateY[i], i);
             }
             #endregion
 

@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -90,8 +91,8 @@ internal class CActPanel : CActivity
 
     public override void On活性化()
     {
-        this.pfMusicName = new CCachedFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.MusicNameFontSize);
-        this.pfSubTitleName = new CCachedFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.SubTitleNameFontSize);
+        this.pfMusicName = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.MusicNameFontSize);
+        this.pfSubTitleName = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.SubTitleNameFontSize);
 
         this.txPanel = null;
         this.ct進行用 = new CCounter();
@@ -247,19 +248,20 @@ internal class CActPanel : CActivity
                         }
                     }
                 }
-                if (this.tx難易度とステージ数 is not null)
-                    if (TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont._MusicNameReferencePoint == CSkin.EReferencePoint.Center)
-                    {
-                        this.tx難易度とステージ数.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.MusicNameX - (this.tx難易度とステージ数.szTextureSize.Width / 2), TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.MusicNameY);
-                    }
-                    else if (TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont._MusicNameReferencePoint == CSkin.EReferencePoint.Left)
-                    {
-                        this.tx難易度とステージ数.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.MusicNameX, TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.MusicNameY);
-                    }
-                    else
-                    {
-                        this.tx難易度とステージ数.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.MusicNameX - this.tx難易度とステージ数.szTextureSize.Width, TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.MusicNameY);
-                    }
+                CTexture.RefPnt stageRefPoint;
+                if (TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont._MusicNameReferencePoint == CSkin.EReferencePoint.Center)
+                {
+                    stageRefPoint = CTexture.RefPnt.Up;
+                }
+                else if (TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont._MusicNameReferencePoint == CSkin.EReferencePoint.Left)
+                {
+                    stageRefPoint = CTexture.RefPnt.UpLeft;
+                }
+                else
+                {
+                    stageRefPoint = CTexture.RefPnt.UpRight;
+                }
+                this.tx難易度とステージ数?.t2D拡大率考慮描画(TJAPlayerPI.app.Device, stageRefPoint, TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.MusicNameX, TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.MusicNameY);
             }
         }
         return base.On進行描画();

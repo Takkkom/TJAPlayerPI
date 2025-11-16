@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -65,7 +66,7 @@ internal class CStageSongLoading : CStage
 
                 if (!string.IsNullOrEmpty(タイトル))
                 {
-                    using (CFontRenderer pfTITLE = new CFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, TJAPlayerPI.app.Skin.SkinConfig.SongLoading.TitleFontSize))
+                    using (CFontRenderer pfTITLE = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.SongLoading.TitleFontSize))
                     {
                         using (var bmpSongTitle = pfTITLE.DrawText(タイトル, TJAPlayerPI.app.Skin.SkinConfig.SongLoading._TitleForeColor, TJAPlayerPI.app.Skin.SkinConfig.SongLoading._TitleBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
                         {
@@ -76,7 +77,7 @@ internal class CStageSongLoading : CStage
 
                     if (!string.IsNullOrEmpty(サブタイトル))
                     {
-                        using (CFontRenderer pfSUBTITLE = new CFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, TJAPlayerPI.app.Skin.SkinConfig.SongLoading.SubTitleFontSize))
+                        using (CFontRenderer pfSUBTITLE = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.SongLoading.SubTitleFontSize))
                         {
                             using (var bmpSongSubTitle = pfSUBTITLE.DrawText(サブタイトル, TJAPlayerPI.app.Skin.SkinConfig.SongLoading._SubTitleForeColor, TJAPlayerPI.app.Skin.SkinConfig.SongLoading._SubTitleBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
                             {
@@ -327,7 +328,7 @@ internal class CStageSongLoading : CStage
                             {
                                 if (!string.IsNullOrEmpty(TJAPlayerPI.DTX[0].List_DanSongs[i].Title))
                                 {
-                                    using (var pfTitle = new CFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 32))
+                                    using (var pfTitle = CFontHelper.tCreateFont(32))
                                     {
                                         using (var bmpSongTitle = pfTitle.DrawText(TJAPlayerPI.DTX[0].List_DanSongs[i].Title, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC._TitleForeColor, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC._TitleBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
                                         {
@@ -339,7 +340,7 @@ internal class CStageSongLoading : CStage
 
                                 if (!string.IsNullOrEmpty(TJAPlayerPI.DTX[0].List_DanSongs[i].SubTitle))
                                 {
-                                    using (var pfSubTitle = new CFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 19))
+                                    using (var pfSubTitle = CFontHelper.tCreateFont(19))
                                     {
                                         using (var bmpSongSubTitle = pfSubTitle.DrawText(TJAPlayerPI.DTX[0].List_DanSongs[i].SubTitle, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC._SubTitleForeColor, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC._SubTitleBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
                                         {

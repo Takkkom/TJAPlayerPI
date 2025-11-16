@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -30,7 +31,7 @@ internal class CStageTitle : CStage
                 { "やめる","Quit"}
             };
             int lang = (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ja") ? 0 : 1;
-            using (var pf = new CFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 28))
+            using (var pf = CFontHelper.tCreateFont(28))
             {
                 texttexture[0] = this.文字テクスチャを生成する(str[0, lang], Color.White, Color.SaddleBrown, pf);
                 texttexture[1] = this.文字テクスチャを生成する(str[1, lang], Color.White, Color.SaddleBrown, pf);

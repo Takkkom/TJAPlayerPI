@@ -1,5 +1,7 @@
 ﻿using FDK;
 using SkiaSharp;
+using TJAPlayerPI.Common;
+using TJAPlayerPI.Saving;
 
 namespace TJAPlayerPI;
 
@@ -178,6 +180,11 @@ public class TJAPlayerPI : Game
         get;
         private set;
     }
+    internal static CNamePlate actNamePlate
+    {
+        get;
+        private set;
+    }
     public static CStage r現在のステージ = null;
     public static CStage r直前のステージ = null;
     public static string strEXEのあるフォルダ => AppContext.BaseDirectory;
@@ -187,6 +194,11 @@ public class TJAPlayerPI : Game
         private set;
     }
     internal DiscordRichPresence Discord
+    {
+        get;
+        private set;
+    }
+    internal CSaveManager SaveManager
     {
         get;
         private set;
@@ -350,6 +362,26 @@ public class TJAPlayerPI : Game
         #endregion
         //-----------
 
+
+        #region [ セーブ管理の初期化 ]
+        //---------------------
+        Trace.TraceInformation("セーブ管理の初期化を行います。");
+        Trace.Indent();
+        try
+        {
+            SaveManager = new CSaveManager();
+            for (int nPlayer = 0; nPlayer < 2; nPlayer++)
+            {
+                SaveManager.Read(nPlayer);
+            }
+            Trace.TraceInformation("セーブ管理を生成しました。");
+        }
+        finally
+        {
+            Trace.Unindent();
+        }
+        //---------------------
+        #endregion
         #region [ FPS カウンタの初期化 ]
         //---------------------
         Trace.TraceInformation("FPSカウンタの初期化を行います。");
@@ -523,6 +555,7 @@ public class TJAPlayerPI : Game
         //---------------------
         r現在のステージ = null;
         r直前のステージ = null;
+        actNamePlate = new CNamePlate();
         stageStartUp = new CStageStartUp();
         stageTitle = new CStageTitle();
         //			stageオプション = new CStageオプション();
@@ -537,6 +570,7 @@ public class TJAPlayerPI : Game
         this.listトップレベルActivities = new List<CActivity>();
         this.listトップレベルActivities.Add(actEnumSongs);
         this.listトップレベルActivities.Add(act文字コンソール);
+        this.listトップレベルActivities.Add(actNamePlate);
         this.listトップレベルActivities.Add(stageStartUp);
         this.listトップレベルActivities.Add(stageTitle);
         //			this.listトップレベルActivities.Add( stageオプション );
@@ -562,6 +596,8 @@ public class TJAPlayerPI : Game
         //---------------------
         Trace.TraceInformation("----------------------");
         Trace.TraceInformation("■ 起動");
+
+        actNamePlate.On活性化();
 
         r現在のステージ = stageStartUp;
 
@@ -635,6 +671,8 @@ public class TJAPlayerPI : Game
             Thread.Sleep(ConfigToml.Window.BackSleep);
         }
         #endregion
+
+        actNamePlate?.On進行描画();
 
         if (r現在のステージ is not null)
         {
@@ -1127,12 +1165,17 @@ public class TJAPlayerPI : Game
                         }
                     });
                 }
-                TJAPlayerPI.app.Tx.Network_Connection.t2D描画(app.Device, this.LogicalSize.Width - (TJAPlayerPI.app.Tx.Network_Connection.szTextureSize.Width / 2), this.LogicalSize.Height - TJAPlayerPI.app.Tx.Network_Connection.szTextureSize.Height, new Rectangle((TJAPlayerPI.app.Tx.Network_Connection.szTextureSize.Width / 2) * (this.bネットワークに接続中 ? 0 : 1), 0, TJAPlayerPI.app.Tx.Network_Connection.szTextureSize.Width / 2, TJAPlayerPI.app.Tx.Network_Connection.szTextureSize.Height));
+                int width = TJAPlayerPI.app.Skin.SkinConfig.Overlay.NetworkConnectionSize[0];
+                int height = TJAPlayerPI.app.Skin.SkinConfig.Overlay.NetworkConnectionSize[1];
+                int shift = this.bネットワークに接続中 ? 2 : 0;
+
+                TJAPlayerPI.app.Tx.Network_Connection.t2D描画(app.Device, TJAPlayerPI.app.Skin.SkinConfig.Overlay.NetworkConnectionX, TJAPlayerPI.app.Skin.SkinConfig.Overlay.NetworkConnectionY,
+                    new Rectangle(width * shift, 0, width, height));
             }
             // オーバレイを描画する(テクスチャの生成されていない起動ステージは例外
-            if (r現在のステージ is not null && r現在のステージ.eStageID != CStage.EStage.StartUp && TJAPlayerPI.app.Tx.Overlay is not null)
+            if (r現在のステージ is not null && r現在のステージ.eStageID != CStage.EStage.StartUp)
             {
-                TJAPlayerPI.app.Tx.Overlay.t2D描画(app.Device, 0, 0);
+                TJAPlayerPI.app.Tx.Overlay?.t2D描画(app.Device, 0, 0);
             }
         }
 
@@ -1381,6 +1424,8 @@ public class TJAPlayerPI : Game
             #endregion
             #region [ 現在のステージの終了処理 ]
             //---------------------
+            actNamePlate?.On非活性化();
+
             if (TJAPlayerPI.r現在のステージ is not null && TJAPlayerPI.r現在のステージ.b活性化してる)		// #25398 2011.06.07 MODIFY FROM
             {
                 Trace.TraceInformation("現在のステージを終了します。");
@@ -1587,6 +1632,12 @@ public class TJAPlayerPI : Game
             }
             //---------------------
             #endregion
+            #region [ セーブデータの保存 ]
+            for (int nPlayer = 0; nPlayer < 2; nPlayer++)
+            {
+                SaveManager.Save(nPlayer);
+            }
+            #endregion
             #region [ Config.iniの出力 ]
             //---------------------
             Trace.TraceInformation("Config.ini を出力します。");
@@ -1664,6 +1715,7 @@ public class TJAPlayerPI : Game
         Trace.TraceInformation("スキン変更:" + TJAPlayerPI.app.Skin.GetCurrentSkinSubfolderFullName(false));
 
         TJAPlayerPI.app.act文字コンソール.On非活性化();
+        actNamePlate.On非活性化();
 
         TJAPlayerPI.app.Skin.Dispose();
         TJAPlayerPI.app.Skin = null;
@@ -1674,12 +1726,16 @@ public class TJAPlayerPI : Game
         TJAPlayerPI.app.Tx.LoadTexture();
 
         TJAPlayerPI.app.act文字コンソール.On活性化();
+        actNamePlate.On活性化();
     }
 
     private void RemoveDefaultSkin()
     {
         string skinDir = Path.Combine(strEXEのあるフォルダ, "System/Default");
-        //Directory.Delete(skinDir, true);
+
+#if DEBUG
+        Directory.Delete(skinDir, true);
+#endif
     }
 
     private void ExportEmbeddedFiles()

@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -32,7 +33,7 @@ internal class CActResultSongBar : CActivity
             ? $"Calibration complete. InputAdjustTime is now {TJAPlayerPI.app.ConfigToml.PlayOption.InputAdjustTimeMs}ms"
             : TJAPlayerPI.DTX[0].TITLE;
 
-        using (var pfMusicName = new CFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, TJAPlayerPI.app.Skin.SkinConfig.Result.MusicNameFontSize))
+        using (var pfMusicName = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Result.MusicNameFontSize))
         {
 
             using (var bmpSongTitle = pfMusicName.DrawText(title, TJAPlayerPI.app.Skin.SkinConfig.Result._MusicNameForeColor, TJAPlayerPI.app.Skin.SkinConfig.Result._MusicNameBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
@@ -42,7 +43,7 @@ internal class CActResultSongBar : CActivity
             }
         }
 
-        using (var pfStageText = new CFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, TJAPlayerPI.app.Skin.SkinConfig.Result.StageTextFontSize))
+        using (var pfStageText = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Result.StageTextFontSize))
         {
             using (var bmpStageText = pfStageText.DrawText(TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.StageText, TJAPlayerPI.app.Skin.SkinConfig.Result._StageTextForeColor, TJAPlayerPI.app.Skin.SkinConfig.Result._StageTextBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
             {

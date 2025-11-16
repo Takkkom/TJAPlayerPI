@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Common;
 
 namespace TJAPlayerPI;
 
@@ -79,7 +80,7 @@ internal class CActConfigKeyAssign : CActivity
         this.n現在の選択行 = 0;
         this.bキー入力待ち = false;
         this.structReset用KeyAssign = new CConfigIni.CKeyAssign.STKEYASSIGN[0x10];
-        this.fontRenderer = new CCachedFontRenderer(TJAPlayerPI.app.ConfigToml.General.FontName, 16, CFontRenderer.FontStyle.Italic);
+        this.fontRenderer = CFontHelper.tCreateFont(16, CFontRenderer.FontStyle.Italic);
         base.On活性化();
     }
     public override void On非活性化()

@@ -14,8 +14,35 @@ Creator = "Takkkom"
 "ボーカロイド" = 8
 "VOCALOID" = 8
 
+[Font]
+MainFontName = "Fonts/MPLUSRounded1c-Medium.ttf"
+LyricFontName = "Fonts/MPLUSRounded1c-Medium.ttf"
+
 [Sound]
 SENames = [ "太鼓", "クイーカ", "ウッドブロック" ]
+
+[Overlay]
+NetworkConnectionX = 1224
+NetworkConnectionY = 665
+NetworkConnectionSize = [ 40, 40 ]
+
+[NamePlate]
+ShadowX = 1
+ShadowY = 2
+PlayerNumberX = 0
+PlayerNumberY = 0
+DanBaseX = 0
+DanBaseY = 27
+NameSize = 17
+NameX = 151
+NameY = 45
+NameWithDanX = 184
+NameWithDanY = 45
+TitleSize = 16
+TitleBaseX = 0
+TitleBaseY = 0
+TitleX = 151
+TitleY = 16
 
 [SongSelect]
 BackBoxTextCorrectionY = 40
@@ -32,10 +59,10 @@ ScrollFieldBGY = [ 192, 368 ]
 NotesAnime = true
 
 [Game.Chara]
-X = [ 0, 0 ]
-Y = [ 0, 537 ]
-BalloonX = [ 210, 210 ]
-BalloonY = [ 0, 298 ]
+X = [ -40, -40 ]
+Y = [ -50, 487 ]
+BalloonX = [ 143, 143 ]
+BalloonY = [ -93, 205 ]
 BalloonTimer = [ 25, 25 ]
 BalloonDelay = [ 400, 400 ]
 BalloonFadeOut = [ 84, 84 ]
@@ -70,8 +97,8 @@ X = [ 15, 15 ]
 Y = [ 232, 368 ]
 
 [Game.PanelFont]
-MusicNameX = 1254
-MusicNameY = 14
+MusicNameX = 1251
+MusicNameY = 26
 MusicNameFontSize = 30
 SubTitleNameX = 1114
 SubTitleNameY = 70
@@ -99,8 +126,10 @@ BackGroundX = [ 0, 0 ]
 BackGroundY = [ 184, 360 ]
 ScoreBaseX = [ 0, 0 ]
 ScoreBaseY = [ 192, 488 ]
-NamePlateX = [ 0, 0 ]
-NamePlateY = [ 288, 368 ]
+NamePlateX = [ 320, 320 ]
+NamePlateY = [ 20, 636 ]
+PlayerNumberX = [ 0, 0 ]
+PlayerNumberY = [ 192, 368 ]
 X = [ 176, 176 ]
 Y = [ 187, 363 ]
 ComboX = [ 249, 249 ]
@@ -119,6 +148,29 @@ ComboTextSize = [ 100, 50 ]
 ComboExIsJumping = true
 
 [Game.Gauge]
+X = [ 487, 487 ]
+Y = [ 140, 528 ]
+EdgeX = [ -160, -160 ]
+EdgeY = [ -4, 0 ]
+LineX = [ 4, 4 ]
+LineY = [ 4, 4 ]
+LineSize = [ 14, 44 ]
+FlashX = [ -3, -3 ]
+FlashY = [ -7, -5 ]
+FlashSize = [ 24, 64 ]
+SoulFireX = [ 735, 735 ]
+SoulFireY = [ 25, 25 ]
+SoulFireSize = [ 380, 380 ]
+SoulFireCount = 8
+SoulTextX = [ 700, 700 ]
+SoulTextY = [ -6, -6 ]
+SoulTextSize = [ 72, 64 ]
+ClearTextX = [ 5, 5 ]
+ClearTextY = [ 4, 24 ]
+ClearTextSize = [ 56, 24 ]
+Step = 14
+RainbowSize = [ 704, 52 ]
+RainbowFrameCount = 8
 RainbowTimer = 50
 
 [Game.Balloon]

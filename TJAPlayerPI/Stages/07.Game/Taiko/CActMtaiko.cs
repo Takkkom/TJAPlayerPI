@@ -65,8 +65,7 @@ internal class CActMtaiko : CActivity
         for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
         {
             TJAPlayerPI.app.Tx.Taiko_Background[i]?.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.BackGroundX[i], TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.BackGroundY[i]);
-            TJAPlayerPI.app.Tx.Taiko_Score_Base?.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.ScoreBaseX[i], TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.ScoreBaseY[i],
-                i == 0 ? CTexture.EFlipType.None : CTexture.EFlipType.Vertical);
+            TJAPlayerPI.app.Tx.Taiko_PlayerNumber[i]?.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.PlayerNumberX[i], TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.PlayerNumberY[i]);
         }
 
         for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
@@ -190,15 +189,13 @@ internal class CActMtaiko : CActivity
 
             }
 
-            if (TJAPlayerPI.app.Tx.Taiko_NamePlate[nPlayer] is not null)
-            {
-                TJAPlayerPI.app.Tx.Taiko_NamePlate[nPlayer].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.NamePlateX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.NamePlateY[nPlayer]);
-            }
+            TJAPlayerPI.actNamePlate.On進行描画(TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.NamePlateX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.NamePlateY[nPlayer], nPlayer);
+        }
 
-            if (TJAPlayerPI.app.Tx.Taiko_PlayerNumber[nPlayer] is not null)
-            {
-                TJAPlayerPI.app.Tx.Taiko_PlayerNumber[nPlayer].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.PlayerNumberX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.PlayerNumberY[nPlayer]);
-            }
+        for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
+        {
+            TJAPlayerPI.app.Tx.Taiko_Score_Base?.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.ScoreBaseX[i], TJAPlayerPI.app.Skin.SkinConfig.Game.Taiko.ScoreBaseY[i],
+                i == 0 ? CTexture.EFlipType.None : CTexture.EFlipType.Vertical);
         }
 
         return base.On進行描画();
