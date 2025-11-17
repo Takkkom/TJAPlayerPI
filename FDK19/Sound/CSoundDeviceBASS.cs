@@ -1,6 +1,5 @@
 ﻿using ManagedBass;
 using ManagedBass.Mix;
-using NAudio.Wave;
 
 namespace FDK;
 
@@ -8,10 +7,10 @@ public class CSoundDeviceBASS : ISoundDevice
 {
     // プロパティ
 
-    public ESoundDeviceType eOutputDevice
+    public bool bValid
     {
         get;
-        protected set;
+        private set;
     }
     public long nOutPutDelayms
     {
@@ -72,7 +71,7 @@ public class CSoundDeviceBASS : ISoundDevice
     public CSoundDeviceBASS(int UpdatePeriod, int BufferSizems)
     {
         Trace.TraceInformation("Start initialization of BASS");
-        this.eOutputDevice = ESoundDeviceType.Unknown;
+        this.bValid = false;
         this.nOutPutDelayms = 0;
         this.nElapsedTimems = 0;
         this.SystemTimemsWhenUpdatingElapsedTime = CTimer.nUnused;
@@ -147,7 +146,7 @@ public class CSoundDeviceBASS : ISoundDevice
             };
         }
 
-        this.eOutputDevice = ESoundDeviceType.BASS;
+        this.bValid = true;
 
         // 出力を開始。
 
@@ -178,6 +177,12 @@ public class CSoundDeviceBASS : ISoundDevice
         sound.SoundImpl = new CSoundImplBass(strFilename, this.hMixer, soundGroup);
         return sound;
     }
+    public CSound tCreateSound(byte[] byArrWAVファイルイメージ, ESoundGroup soundGroup)
+    {
+        var sound = new CSound(soundGroup);
+        sound.SoundImpl = new CSoundImplBass(byArrWAVファイルイメージ, this.hMixer, soundGroup);
+        return sound;
+    }
 
     public void tCreateSound(string strFilename, CSound sound)
     {
@@ -199,7 +204,7 @@ public class CSoundDeviceBASS : ISoundDevice
     }
     protected void Dispose(bool bManagedDispose)
     {
-        this.eOutputDevice = ESoundDeviceType.Unknown;      // まず出力停止する(Dispose中にクラス内にアクセスされることを防ぐ)
+        this.bValid = false;
         if (hMainStream != -1)
         {
             Bass.StreamFree(this.hMainStream);

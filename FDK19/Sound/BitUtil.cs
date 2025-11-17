@@ -1,4 +1,5 @@
 ﻿using NAudio.Wave;
+using SDL;
 using Silk.NET.OpenAL;
 using Silk.NET.OpenAL.Extensions.EXT;
 using System;
@@ -25,6 +26,21 @@ namespace FDK.Sound
                     return waveStream.WaveFormat.Channels == 1 ? (BufferFormat)FloatBufferFormat.Mono : (BufferFormat)FloatBufferFormat.Stereo;
             }
             return BufferFormat.Mono8;
+        }
+        public static SDL_AudioFormat GetSDLAudioFormat(WaveStream waveStream)
+        {
+            switch (waveStream.WaveFormat.BitsPerSample)
+            {
+                case 8:
+                    return SDL_AudioFormat.SDL_AUDIO_S8;
+                case 16:
+                    return SDL_AudioFormat.SDL_AUDIO_S16LE;
+                case 24:
+                    return SDL_AudioFormat.SDL_AUDIO_S16LE;
+                case 32:
+                    return SDL_AudioFormat.SDL_AUDIO_F32LE;
+            }
+            return SDL_AudioFormat.SDL_AUDIO_S8;
         }
 
         public static byte[] Bit24ToBit16(byte[] bytes)

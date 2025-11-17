@@ -5,14 +5,18 @@ namespace FDK;
 #region [ DTXMania用拡張 ]
 public class CSoundManager  // : CSound
 {
+    public static readonly string DefaultDeviceName;
+
+    public static Dictionary<string, Func<ISoundDevice>> SoundDeviceTypes = new Dictionary<string, Func<ISoundDevice>>();
+
     private static ISoundDevice? SoundDevice
     {
         get; set;
     }
-    private static ESoundDeviceType SoundDeviceType
+    private static string SoundDeviceType
     {
         get; set;
-    }
+    } = "";
     public static CSoundTimer? rc演奏用タイマ = null;
     public static bool bUseOSTimer = false;     // OSのタイマーを使うか、CSoundTimerを使うか。DTXCではfalse, DTXManiaではtrue。
                                                 // DTXCでCSoundTimerを使うと、内部で無音のループサウンドを再生するため
@@ -77,6 +81,29 @@ public class CSoundManager  // : CSound
     #endregion
 
 
+    static CSoundManager()
+    {
+        SoundDeviceTypes.Add("BASS", () => new CSoundDeviceBASS(SoundUpdatePeriodBASS, SoundDelayBASS));
+        SoundDeviceTypes.Add("WASAPI(Shared)", () => new CSoundDeviceWASAPI(CSoundDeviceWASAPI.EWASAPIMode.Shared, SoundDelaySharedWASAPI, SoundUpdatePeriodSharedWASAPI));
+        SoundDeviceTypes.Add("WASAPI(Exclusive)", () => new CSoundDeviceWASAPI(CSoundDeviceWASAPI.EWASAPIMode.Exclusive, SoundDelayExclusiveWASAPI, SoundUpdatePeriodExclusiveWASAPI));
+        SoundDeviceTypes.Add("ASIO", () => new CSoundDeviceASIO(SoundDelayASIO, ASIODevice));
+        SoundDeviceTypes.Add("SDL", () => new CSoundDeviceSDL());
+        SoundDeviceTypes.Add("OpenAL", () => new CSoundDeviceOpenAL());
+
+        if (OperatingSystem.IsWindows())
+        {
+            DefaultDeviceName = "WASAPI(Shared)";
+        }
+        else if (OperatingSystem.IsAndroid())
+        {
+            DefaultDeviceName = "SDL";
+        }
+        else
+        {
+            DefaultDeviceName = "BASS";
+        }
+    }
+
     /// <summary>
     /// DTXMania用コンストラクタ
     /// </summary>
@@ -85,7 +112,7 @@ public class CSoundManager  // : CSound
     /// <param name="nSoundDelayExclusiveWASAPI"></param>
     /// <param name="nSoundDelayASIO"></param>
     /// <param name="nASIODevice"></param>
-    public CSoundManager(ESoundDeviceType soundDeviceType, int nSoundDelayExclusiveWASAPI, int nSoundDelayASIO, int nASIODevice, int nSoundDelayBASS, bool _bUseOSTimer)
+    public CSoundManager(string soundDeviceType, int nSoundDelayExclusiveWASAPI, int nSoundDelayASIO, int nASIODevice, int nSoundDelayBASS, bool _bUseOSTimer)
     {
         SoundDevice = null;
         //bUseOSTimer = false;
@@ -95,7 +122,7 @@ public class CSoundManager  // : CSound
     {
         t終了();
     }
-    public void tInitialize(ESoundDeviceType soundDeviceType, int _nSoundDelayExclusiveWASAPI, int _nSoundDelayASIO, int _nASIODevice, int _nSoundDelayBASS, bool _bUseOSTimer)
+    public void tInitialize(string soundDeviceType, int _nSoundDelayExclusiveWASAPI, int _nSoundDelayASIO, int _nASIODevice, int _nSoundDelayBASS, bool _bUseOSTimer)
     {
         //SoundDevice = null;						// 後で再初期化することがあるので、null初期化はコンストラクタに回す
         rc演奏用タイマ = null;                        // Global.Bass 依存（つまりユーザ依存）
@@ -107,6 +134,22 @@ public class CSoundManager  // : CSound
         ASIODevice = _nASIODevice;
         bUseOSTimer = _bUseOSTimer;
 
+        SoundDeviceType = soundDeviceType;
+
+        try
+        {
+            t現在のユーザConfigに従ってサウンドデバイスとすべての既存サウンドを再構築する();
+        }
+        catch (Exception e)
+        {
+            Trace.TraceError(e.ToString());
+            Trace.TraceError("An exception has occurred, but processing continues.");
+            if (SoundDeviceTypes.ContainsKey(SoundDeviceType))
+            {
+                Trace.TraceError(string.Format("サウンドデバイスの初期化に失敗しました。"));
+            }
+        }
+        /*
         ESoundDeviceType[] ESoundDeviceTypes = new ESoundDeviceType[7]
         {
             ESoundDeviceType.BASS,
@@ -140,6 +183,7 @@ public class CSoundManager  // : CSound
                 }
             }
         }
+        */
     }
 
     public static void t終了()
@@ -174,28 +218,13 @@ public class CSoundManager  // : CSound
 
         #region [ 新しいサウンドデバイスを構築する。]
         //-----------------
-        switch (SoundDeviceType)
+        if (SoundDeviceTypes.TryGetValue(SoundDeviceType, out Func<ISoundDevice>? soundDeviceBuilder) && soundDeviceBuilder is not null)
         {
-            case ESoundDeviceType.BASS:
-                SoundDevice = new CSoundDeviceBASS(SoundUpdatePeriodBASS, SoundDelayBASS);
-                break;
-            case ESoundDeviceType.SharedWASAPI:
-                SoundDevice = new CSoundDeviceWASAPI(CSoundDeviceWASAPI.EWASAPIMode.Shared, SoundDelaySharedWASAPI, SoundUpdatePeriodSharedWASAPI);
-                break;
-            case ESoundDeviceType.ExclusiveWASAPI:
-                SoundDevice = new CSoundDeviceWASAPI(CSoundDeviceWASAPI.EWASAPIMode.Exclusive, SoundDelayExclusiveWASAPI, SoundUpdatePeriodExclusiveWASAPI);
-                break;
-            case ESoundDeviceType.ASIO:
-                SoundDevice = new CSoundDeviceASIO(SoundDelayASIO, ASIODevice);
-                break;
-            case ESoundDeviceType.SDL:
-                SoundDevice = new CSoundDeviceSDL();
-                break;
-            case ESoundDeviceType.OpenAL:
-                SoundDevice = new CSoundDeviceOpenAL();
-                break;
-            default:
-                throw new Exception(string.Format("未対応の SoundDeviceType です。[{0}]", SoundDeviceType.ToString()));
+            SoundDevice = soundDeviceBuilder.Invoke();
+        }
+        else
+        {
+            throw new Exception(string.Format("未対応の SoundDeviceType です。[{0}]", SoundDeviceType.ToString()));
         }
         //-----------------
         #endregion
@@ -222,33 +251,14 @@ public class CSoundManager  // : CSound
             throw new Exception("SoundDevice が null です。");
         }
 
-        if (SoundDeviceType == ESoundDeviceType.Unknown)
+        if (!SoundDeviceTypes.ContainsKey(SoundDeviceType))
         {
             throw new Exception(string.Format("未対応の SoundDeviceType です。[{0}]", SoundDeviceType.ToString()));
         }
         return SoundDevice.tCreateSound(filename, soundGroup);
     }
 
-    public string GetCurrentSoundDeviceType()
-    {
-        switch (SoundDeviceType)
-        {
-            case ESoundDeviceType.BASS:
-                return "BASS";
-            case ESoundDeviceType.SharedWASAPI:
-                return "WASAPI(Shared)";
-            case ESoundDeviceType.ExclusiveWASAPI:
-                return "WASAPI(Exclusive)";
-            case ESoundDeviceType.ASIO:
-                return "ASIO";
-            case ESoundDeviceType.SDL:
-                return "SDL";
-            case ESoundDeviceType.OpenAL:
-                return "OpenAL";
-            default:
-                return "Unknown";
-        }
-    }
+    public string GetCurrentSoundDeviceType() => SoundDeviceType;
 
     /*
     public void AddMixer(CSound cs, double db再生速度, bool _b演奏終了後も再生が続くチップである)

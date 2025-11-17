@@ -223,7 +223,9 @@ internal class CActConfigList : CActivity
         list項目リスト.Add(SendDiscordPlayingInformation);
 
         // #24820 2013.1.3 yyagi
-        this.iSystemSoundType = new CItemList("SoundType", TJAPlayerPI.app.ConfigToml.SoundDevice.DeviceType,
+        string[] soundTypeKeyArray = CSoundManager.SoundDeviceTypes.Keys.ToArray();
+
+        this.iSystemSoundType = new CItemList("SoundType", Array.IndexOf(soundTypeKeyArray, TJAPlayerPI.app.ConfigToml.SoundDevice.DeviceType),
             "サウンドの出力方式:\n" +
             "WASAPI(共有), WASAPI(排他)\n" +
             "BASS, ASIO\n" +
@@ -249,7 +251,7 @@ internal class CActConfigList : CActivity
             "\n" +
             "Note: Exit CONFIGURATION to make\n" +
             "     the setting take effect.",
-            new string[] { "BASS", "WASAPI(Shared)", "WASAPI(Exclusive)", "ASIO", "SDL", "OpenAL" });
+            soundTypeKeyArray);
         this.list項目リスト.Add(this.iSystemSoundType);
 
         // #24820 2013.1.15 yyagi
@@ -1031,7 +1033,9 @@ internal class CActConfigList : CActivity
                 this.iSystemBASSBufferSizeMs_initial != this.iSystemBASSBufferSizeMs.nValue ||
             this.iSystemSoundTimerType_initial != this.iSystemSoundTimerType.GetIndex())
         {
-            ESoundDeviceType soundDeviceType = (ESoundDeviceType)this.iSystemSoundType.n現在選択されている項目番号;
+            string[] soundTypeKeyArray = CSoundManager.SoundDeviceTypes.Keys.ToArray();
+
+            string soundDeviceType = soundTypeKeyArray[this.iSystemSoundType.n現在選択されている項目番号];
             TJAPlayerPI.SoundManager.tInitialize(soundDeviceType,
                                     this.iSystemWASAPIBufferSizeMs.nValue,
                                     0,
@@ -1585,7 +1589,8 @@ internal class CActConfigList : CActivity
         TJAPlayerPI.app.ConfigToml.General.SkinPath = skinSubFolders[nSkinIndex];				// #28195 2012.5.2 yyagi
         TJAPlayerPI.app.Skin.SetCurrentSkinSubfolderFullName(TJAPlayerPI.app.ConfigToml.General._AbsSkinPath, true);
 
-        TJAPlayerPI.app.ConfigToml.SoundDevice.DeviceType = this.iSystemSoundType.n現在選択されている項目番号;		// #24820 2013.1.3 yyagi
+        string[] soundTypeKeyArray = CSoundManager.SoundDeviceTypes.Keys.ToArray();
+        TJAPlayerPI.app.ConfigToml.SoundDevice.DeviceType = soundTypeKeyArray[this.iSystemSoundType.n現在選択されている項目番号];		// #24820 2013.1.3 yyagi
         TJAPlayerPI.app.ConfigToml.SoundDevice.WASAPIBufferSizeMs = this.iSystemWASAPIBufferSizeMs.nValue;               // #24820 2013.1.15 yyagi
                                                                                                                     //			CDTXMania.ConfigIni.nASIOBufferSizeMs = this.iSystemASIOBufferSizeMs.nValue;					// #24820 2013.1.3 yyagi
         TJAPlayerPI.app.ConfigToml.SoundDevice.ASIODevice = this.iSystemASIODevice.n現在選択されている項目番号;           // #24820 2013.1.17 yyagi

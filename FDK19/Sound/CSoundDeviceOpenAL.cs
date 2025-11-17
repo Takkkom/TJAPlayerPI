@@ -1,5 +1,4 @@
-﻿using NAudio.Wave;
-using Silk.NET.OpenAL;
+﻿using Silk.NET.OpenAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,11 @@ namespace FDK.Sound
         public static readonly AL AL = AL.GetApi();
         public static readonly ALContext ALC = ALContext.GetApi();
 
-        public ESoundDeviceType eOutputDevice { get => ESoundDeviceType.OpenAL; }
+        public bool bValid
+        {
+            get;
+            private set;
+        }
 
         private int _nMasterVolume;
         public int nMasterVolume
@@ -36,7 +39,7 @@ namespace FDK.Sound
         {
             get
             {
-                alSample.t再生位置を取得する(out _, out double dbTime);
+                sample.t再生位置を取得する(out _, out double dbTime);
                 long systemTime = this.tmSystemTimer.nシステム時刻ms;
 
 
@@ -90,7 +93,7 @@ namespace FDK.Sound
         internal readonly unsafe Silk.NET.OpenAL.Device* Device;
         internal readonly unsafe Silk.NET.OpenAL.Context* Context;
 
-        private CSoundImplOpenAL alSample;
+        private CSound sample;
         private long nPreviousSystemTime;
         private double dbSampleInterval = 1.0;
         private int dbSampleIntervalMs => (int)(dbSampleInterval * 1000.0);
@@ -101,6 +104,13 @@ namespace FDK.Sound
         {
             CSound sound = new CSound(soundGroup);
             sound.SoundImpl = new CSoundImplOpenAL(this, strFilename, sound.SoundGroup);
+            return sound;
+        }
+
+        public unsafe CSound tCreateSound(byte[] byArrWAVファイルイメージ, ESoundGroup soundGroup)
+        {
+            CSound sound = new CSound(soundGroup);
+            sound.SoundImpl = new CSoundImplOpenAL(this, byArrWAVファイルイメージ, sound.SoundGroup);
             return sound;
         }
 
@@ -116,6 +126,8 @@ namespace FDK.Sound
 
         public unsafe CSoundDeviceOpenAL()
         {
+            this.bValid = false;
+
             this.tmSystemTimer = new CTimer();
 
             Device = ALC.OpenDevice(null);
@@ -128,29 +140,18 @@ namespace FDK.Sound
             Context = ALC.CreateContext(Device, null);
             ALC.MakeContextCurrent(Context);
 
-            using Stream stream = new MemoryStream();
+            this.bValid = true;
 
-            WaveFormat waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(44100, 1);
-            using WaveFileWriter waveFileWriter = new WaveFileWriter(stream, waveFormat);
-            int length = waveFileWriter.WaveFormat.SampleRate * dbSampleIntervalMs / 1000;
-            for (int i = 0; i < length; i++)
-            {
-                waveFileWriter.WriteSample(0);
-            }
-            waveFileWriter.Flush();
-            stream.Position = 0;
-
-            byte[] bytes = new byte[stream.Length];
-            stream.Read(bytes);
-
-            alSample = new CSoundImplOpenAL(this, bytes, ESoundGroup.Unknown);
-            alSample.tサウンドを再生する(true);
+            sample = CSampleSound.tCreateSample(this);
+            sample.t再生を開始する(true);
         }
 
         public unsafe void Dispose()
         {
-            alSample.tサウンドを停止する();
-            alSample.Dispose();
+            this.bValid = false;
+
+            sample.tサウンドを停止する();
+            sample.Dispose();
             tmSystemTimer.Dispose();
 
             ALC.DestroyContext(Context);

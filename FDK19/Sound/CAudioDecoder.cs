@@ -4,6 +4,7 @@ namespace FDK;
 
 public unsafe static class CAudioDecoder
 {
+    [ObsoleteAttribute("CAudioDecoder is deprecated. Use NAudio.", false)]
     public static void AudioDecode(string filename, out byte[] buffer,
         out int nPCMDataIndex, out int totalPCMSize, bool enablechunk)
     {

@@ -6,7 +6,7 @@ public class CSoundTimer : CTimerBase
     {
         get
         {
-            if (this.Device.eOutputDevice == ESoundDeviceType.Unknown)
+            if (!this.Device.bValid)
                 return CTimerBase.nUnused;
 
             // BASS 系の ISoundDevice.nElapsedTimems はオーディオバッファの更新間隔ずつでしか更新されないため、単にこれを返すだけではとびとびの値になる。

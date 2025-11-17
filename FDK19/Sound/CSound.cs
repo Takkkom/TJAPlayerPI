@@ -1,5 +1,4 @@
-﻿using FDK.BassMixExtension;
-using NAudio.Wave;
+﻿using System;
 
 namespace FDK;
 
@@ -8,6 +7,7 @@ namespace FDK;
 
 public class CSound : IDisposable
 {
+
     public const int MinimumSongVol = 0;
     public const int MaximumSongVol = 200; // support an approximate doubling in volume.
     public const int DefaultSongVol = 100;
@@ -295,7 +295,6 @@ public class CSound : IDisposable
         db位置ms = 0;
     }
 
-
     public static void tすべてのサウンドを初期状態に戻す()
     {
         foreach (var sound in CSound.listインスタンス)
@@ -358,8 +357,6 @@ public class CSound : IDisposable
 
         if (bManagedも解放する)
         {
-            this.eSoundDeviceType = ESoundDeviceType.Unknown;
-
             if (bインスタンス削除)
             {
                 //try
@@ -390,7 +387,6 @@ public class CSound : IDisposable
     //-----------------
     public enum EMakeType { File, WAVFileImage, Unknown }
     public EMakeType eMakeType => SoundImpl?.eMakeType ?? EMakeType.Unknown;
-    protected ESoundDeviceType eSoundDeviceType = ESoundDeviceType.Unknown;
     public string? strFilename => SoundImpl?.strFilename;
     protected byte[]? byArrWAVファイルイメージ => SoundImpl?.byArrWAVファイルイメージ;  // WAVファイルイメージ、もしくはchunkのDATA部のみ
     //-----------------

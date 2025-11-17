@@ -48,7 +48,7 @@
 
   <PropertyGroup>
     <PackageId>TJAPlayerPI</PackageId>
-    <Version>0.0.0.1</Version>
+    <Version>0.0.0.2</Version>
     <Authors>Takkkom</Authors>
     <NeutralLanguage>ja-JP</NeutralLanguage>
     <RepositoryUrl>https://github.com/Takkkom/TJAPlayerPI</RepositoryUrl>

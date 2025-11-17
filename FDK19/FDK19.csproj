@@ -34,7 +34,8 @@
     <PackageReference Include="ManagedBass.Wasapi" Version="4.0.1" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
-    <PackageReference Include="ppy.SDL3-CS" Version="2025.828.0" />
+    <PackageReference Include="ppy.SDL3-CS" Version="2025.1115.0" />
+    <PackageReference Include="ppy.SDL3_mixer-CS" Version="2025.1115.0" />
     <PackageReference Include="ReadJEnc" Version="1.3.1.2" />
     <PackageReference Include="Silk.NET.OpenAL" Version="2.22.0" />
     <PackageReference Include="Silk.NET.OpenAL.Extensions.EXT" Version="2.22.0" />

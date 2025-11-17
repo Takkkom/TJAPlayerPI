@@ -480,8 +480,7 @@ public class TJAPlayerPI : Game
         Trace.Indent();
         try
         {
-            ESoundDeviceType soundDeviceType = (ESoundDeviceType)TJAPlayerPI.app.ConfigToml.SoundDevice.DeviceType;
-            SoundManager = new CSoundManager(soundDeviceType,
+            SoundManager = new CSoundManager(TJAPlayerPI.app.ConfigToml.SoundDevice.DeviceType,
                                         TJAPlayerPI.app.ConfigToml.SoundDevice.WASAPIBufferSizeMs,
                                         0,
                                         TJAPlayerPI.app.ConfigToml.SoundDevice.ASIODevice,
@@ -1734,7 +1733,10 @@ public class TJAPlayerPI : Game
         string skinDir = Path.Combine(strEXEのあるフォルダ, "System/Default");
 
 #if DEBUG
-        Directory.Delete(skinDir, true);
+        if (Directory.Exists(skinDir))
+        {
+            Directory.Delete(skinDir, true);
+        }
 #endif
     }
 

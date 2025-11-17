@@ -38,10 +38,10 @@ internal class CSoundDeviceASIO : ISoundDevice
 {
     // プロパティ
 
-    public ESoundDeviceType eOutputDevice
+    public bool bValid
     {
         get;
-        protected set;
+        private set;
     }
     public long nOutPutDelayms
     {
@@ -111,7 +111,7 @@ internal class CSoundDeviceASIO : ISoundDevice
         // 初期化。
 
         Trace.TraceInformation("BASS (ASIO) の初期化を開始します。");
-        this.eOutputDevice = ESoundDeviceType.Unknown;
+        this.bValid = false;
         this.nOutPutDelayms = 0;
         this.nElapsedTimems = 0;
         this.SystemTimemsWhenUpdatingElapsedTime = CTimer.nUnused;
@@ -161,7 +161,7 @@ internal class CSoundDeviceASIO : ISoundDevice
         {
             #region [ ASIO の初期化に成功。]
             //-----------------
-            this.eOutputDevice = ESoundDeviceType.ASIO;
+            this.bValid = true;
             BassAsio.GetInfo(out asioInfo);
             this.n出力チャンネル数 = asioInfo.Outputs;
             this.db周波数 = BassAsio.Rate;
@@ -329,6 +329,12 @@ internal class CSoundDeviceASIO : ISoundDevice
         sound.SoundImpl = new CSoundImplBass(strFilename, this.hMixer, soundGroup);
         return sound;
     }
+    public CSound tCreateSound(byte[] byArrWAVファイルイメージ, ESoundGroup soundGroup)
+    {
+        var sound = new CSound(soundGroup);
+        sound.SoundImpl = new CSoundImplBass(byArrWAVファイルイメージ, this.hMixer, soundGroup);
+        return sound;
+    }
 
     public void tCreateSound(string strFilename, CSound sound)
     {
@@ -350,7 +356,7 @@ internal class CSoundDeviceASIO : ISoundDevice
     }
     protected void Dispose(bool bManagedDispose)
     {
-        this.eOutputDevice = ESoundDeviceType.Unknown;		// まず出力停止する(Dispose中にクラス内にアクセスされることを防ぐ)
+        this.bValid = false;
         if (hMixer != -1)
         {
             Bass.StreamFree(this.hMixer);

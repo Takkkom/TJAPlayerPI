@@ -1,5 +1,6 @@
 ﻿namespace FDK;
 
+/*
 public enum ESoundDeviceType
 {
     BASS,
@@ -10,3 +11,4 @@ public enum ESoundDeviceType
     OpenAL,
     Unknown,
 }
+*/

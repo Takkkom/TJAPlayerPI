@@ -1,0 +1,1 @@
+dotnet publish TJAPlayerPI.Android/TJAPlayerPI.Android.csproj --configuration Release --self-contained --runtime android-arm64

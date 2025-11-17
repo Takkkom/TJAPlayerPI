@@ -92,7 +92,27 @@ public class CConfigToml
     public CWindow Window { get; set; } = new();
     public class CWindow
     {
-        public bool FullScreen { get; set; } = false;
+        public bool FullScreen
+        {
+            get
+            {
+                if (OperatingSystem.IsAndroid())
+                {
+                    return true;
+                }
+                return _FullScreen;
+            }
+            set
+            {
+                if (OperatingSystem.IsAndroid())
+                {
+                    _FullScreen = true;
+                    return;
+                }
+                _FullScreen = value;
+            }
+        }
+        public bool _FullScreen { get; set; } = false;
         public int X { get; set; } = 0;
         public int Y { get; set; } = 0;
         public int Width
@@ -115,12 +135,32 @@ public class CConfigToml
     public CSoundDevice SoundDevice { get; set; } = new();
     public class CSoundDevice
     {
-        public int DeviceType
+        public string DeviceType
         {
-            get { return _DeviceType; }
-            set { _DeviceType = Math.Clamp(value, 0, 6); }
+            get
+            {
+                if (CSoundManager.SoundDeviceTypes.ContainsKey(_DeviceType))
+                {
+                    return _DeviceType;
+                }
+                else
+                {
+                    return CSoundManager.DefaultDeviceName;
+                }
+            }
+            set
+            {
+                if (CSoundManager.SoundDeviceTypes.ContainsKey(value))
+                {
+                    _DeviceType = value;
+                }
+                else
+                {
+                    _DeviceType = CSoundManager.DefaultDeviceName;
+                }
+            }
         }
-        private int _DeviceType = (int)(OperatingSystem.IsWindows() ? ESoundDeviceType.SharedWASAPI : ESoundDeviceType.BASS);
+        private string _DeviceType = CSoundManager.DefaultDeviceName;
         public int WASAPIBufferSizeMs
         {
             get { return _WASAPIBufferSizeMs; }
@@ -506,13 +546,13 @@ public class CConfigToml
             sw.WriteLine("{0} = {1}", nameof(this.Window.VSyncWait), this.Window.VSyncWait.ToString().ToLowerInvariant());
             sw.WriteLine();
             sw.WriteLine("[{0}]", nameof(this.SoundDevice));
-            sw.WriteLine("# サウンド出力方式(0=BASS, 1=ASIO, 2=WASAPI(排他), 3=WASAPI(共有))");
-            sw.WriteLine("# WASAPIはVista以降のOSで使用可能。推奨方式はWASAPI。");
+            sw.WriteLine("# サウンド出力方式(BASS, ASIO, WASAPI(Exclusive), WASAPI(Shared))");
+            sw.WriteLine("# WASAPIはVista以降のOSで使用可能。推奨方式はWASAPI(Shared)。");
             sw.WriteLine("# なお、WASAPIが使用不可ならASIOを、ASIOが使用不可ならBASSを使用します。");
-            sw.WriteLine("# Sound device type(0=BASS, 1=ASIO, 2=WASAPI(Exclusive), 3=WASAPI(Shared))");
+            sw.WriteLine("# Sound device type(BASS, ASIO, WASAPI(Exclusive), WASAPI(Shared))");
             sw.WriteLine("# WASAPI can use on Vista or later OSs.");
-            sw.WriteLine("# If WASAPI is not available, TJAP3-f try to use ASIO. If ASIO can't be used, TJAP3-f try to use BASS.");
-            sw.WriteLine("{0} = {1}", nameof(this.SoundDevice.DeviceType), this.SoundDevice.DeviceType);
+            sw.WriteLine("# If WASAPI is not available, TJAPPI try to use ASIO. If ASIO can't be used, TJAPPI try to use BASS.");
+            sw.WriteLine("{0} = \"{1}\"", nameof(this.SoundDevice.DeviceType), this.SoundDevice.DeviceType);
             sw.WriteLine();
             sw.WriteLine("# WASAPI使用時のサウンドバッファサイズ");
             sw.WriteLine("# (0=デバイスに設定されている値を使用, 1～9999=バッファサイズ(単位:ms)の手動指定");

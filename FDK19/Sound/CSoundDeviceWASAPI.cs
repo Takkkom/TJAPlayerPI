@@ -1,7 +1,6 @@
 ﻿using ManagedBass;
 using ManagedBass.Mix;
 using ManagedBass.Wasapi;
-using NAudio.Wave;
 
 namespace FDK;
 
@@ -9,10 +8,10 @@ internal class CSoundDeviceWASAPI : ISoundDevice
 {
     // プロパティ
 
-    public ESoundDeviceType eOutputDevice
+    public bool bValid
     {
         get;
-        protected set;
+        private set;
     }
     public long nOutPutDelayms
     {
@@ -93,7 +92,7 @@ internal class CSoundDeviceWASAPI : ISoundDevice
 
         Trace.TraceInformation("BASS (WASAPI{0}) の初期化を開始します。", mode.ToString());
 
-        this.eOutputDevice = ESoundDeviceType.Unknown;
+        this.bValid = false;
         this.nOutPutDelayms = 0;
         this.nElapsedTimems = 0;
         this.SystemTimemsWhenUpdatingElapsedTime = CTimer.nUnused;
@@ -272,8 +271,7 @@ internal class CSoundDeviceWASAPI : ISoundDevice
             {
                 #region [ 排他モードで作成成功。]
                 //-----------------
-                this.eOutputDevice = ESoundDeviceType.ExclusiveWASAPI;
-
+                this.bValid = true;
                 nDevNo = BassWasapi.CurrentDevice;
                 deviceInfo = BassWasapi.GetDeviceInfo(nDevNo);
                 BassWasapi.GetInfo(out var wasapiInfo);
@@ -309,8 +307,7 @@ internal class CSoundDeviceWASAPI : ISoundDevice
             {
                 #region [ 共有モードで作成成功。]
                 //-----------------
-                this.eOutputDevice = ESoundDeviceType.SharedWASAPI;
-
+                this.bValid = true;
                 BassWasapi.GetInfo(out var wasapiInfo);
                 int n1サンプルのバイト数 = 2 * wasapiInfo.Channels;  // default;
                 switch (wasapiInfo.Format)     // BASS WASAPI で扱うサンプルはすべて 32bit float で固定されているが、デバイスはそうとは限らない。
@@ -438,6 +435,12 @@ internal class CSoundDeviceWASAPI : ISoundDevice
         sound.SoundImpl = new CSoundImplBass(strFilename, this.hMixer, soundGroup);
         return sound;
     }
+    public CSound tCreateSound(byte[] byArrWAVファイルイメージ, ESoundGroup soundGroup)
+    {
+        var sound = new CSound(soundGroup);
+        sound.SoundImpl = new CSoundImplBass(byArrWAVファイルイメージ, this.hMixer, soundGroup);
+        return sound;
+    }
 
     public void tCreateSound(string strFilename, CSound sound)
     {
@@ -458,7 +461,7 @@ internal class CSoundDeviceWASAPI : ISoundDevice
     }
     protected void Dispose(bool bManagedDispose)
     {
-        this.eOutputDevice = ESoundDeviceType.Unknown;		// まず出力停止する(Dispose中にクラス内にアクセスされることを防ぐ)
+        this.bValid = false;
         if (hMixer != -1)
         {
             Bass.StreamFree(this.hMixer);
