@@ -1022,6 +1022,9 @@ internal class CSkin : IDisposable
                 public int[] ComboSize { get; set; } = new int[] { 56, 64 };
                 public int[] ComboSizeEx { get; set; } = new int[] { 56, 64 };
                 public float[] ComboScale { get; set; } = new float[] { 1.0f, 1.0f, 0.85f };
+                public float ComboScalingOffset { get; set; } = 10;
+                public float ComboExScalingOffset { get; set; } = 3;
+                public float ComboEx4ScalingOffset { get; set; } = 3;
                 public int[] ComboTextX { get; set; } = new int[] { 248, 248 };
                 public int[] ComboTextY { get; set; } = new int[] { 299, 475 };
                 public int[] ComboTextSize { get; set; } = new int[] { 100, 50 };
@@ -1060,8 +1063,10 @@ internal class CSkin : IDisposable
             {
                 public int[] ComboX { get; set; } = new int[] { 264, 264 };
                 public int[] ComboY { get; set; } = new int[] { 16, 572 };
+                public int[] ComboSize { get; set; } = new int[] { 336, 136 };
                 public int[] ComboShinX { get; set; } = new int[] { 254, 254 };
                 public int[] ComboShinY { get; set; } = new int[] { 16, 572 };
+                public int[] ComboShinSize { get; set; } = new int[] { 336, 136 };
                 public int[] ComboNumberX { get; set; } = new int[] { 385, 385 };
                 public int[] ComboNumberY { get; set; } = new int[] { 32, 588 };
                 public int[] ComboShinNumberX { get; set; } = new int[] { 375, 375 };

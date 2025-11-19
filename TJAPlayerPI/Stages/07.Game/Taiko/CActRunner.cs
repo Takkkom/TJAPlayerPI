@@ -189,7 +189,7 @@ internal class CActRunner : CActivity
             {
                 float delta = TJAPlayerPI.app.FPS.fDelta;
                 float speedMul = TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed / 20.0f;
-                float valueSpeed = (float)TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.dbBPM * speedMul / (60.0f * 4);
+                float valueSpeed = (float)TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.dbBPM[0] * speedMul / (60.0f * 4);
                 stRunner.fValue += valueSpeed * delta;
             }
 

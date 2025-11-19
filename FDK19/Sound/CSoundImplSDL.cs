@@ -87,6 +87,8 @@ namespace FDK.Sound
             }
         }
 
+        private long? nPreviousTime = null;
+
         private CSoundDeviceSDL device;
 
         public CSoundImplSDL(CSoundDeviceSDL device, string strFilename, ESoundGroup soundGroup) : base(soundGroup)
@@ -152,6 +154,7 @@ namespace FDK.Sound
             {
                 return;
             }
+            nPreviousTime = SDL3_mixer.MIX_GetTrackPlaybackPosition(pTrack);
             SDL3_mixer.MIX_PauseTrack(pTrack);
         }
 
@@ -164,7 +167,13 @@ namespace FDK.Sound
 
             SDL_PropertiesID id = SDL3.SDL_CreateProperties();
             SDL3.SDL_SetNumberProperty(id, SDL3_mixer.MIX_PROP_PLAY_LOOPS_NUMBER, bループする ? -1 : 0);
+
+            SDL3_mixer.MIX_ResumeTrack(pTrack);
             SDL3_mixer.MIX_PlayTrack(pTrack, id);
+            if (nPreviousTime is long time)
+            {
+                SDL3_mixer.MIX_SetTrackPlaybackPosition(pTrack, time);
+            }
 
             SDL3.SDL_DestroyProperties(id);
         }
@@ -192,6 +201,8 @@ namespace FDK.Sound
 
             long trackPos = SDL3_mixer.MIX_TrackMSToFrames(pTrack, n位置ms);
             SDL3_mixer.MIX_SetTrackPlaybackPosition(pTrack, trackPos);
+
+            nPreviousTime = trackPos;
         }
 
         public unsafe override void Dispose(bool bManagedも解放する)
@@ -204,6 +215,8 @@ namespace FDK.Sound
             {
                 SDL3_mixer.MIX_DestroyTrack(pTrack);
             }
+
+            nPreviousTime = null;
 
             base.Dispose(bManagedも解放する);
         }

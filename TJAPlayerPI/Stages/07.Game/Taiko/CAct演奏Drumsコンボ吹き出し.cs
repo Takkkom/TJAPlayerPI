@@ -180,6 +180,8 @@ internal class CAct演奏Drumsコンボ吹き出し : CActivity
                     int comboNumberY = TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.ComboNumberY[i];
                     int comboTextX = TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.ComboTextX[i];
                     int comboTextY = TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.ComboTextY[i];
+                    int comboWidth = TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.ComboSize[0];
+                    int comboHeight = TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.ComboSize[1];
                     if (TJAPlayerPI.app.ConfigToml.PlayOption.Shinuchi[i])
                     {
                         comboX = TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.ComboShinX[i];
@@ -188,9 +190,11 @@ internal class CAct演奏Drumsコンボ吹き出し : CActivity
                         comboNumberY = TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.ComboShinNumberY[i];
                         comboTextX = TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.ComboShinTextX[i];
                         comboTextY = TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.ComboShinTextY[i];
+                        comboWidth = TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.ComboShinSize[0];
+                        comboHeight = TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.ComboShinSize[1];
                     }
 
-                    combo.t2D描画(TJAPlayerPI.app.Device, comboX, comboY);
+                    combo.t2D描画(TJAPlayerPI.app.Device, comboX, comboY, new Rectangle(0, comboHeight * i, comboWidth, comboHeight));
 
                     int offset = this.t小文字表示(comboNumberX, comboNumberY, this.nCombo_渡[i].ToString());
                     num_combo_text?.t2D描画(TJAPlayerPI.app.Device, comboTextX + offset, comboTextY);

@@ -246,6 +246,8 @@ class TextureLoader
         #region 共通
         Notes = TxC(GAME + @"Notes.png");
         Notes_White = TxC(GAME + @"Notes_White.png");
+        Note_Balloon_Tail = TxC(GAME + @"Note_Balloon_Tail.png");
+        Note_Kusudama = TxC(GAME + @"Note_Kusudama.png");
         Judge_Frame = TxC(GAME + @"Notes.png");
         SENotes = TxC(GAME + @"SENotes.png");
         Notes_Arm = TxC(GAME + @"Notes_Arm.png");
@@ -828,6 +830,8 @@ class TextureLoader
         #region 共通
         TJAPlayerPI.t安全にDisposeする(ref Notes);
         TJAPlayerPI.t安全にDisposeする(ref Notes_White);
+        TJAPlayerPI.t安全にDisposeする(ref Note_Balloon_Tail);
+        TJAPlayerPI.t安全にDisposeする(ref Note_Kusudama);
         TJAPlayerPI.t安全にDisposeする(ref Judge_Frame);
         TJAPlayerPI.t安全にDisposeする(ref SENotes);
         TJAPlayerPI.t安全にDisposeする(ref Notes_Arm);
@@ -1185,6 +1189,8 @@ class TextureLoader
     #region 共通
     public CTexture? Notes,
         Notes_White,
+        Note_Balloon_Tail,
+        Note_Kusudama,
         Judge_Frame,
         SENotes,
         Notes_Arm,

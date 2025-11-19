@@ -18,6 +18,7 @@
 *.score.json
 *.DotSettings.user
 *.bs1770gain.xml
+*.xcf
 .DS_Store
 /packages/*
 /Test/*

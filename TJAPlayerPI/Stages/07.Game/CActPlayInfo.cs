@@ -6,7 +6,7 @@ internal class CActPlayInfo : CActivity
 {
     // プロパティ
 
-    public double dbBPM;
+    public readonly double[] dbBPM = new double[2];
     public readonly int[] NowMeasure = new int[2];
 
     // コンストラクタ
@@ -24,7 +24,10 @@ internal class CActPlayInfo : CActivity
         {
             NowMeasure[i] = 0;
         }
-        this.dbBPM = TJAPlayerPI.DTX[0].BASEBPM;
+        for (int nPlayer = 0; nPlayer < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; nPlayer++)
+        {
+            this.dbBPM[nPlayer] = TJAPlayerPI.DTX[nPlayer].BASEBPM;
+        }
         base.On活性化();
     }
     public override int On進行描画()
@@ -51,7 +54,7 @@ internal class CActPlayInfo : CActivity
             string.Format("NoteE:         {0:####0}", TJAPlayerPI.DTX[0].nノーツ数[1]),
             string.Format("NoteN:         {0:####0}", TJAPlayerPI.DTX[0].nノーツ数[0]),
             string.Format("Frame:         {0:####0} fps", TJAPlayerPI.app.FPS.nFPS),
-            string.Format("BPM:           {0:####0.0000}", this.dbBPM),
+            string.Format("BPM:           {0:####0.0000}", this.dbBPM[0]),
             string.Format("Part:          {0:####0}/{1:####0}", NowMeasure[0], NowMeasure[1]),
             string.Format("Time:          {0:####0.00}/{1:####0.00}", ((double)(CSoundManager.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0))) / 1000.0, ((double)lastChipTime) / 1000.0),
             string.Format("BGM/Taiko Adj: {0:####0}/{1:####0} ms", TJAPlayerPI.DTX[0].nBGMAdjust, TJAPlayerPI.app.ConfigToml.PlayOption.InputAdjustTimeMs),
