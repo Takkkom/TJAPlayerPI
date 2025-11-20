@@ -231,12 +231,12 @@ public class TJAPlayerPI : Game
     internal int[] n確定された曲の難易度
     {
         get;
-        set;
+        private set;
     } = new int[4];
     internal C曲リストノード? r確定された曲
     {
         get;
-        set;
+        private set;
     }
     internal Cスコア? r確定されたスコア => r確定された曲?.arスコア;
 
