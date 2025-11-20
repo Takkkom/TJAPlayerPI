@@ -127,6 +127,7 @@ Fork元より使用しているライブラリ
 * [NVorbis](https://github.com/NVorbis/NVorbis)
 * [OpenAL](https://www.openal.org/)
 * [Silk.NET](https://github.com/dotnet/Silk.NET)
+* [Lua-CSharp](https://github.com/nuskey8/Lua-CSharp)
 
 また、フレームワークに[.NET](https://dotnet.microsoft.com/)を使用しています。
 
