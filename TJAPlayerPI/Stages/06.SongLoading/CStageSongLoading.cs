@@ -26,9 +26,9 @@ internal class CStageSongLoading : CStage
             this.nBGM再生開始時刻 = -1;
             this.nBGMの総再生時間ms = 0;
 
-            var 譜面情報 = TJAPlayerPI.app.r確定されたスコア.譜面情報;
-            this.strTitle = 譜面情報.Title;
-            this.strSubTitle = 譜面情報.SubTitle;
+            var 譜面情報 = TJAPlayerPI.app.r確定されたスコア?.譜面情報;
+            this.strTitle = 譜面情報?.Title;
+            this.strSubTitle = 譜面情報?.SubTitle;
 
 
 
@@ -191,7 +191,7 @@ internal class CStageSongLoading : CStage
 
                 if (this.txTitle is not null)
                 {
-                    int nサブタイトル補正 = string.IsNullOrEmpty(TJAPlayerPI.app.r確定されたスコア.譜面情報.SubTitle) ? 15 : 0;
+                    int nサブタイトル補正 = string.IsNullOrEmpty(TJAPlayerPI.app.r確定されたスコア?.譜面情報.SubTitle) ? 15 : 0;
 
                     this.txTitle.Opacity = CConvert.nParsentTo255((this.ct曲名表示.n現在の値 / 30.0));
                     if (TJAPlayerPI.app.Skin.SkinConfig.SongLoading._v2TitleReferencePoint == CSkin.EReferencePoint.Left)
@@ -245,7 +245,7 @@ internal class CStageSongLoading : CStage
 
                 if (this.txTitle is not null)
                 {
-                    int nサブタイトル補正 = string.IsNullOrEmpty(TJAPlayerPI.app.r確定されたスコア.譜面情報.SubTitle) ? 15 : 0;
+                    int nサブタイトル補正 = string.IsNullOrEmpty(TJAPlayerPI.app.r確定されたスコア?.譜面情報.SubTitle) ? 15 : 0;
 
                     this.txTitle.Opacity = CConvert.nParsentTo255((this.ct曲名表示.n現在の値 / 30.0));
                     if (TJAPlayerPI.app.Skin.SkinConfig.SongLoading._TitleReferencePoint == CSkin.EReferencePoint.Left)
@@ -294,7 +294,7 @@ internal class CStageSongLoading : CStage
             case CStage.Eフェーズ.NOWLOADING_DTXファイルを読み込む:
                 {
                     timeBeginLoad = DateTime.Now;
-                    string str = TJAPlayerPI.app.r確定されたスコア.FileInfo.FileAbsolutePath;
+                    string str = TJAPlayerPI.app.r確定されたスコア?.FileInfo.FileAbsolutePath ?? "";
 
                     CScoreJson json = CScoreJson.Load(str + ".score.json");
 

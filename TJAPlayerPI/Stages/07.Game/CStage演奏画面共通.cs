@@ -2886,7 +2886,7 @@ internal class CStage演奏画面共通 : CStage
 
         string subtitle = (TJAPlayerPI.app.ConfigToml.Game._SubtitleDispMode == ESubtitleDispMode.On || (TJAPlayerPI.app.ConfigToml.Game._SubtitleDispMode == ESubtitleDispMode.Compliant && TJAPlayerPI.DTX[0].SUBTITLEDisp)) ? TJAPlayerPI.DTX[0].SUBTITLE : null;
 
-        this.actPanel.SetPanelString(panelString, subtitle, TJAPlayerPI.app.r確定された曲.strGenre, TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.StageText);
+        this.actPanel.SetPanelString(panelString, subtitle, TJAPlayerPI.app.r確定された曲?.strGenre ?? "", TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.StageText);
     }
 
 
@@ -4820,7 +4820,7 @@ internal class CStage演奏画面共通 : CStage
         try
         {
             if (!String.IsNullOrEmpty(TJAPlayerPI.DTX[0].strBGIMAGE_PATH))
-                this.tx背景 = TJAPlayerPI.app.tCreateTexture(TJAPlayerPI.app.r確定されたスコア.FileInfo.DirAbsolutePath + TJAPlayerPI.DTX[0].strBGIMAGE_PATH);
+                this.tx背景 = TJAPlayerPI.app.tCreateTexture((TJAPlayerPI.app.r確定されたスコア?.FileInfo.DirAbsolutePath ?? "") + TJAPlayerPI.DTX[0].strBGIMAGE_PATH);
             else
                 this.tx背景 = TJAPlayerPI.app.tCreateTexture(CSkin.Path(@"Graphics/5_Game/5_Background/0/Background.png"));
         }

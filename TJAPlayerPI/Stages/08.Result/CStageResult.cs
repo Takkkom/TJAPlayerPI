@@ -100,14 +100,16 @@ internal class CStageResult : CStage
                     #endregion
 
                     #region [ 選曲画面の譜面情報の更新 ]
-                    Cスコア cスコア = TJAPlayerPI.app.r確定されたスコア;
-                    cスコア.譜面情報.nCrown[TJAPlayerPI.app.n確定された曲の難易度[i]] = json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown;
-                    for (int k = 0; k < json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore.Count; k++)
+                    Cスコア? cスコア = TJAPlayerPI.app.r確定されたスコア;
+                    if (cスコア is not null)
                     {
-                        cスコア.譜面情報.nHiScore[TJAPlayerPI.app.n確定された曲の難易度[i]][k] = (int)json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore[k].Score;
-                        cスコア.譜面情報.strHiScorerName[TJAPlayerPI.app.n確定された曲の難易度[i]][k] = json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore[k].PlayerName;
+                        cスコア.譜面情報.nCrown[TJAPlayerPI.app.n確定された曲の難易度[i]] = json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown;
+                        for (int k = 0; k < json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore.Count; k++)
+                        {
+                            cスコア.譜面情報.nHiScore[TJAPlayerPI.app.n確定された曲の難易度[i]][k] = (int)json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore[k].Score;
+                            cスコア.譜面情報.strHiScorerName[TJAPlayerPI.app.n確定された曲の難易度[i]][k] = json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore[k].PlayerName;
+                        }
                     }
-                    TJAPlayerPI.app.r確定されたスコア = cスコア;
                     #endregion
 
                 }

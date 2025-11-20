@@ -1200,10 +1200,8 @@ internal class CStage選曲 : CStage
     }
     private void t曲を選択する()
     {
-        TJAPlayerPI.app.r確定された曲 = this.act曲リスト.r現在選択中の曲;
-        TJAPlayerPI.app.r確定されたスコア = this.act曲リスト.r現在選択中のスコア;
-        TJAPlayerPI.app.n確定された曲の難易度[0] = this.act曲リスト.n現在選択中の曲の難易度レベル[0];
-        TJAPlayerPI.app.n確定された曲の難易度[1] = this.act曲リスト.n現在選択中の曲の難易度レベル[1];
+        TJAPlayerPI.app.tSetSongInfo(this.act曲リスト.r現在選択中の曲, this.act曲リスト.n現在選択中の曲の難易度レベル[0], this.act曲リスト.n現在選択中の曲の難易度レベル[1]);
+
         if ((TJAPlayerPI.app.r確定された曲 is not null) && (TJAPlayerPI.app.r確定されたスコア is not null))
         {
             this.eFadeOut完了時の戻り値 = E戻り値.選曲した;
@@ -1214,10 +1212,8 @@ internal class CStage選曲 : CStage
     }
     public void t曲を選択する(int nCurrentLevel)
     {
-        TJAPlayerPI.app.r確定された曲 = this.act曲リスト.r現在選択中の曲;
-        TJAPlayerPI.app.r確定されたスコア = this.act曲リスト.r現在選択中のスコア;
-        TJAPlayerPI.app.n確定された曲の難易度[0] = nCurrentLevel;
-        TJAPlayerPI.app.n確定された曲の難易度[1] = nCurrentLevel;
+        TJAPlayerPI.app.tSetSongInfo(this.act曲リスト.r現在選択中の曲, nCurrentLevel, nCurrentLevel);
+
         if ((TJAPlayerPI.app.r確定された曲 is not null) && (TJAPlayerPI.app.r確定されたスコア is not null))
         {
             this.eFadeOut完了時の戻り値 = E戻り値.選曲した;
@@ -1229,10 +1225,8 @@ internal class CStage選曲 : CStage
     }
     public void t曲を選択する(int nCurrentLevel, int nCurrentLevel2)
     {
-        TJAPlayerPI.app.r確定された曲 = this.act曲リスト.r現在選択中の曲;
-        TJAPlayerPI.app.r確定されたスコア = this.act曲リスト.r現在選択中のスコア;
-        TJAPlayerPI.app.n確定された曲の難易度[0] = nCurrentLevel;
-        TJAPlayerPI.app.n確定された曲の難易度[1] = nCurrentLevel2;
+        TJAPlayerPI.app.tSetSongInfo(this.act曲リスト.r現在選択中の曲, nCurrentLevel, nCurrentLevel2);
+
         if ((TJAPlayerPI.app.r確定された曲 is not null) && (TJAPlayerPI.app.r確定されたスコア is not null))
         {
             this.eFadeOut完了時の戻り値 = E戻り値.選曲した;

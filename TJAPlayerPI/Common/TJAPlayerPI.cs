@@ -233,16 +233,12 @@ public class TJAPlayerPI : Game
         get;
         set;
     } = new int[4];
-    internal Cスコア r確定されたスコア
+    internal C曲リストノード? r確定された曲
     {
         get;
         set;
     }
-    internal C曲リストノード r確定された曲
-    {
-        get;
-        set;
-    }
+    internal Cスコア? r確定されたスコア => r確定された曲?.arスコア;
 
     public static string SkinName = "Unknown";
     public static string SkinVersion = "Unknown";
@@ -1249,6 +1245,13 @@ public class TJAPlayerPI : Game
             base.ClientSize = new Size(currentClientSize.Width, currentClientSize.Height);   // #23510 2010.11.3 yyagi: to resume window size after changing VSyncWait
         }
         #endregion
+    }
+
+    internal void tSetSongInfo(C曲リストノード song, int diffP1, int diffP2)
+    {
+        r確定された曲 = song;
+        n確定された曲の難易度[0] = diffP1;
+        n確定された曲の難易度[1] = diffP2;
     }
 
     // その他
