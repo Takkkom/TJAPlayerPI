@@ -1,0 +1,65 @@
+local tau = 2.0 * math.pi
+
+Runner = {}
+Runner.Variant = 1
+Runner.AnimSpeed = 1
+
+local config = Content:LoadJson("Config.json")
+local in_jump_height = config.in_jump_height
+local in_pos_length = config.in_pos_length
+local in_beat_length = config.in_beat_length
+local loop_beat_length = config.loop_beat_length
+local loop_wave = config.loop_wave
+local loop_ptn = math.floor(config.loop_ptn)
+
+local tx_in = Content:LoadTexture("In.png")
+local tx_loop = Content:LoadTexture("Loop.png")
+
+local config_x = config.x
+local config_y = config.y
+local config_loop_x = config.loop_x
+local config_loop_y = config.loop_y
+local config_width = config.width
+local config_height = config.height
+
+function runnerWave(value)
+    value = value * 0.5
+    value = value - math.floor(value)
+    if value < 0.5 then
+        return MathEx:InvLerp(0.0, 0.5, value)
+    else
+        return 1.0 - MathEx:InvLerp(0.5, 1.0, value)
+    end
+end
+
+function draw(value, ptn, player)
+    local lua_index = player + 1
+
+    local beat = value * 4
+
+    if beat < in_beat_length then
+        local x = config_x[lua_index]
+        local y = config_y[lua_index]
+        local in_value = MathEx:InvLerp(0.0, in_beat_length, beat)
+        x = x + (in_value * in_pos_length)
+        y = y + (math.sin(in_value * math.pi) * -in_jump_height)
+
+        local scale = MathEx:Lerp(0.7, 1.0, in_value)
+
+        tx_in.opacity = 1.0
+        tx_in:drawRect(x, y, 0, config_height * ptn, config_width, config_height)
+    else
+        local x = config_loop_x[lua_index]
+        local y = config_loop_y[lua_index]
+        local loop_value = beat - in_beat_length
+        x = x + (loop_value * loop_beat_length)
+
+        local wave = runnerWave(loop_value)
+        y = y + (wave * loop_wave)
+
+        local frame = math.floor(loop_value * loop_ptn * 0.5) % loop_ptn
+        tx_loop.opacity = 1.0
+        tx_loop:drawRect(x, y, config_width * frame, config_height * ptn, config_width, config_height)
+    end
+
+end

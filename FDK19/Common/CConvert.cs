@@ -38,7 +38,19 @@ public static class CConvert
         return val / length;
     }
 
+    public static double InverseLerp(double begin, double end, double value)
+    {
+        double val = value - begin;
+        double length = end - begin;
+        return val / length;
+    }
+
     public static float InverseLerpClamp(float begin, float end, float value)
+    {
+        return InverseLerp(begin, end, Math.Clamp(value, begin, end));
+    }
+
+    public static double InverseLerpClamp(double begin, double end, double value)
     {
         return InverseLerp(begin, end, Math.Clamp(value, begin, end));
     }

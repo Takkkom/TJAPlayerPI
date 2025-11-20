@@ -1,0 +1,12 @@
+{
+    "x": [ 260, 260 ],
+    "y": [ 116, 655 ],
+    "loop_x": [ 370, 370 ],
+    "loop_y": [ 112, 651 ],
+    "in_pos_length": 110,
+    "in_beat_length": 0.5,
+    "loop_beat_length": 250,
+    "loop_wave": -34,
+    "width": 120,
+    "height": 64
+}

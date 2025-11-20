@@ -1,4 +1,6 @@
 ﻿using FDK;
+using Lua;
+using TJAPlayerPI.Scripting;
 using Tomlyn;
 using static TJAPlayerPI.CSkin;
 using static TJAPlayerPI.CSkin.CSkinConfig;
@@ -39,10 +41,11 @@ internal class CActRunner : CActivity
                     }
                     else
                     {
+                        //stRunners[i].cRunnerType = cRunnerMiss;
                         stRunners[i].cRunnerType = cRunnerHit;
                     }
 
-                    stRunners[i].nType = random.Next(0, stRunners[i].cRunnerType?.Config.Variant ?? 0);
+                    stRunners[i].nType = random.Next(0, stRunners[i].cRunnerType?.nVariant ?? 0);
                     stRunners[i].fValue = 0;
                     //stRunners[i].nOldValue = 0;
                     //stRunners[i].nNowPtn = 0;
@@ -89,7 +92,7 @@ internal class CActRunner : CActivity
             if (stRunners[i].b使用中)
             {
                 //stRunners[i].nOldValue = stRunners[i].ct進行.n現在の値;
-                if (stRunners[i].fValue > 1.0f)
+                if (stRunners[i].fValue > 1.5f)
                 {
                     stRunners[i].b使用中 = false;
                 }
@@ -134,64 +137,71 @@ internal class CActRunner : CActivity
     private CRunnerType? cRunnerMiss;
     private CRunnerType? cRunnerHit;
 
-    private class CRunnerConfig
-    {
-        public int[] X { get; set; } = new int[2];
-        public int[] Y { get; set; } = new int[2];
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public int[] InJumpWave { get; set; } = new int[2];
-        public int Wave { get; set; }
-        public int InPtn { get; set; }
-        public int LoopPtn { get; set; }
-        public float InSpeed { get; set; }
-        public float LoopSpeed { get; set; }
-        public int Variant { get; set; }
-        public string Style { get; set; } = "";
-    }
     private class CRunnerType : IDisposable
     {
-        public CRunnerConfig Config { get; init; } = new CRunnerConfig();
+        /*
         public CTexture? txIn;
         public CTexture? txLoop;
+        */
+
+        private CLuaScript? LuaScript;
+        public readonly LuaFunction? lfDraw;
+        public readonly int nVariant;
+        public readonly float fAnimSpeed;
 
         public CRunnerType(string path)
         {
-            string? strToml = CJudgeTextEncoding.ReadTextFile(System.IO.Path.Combine(path, "Config.toml"));
-            if (string.IsNullOrEmpty(strToml))
+            LuaScript = new CLuaScript(System.IO.Path.Combine(path, "Script.lua"));
+            lfDraw = LuaScript?.GetFunction("draw");
+
+            if (LuaScript?.laLuaState?.Environment.TryGetValue("Runner", out LuaValue value) ?? false)
             {
-                return;
+                value.TryRead<LuaTable>(out LuaTable runner);
+                if (runner.TryGetValue("Variant", out LuaValue variant))
+                {
+                    variant.TryRead(out nVariant);
+                }
+                if (runner.TryGetValue("AnimSpeed", out LuaValue animSpeed))
+                {
+                    animSpeed.TryRead(out fAnimSpeed);
+                }
             }
 
-            TomlModelOptions tomlModelOptions = new()
-            {
-                ConvertPropertyName = (x) => x,
-                ConvertFieldName = (x) => x,
-            };
-            this.Config = Toml.ToModel<CRunnerConfig>(strToml, null, tomlModelOptions);
-
+            /*
             txIn = TJAPlayerPI.app.tCreateTexture(System.IO.Path.Combine(path, "In.png"));
             txLoop = TJAPlayerPI.app.tCreateTexture(System.IO.Path.Combine(path, "Loop.png"));
+            */
         }
 
         public void Dispose()
         {
+            TJAPlayerPI.t安全にDisposeする(ref this.LuaScript);
+            /*
             TJAPlayerPI.t安全にDisposeする(ref this.txIn);
             TJAPlayerPI.t安全にDisposeする(ref this.txLoop);
+            */
         }
 
         public void Draw(ref STRunner stRunner)
         {
-            float x = Config.X[stRunner.nPlayer];
-            float y = Config.Y[stRunner.nPlayer];
+            //float x = Config.X[stRunner.nPlayer];
+            //float y = Config.Y[stRunner.nPlayer];
 
             if (TJAPlayerPI.app.Timer.b停止していない)
             {
                 float delta = TJAPlayerPI.app.FPS.fDelta;
                 float speedMul = TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed / 20.0f;
-                float valueSpeed = (float)TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.dbBPM[0] * speedMul / (60.0f * 4);
+                float valueSpeed = (float)TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.dbBPM[stRunner.nPlayer] * speedMul / 240.0f * fAnimSpeed;
                 stRunner.fValue += valueSpeed * delta;
             }
+            if (LuaScript?.laLuaState is LuaState luaState)
+            {
+                float value = stRunner.fValue;
+                int ptn = stRunner.nType;
+                lfDraw?.InvokeAsync(luaState, new LuaValue[] { value, ptn, stRunner.nPlayer }).AsTask().GetAwaiter().GetResult();
+            }
+
+            /*
 
 
             float inTimeLength = 0.15f;
@@ -260,6 +270,7 @@ internal class CActRunner : CActivity
                     this.txLoop.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Center, x, y, rectangle);
                 }
             }
+            */
         }
     }
 
