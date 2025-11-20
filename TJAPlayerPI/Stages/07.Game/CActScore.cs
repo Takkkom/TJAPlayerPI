@@ -35,6 +35,8 @@ internal class CActScore : CActivity
         public int nPlayer;
     }
 
+    private Dan_Cert actDan;
+
     public long GetScore(int player)
     {
         return n現在表示中のスコア[player];
@@ -42,9 +44,10 @@ internal class CActScore : CActivity
 
     // コンストラクタ
 
-    public CActScore()
+    public CActScore(Dan_Cert actDan)
     {
         this.stScore = new STスコア[256];
+        this.actDan = actDan;
     }
 
 
@@ -214,7 +217,7 @@ internal class CActScore : CActivity
                     this.ctボーナス加算タイマ[i].t進行();
                     if (this.ctボーナス加算タイマ[i].b終了値に達した)
                     {
-                        TJAPlayerPI.stage演奏ドラム画面.actScore.BonusAdd(i);
+                        BonusAdd(i);
                         this.ctボーナス加算タイマ[i].t停止();
                     }
                 }
@@ -248,7 +251,7 @@ internal class CActScore : CActivity
                             {
                                 this.ct点数アニメタイマ[stScore[i].nPlayer] = new CCounter(0, 11, 12, TJAPlayerPI.app.Timer);
                             }
-                            TJAPlayerPI.stage演奏ドラム画面.actDan.Update();
+                            actDan.Update();
                         }
 
                         int xAdd = 0;

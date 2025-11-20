@@ -1,13 +1,15 @@
 ﻿using FDK;
-using TJAPlayerPI.Common;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
 
 class CActSelectChangeSE : CActivity
 {
-    public CActSelectChangeSE()
+    public CActSelectChangeSE(CActSelectDifficultySelect actDifficultySelect)
     {
+        this.actDifficultySelect = actDifficultySelect;
     }
+
     public override void On活性化()
     {
         if (this.b活性化してる)
@@ -29,7 +31,7 @@ class CActSelectChangeSE : CActivity
         this.NameMoving = new CTexture[2];
         this.SENameList = new CTexture[TJAPlayerPI.app.Skin.SECount];
 
-        using (var font = CFontHelper.tCreateFont(30))
+        using (var font = HFontHelper.tCreateFont(30))
             for (int i = 0; i < TJAPlayerPI.app.Skin.SECount; i++)
             {
                 string SEName = "Untitled";
@@ -126,12 +128,12 @@ class CActSelectChangeSE : CActivity
         }
         if (this.ePhase[1] == EChangeSEPhase.Active)
         {
-            if (TJAPlayerPI.app.Pad.bPressed(EPad.LRed2P) || TJAPlayerPI.app.Pad.bPressed(EPad.RRed2P) || (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Return) && TJAPlayerPI.stage選曲.actDifficultySelect.選択済み[0]))
+            if (TJAPlayerPI.app.Pad.bPressed(EPad.LRed2P) || TJAPlayerPI.app.Pad.bPressed(EPad.RRed2P) || (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Return) && actDifficultySelect.選択済み[0]))
             {
                 TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND決定音]?.t再生する();
                 this.tDeativateChangeSE(1);
             }
-            if ((TJAPlayerPI.app.Pad.bPressed(EPad.LBlue2P) || (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.LeftArrow) && TJAPlayerPI.stage選曲.actDifficultySelect.選択済み[0])) && TJAPlayerPI.app.Skin.SECount != 0)
+            if ((TJAPlayerPI.app.Pad.bPressed(EPad.LBlue2P) || (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.LeftArrow) && actDifficultySelect.選択済み[0])) && TJAPlayerPI.app.Skin.SECount != 0)
             {
                 TJAPlayerPI.app.Skin.NowSENum[1]--;
                 if (TJAPlayerPI.app.Skin.NowSENum[1] < 0)
@@ -140,7 +142,7 @@ class CActSelectChangeSE : CActivity
                 this.MoveStart(EMoving.LeftMoving, 1);
                 this.SENameChanger(1);
             }
-            if ((TJAPlayerPI.app.Pad.bPressed(EPad.RBlue2P) || (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.RightArrow) && TJAPlayerPI.stage選曲.actDifficultySelect.選択済み[0])) && TJAPlayerPI.app.Skin.SECount != 0)
+            if ((TJAPlayerPI.app.Pad.bPressed(EPad.RBlue2P) || (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.RightArrow) && actDifficultySelect.選択済み[0])) && TJAPlayerPI.app.Skin.SECount != 0)
             {
                 TJAPlayerPI.app.Skin.NowSENum[1]++;
                 if (TJAPlayerPI.app.Skin.NowSENum[1] > TJAPlayerPI.app.Skin.SECount - 1)
@@ -318,5 +320,6 @@ class CActSelectChangeSE : CActivity
     private CTexture?[] SEName;
     private CTexture?[] NameMoving;
     private CTexture?[] SENameList;
+    private CActSelectDifficultySelect actDifficultySelect;
     #endregion
 }

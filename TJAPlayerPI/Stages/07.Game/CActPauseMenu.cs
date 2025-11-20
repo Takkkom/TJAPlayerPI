@@ -52,7 +52,7 @@ internal class CActPauseMenu : CActSelectPopupMenu
     //{
     //	base.tDeativatePopupMenu();
     //}
-    public void t選択後()
+    public void t選択後(Action gameContinue, Action restart, Action endGame)
     {
         if (this.選択完了)
         {
@@ -63,23 +63,15 @@ internal class CActPauseMenu : CActSelectPopupMenu
                 switch (選択した行)
                 {
                     case (int)EOrder.Continue:
-                        TJAPlayerPI.stage演奏ドラム画面.bPAUSE = false;
-
-                        CSoundManager.rc演奏用タイマ.t再開();
-                        TJAPlayerPI.app.Timer.t再開();
-                        TJAPlayerPI.DTX[0].t全チップの再生再開();
-                        TJAPlayerPI.stage演奏ドラム画面.actAVI.tPauseControl();
+                        gameContinue?.Invoke();
                         break;
 
                     case (int)EOrder.Redoing:
-                        TJAPlayerPI.stage演奏ドラム画面.bPAUSE = false;
-                        TJAPlayerPI.stage演奏ドラム画面.t演奏やりなおし();
+                        restart?.Invoke();
                         break;
 
                     case (int)EOrder.Return:
-                        CSoundManager.rc演奏用タイマ.t再開();
-                        TJAPlayerPI.app.Timer.t再開();
-                        TJAPlayerPI.stage演奏ドラム画面.t演奏中止();
+                        endGame?.Invoke();
                         break;
                     default:
                         break;

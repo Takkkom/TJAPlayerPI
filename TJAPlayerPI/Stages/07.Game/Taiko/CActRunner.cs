@@ -13,8 +13,9 @@ internal class CActRunner : CActivity
     /// <summary>
     /// ランナー
     /// </summary>
-    public CActRunner()
+    public CActRunner(CActPlayInfo actPlayInfo)
     {
+        this.actPlayInfo = actPlayInfo;
     }
 
     public void Start(int Player, bool IsMiss, CDTX.CChip pChip)
@@ -112,7 +113,7 @@ internal class CActRunner : CActivity
                 //int x = (int)(StartPoint_X[stRunners[i].nPlayer] + stRunners[i].fX);
                 //int y = StartPoint_Y[stRunners[i].nPlayer];
                 //stRunners[i].txRunner?.t2D描画(TJAPlayerPI.app.Device, x, y, new Rectangle(stRunners[i].nNowPtn * Size[0], stRunners[i].nType * Size[1], Size[0], Size[1]));
-                stRunners[i].cRunnerType?.Draw(ref stRunners[i]);
+                stRunners[i].cRunnerType?.Draw(actPlayInfo, ref stRunners[i]);
             }
         }
         return base.On進行描画();
@@ -131,6 +132,7 @@ internal class CActRunner : CActivity
         public float fValue;
         public CRunnerType? cRunnerType;
     }
+    private CActPlayInfo actPlayInfo;
     private STRunner[] stRunners = new STRunner[128];
     Random random = new Random();
 
@@ -182,7 +184,7 @@ internal class CActRunner : CActivity
             */
         }
 
-        public void Draw(ref STRunner stRunner)
+        public void Draw(CActPlayInfo playInfo, ref STRunner stRunner)
         {
             //float x = Config.X[stRunner.nPlayer];
             //float y = Config.Y[stRunner.nPlayer];
@@ -191,7 +193,7 @@ internal class CActRunner : CActivity
             {
                 float delta = TJAPlayerPI.app.FPS.fDelta;
                 float speedMul = TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed / 20.0f;
-                float valueSpeed = (float)TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.dbBPM[stRunner.nPlayer] * speedMul / 240.0f * fAnimSpeed;
+                float valueSpeed = (float)playInfo.dbBPM[stRunner.nPlayer] * speedMul / 240.0f * fAnimSpeed;
                 stRunner.fValue += valueSpeed * delta;
             }
             if (LuaScript?.laLuaState is LuaState luaState)

@@ -33,7 +33,7 @@ internal class CAct演奏ゲージ共通 : CActivity
 
         for (int nPlayer = 0; nPlayer < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; nPlayer++)
         {
-            Difficulty difficulty = (Difficulty)TJAPlayerPI.stage選曲.n確定された曲の難易度[nPlayer];
+            Difficulty difficulty = (Difficulty)TJAPlayerPI.app.n確定された曲の難易度[nPlayer];
             bool isDan = difficulty == Difficulty.Dan;
             cGauge[nPlayer] = new CGauge(nPlayer, isDan);
 
@@ -299,7 +299,7 @@ internal class CAct演奏ゲージ共通 : CActivity
 
         for (int nPlayer = 0; nPlayer < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; nPlayer++)
         {
-            switch (TJAPlayerPI.DTX[nPlayer].LEVELtaiko[TJAPlayerPI.stage選曲.n確定された曲の難易度[nPlayer]])
+            switch (TJAPlayerPI.DTX[nPlayer].LEVELtaiko[TJAPlayerPI.app.n確定された曲の難易度[nPlayer]])
             {
                 case 1:
                 case 2:

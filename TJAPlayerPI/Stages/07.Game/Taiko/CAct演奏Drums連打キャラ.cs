@@ -22,7 +22,7 @@ internal class CAct演奏Drums連打キャラ : CActivity
                 RollCharas[i].Type = random.Next(0, TJAPlayerPI.app.Skin.Game_Effect_Roll_Ptn);
                 RollCharas[i].OldValue = 0;
                 RollCharas[i].Counter = new CCounter(0, 5000, 1, TJAPlayerPI.app.Timer);
-                if (TJAPlayerPI.stage演奏ドラム画面.bDoublePlay)
+                if (TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount != 1)
                 {
                     RollCharas[i].X = TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.Roll.StartPointMultiX[player][random.Next(0, TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.Roll.StartPointMultiX[player].Length)];
                     RollCharas[i].Y = TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.Roll.StartPointMultiY[player][random.Next(0, TJAPlayerPI.app.Skin.SkinConfig.Game.Effect.Roll.StartPointMultiY[player].Length)];

@@ -9,8 +9,10 @@ internal class CAct演奏Drums演奏終了演出 : CActivity
     /// _クリア失敗 →素材不足(確保はできる。切り出しと加工をしてないだけ。)
     /// _
     /// </summary>
-    public CAct演奏Drums演奏終了演出()
+    public CAct演奏Drums演奏終了演出(CStage演奏画面共通 stage演奏ドラム画面, CAct演奏ゲージ共通 actGauge)
     {
+        this.stage演奏ドラム画面 = stage演奏ドラム画面;
+        this.actGauge = actGauge;
     }
 
     public void Start()
@@ -19,10 +21,10 @@ internal class CAct演奏Drums演奏終了演出 : CActivity
         this.ct進行return用 = new CCounter(0, this.ct進行メイン.n終了値 - 100, 22, TJAPlayerPI.app.Timer);
         this.bリザルトボイス再生済み = false;
         // モードの決定。クリア失敗・フルコンボも事前に作っとく。
-        if (TJAPlayerPI.stage選曲.n確定された曲の難易度[0] == (int)Difficulty.Dan)
+        if (TJAPlayerPI.app.n確定された曲の難易度[0] == (int)Difficulty.Dan)
         {
             // 段位認定モード。
-            if (!TJAPlayerPI.stage演奏ドラム画面.actDan.GetFailedAllChallenges())
+            if (!stage演奏ドラム画面.actDan.GetFailedAllChallenges())
             {
                 // 段位認定モード、クリア成功
                 this.Mode[0] = EndMode.StageCleared;
@@ -42,17 +44,17 @@ internal class CAct演奏Drums演奏終了演出 : CActivity
             // 今の段階では魂ゲージ80%以上でチェック。
             for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
             {
-                if (!TJAPlayerPI.stage演奏ドラム画面.actGauge.cGauge[i].bIsCleared)
+                if (!actGauge.cGauge[i].bIsCleared)
                 {
                     this.Mode[i] = EndMode.StageFailed;
                     this.soundFailed?.t再生を開始する();
                 }
-                else if (TJAPlayerPI.stage演奏ドラム画面.nヒット数[i].Miss != 0 || TJAPlayerPI.stage演奏ドラム画面.nヒット数[i].Bad != 0)
+                else if (stage演奏ドラム画面.nヒット数[i].Miss != 0 || stage演奏ドラム画面.nヒット数[i].Bad != 0)
                 {
                     this.Mode[i] = EndMode.StageCleared;
                     this.soundClear?.t再生を開始する();
                 }
-                else if (TJAPlayerPI.stage演奏ドラム画面.nヒット数[i].Good != 0)
+                else if (stage演奏ドラム画面.nヒット数[i].Good != 0)
                 {
                     this.Mode[i] = EndMode.StageFullCombo;
                     this.soundFullCombo?.t再生を開始する();
@@ -100,7 +102,7 @@ internal class CAct演奏Drums演奏終了演出 : CActivity
         {
             base.b初めての進行描画 = false;
         }
-        if (this.ct進行メイン is not null && this.ct進行return用 is not null && (TJAPlayerPI.stage演奏ドラム画面.eフェーズID == CStage.Eフェーズ.演奏_演奏終了演出 || TJAPlayerPI.stage演奏ドラム画面.eフェーズID == CStage.Eフェーズ.演奏_STAGE_CLEAR_FadeOut))
+        if (this.ct進行メイン is not null && this.ct進行return用 is not null && (stage演奏ドラム画面.eフェーズID == CStage.Eフェーズ.演奏_演奏終了演出 || stage演奏ドラム画面.eフェーズID == CStage.Eフェーズ.演奏_STAGE_CLEAR_FadeOut))
         {
             this.ct進行メイン.t進行();
             this.ct進行return用.t進行();
@@ -973,6 +975,8 @@ internal class CAct演奏Drums演奏終了演出 : CActivity
 
     #region[ private ]
     //-----------------
+    private CStage演奏画面共通 stage演奏ドラム画面;
+    private CAct演奏ゲージ共通 actGauge;
     bool bリザルトボイス再生済み;
     CCounter ct進行メイン;
     CCounter ct進行return用;

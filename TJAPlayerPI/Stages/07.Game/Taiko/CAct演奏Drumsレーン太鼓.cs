@@ -10,8 +10,11 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
     ///
     ///
     /// </summary>
-    public CAct演奏Drumsレーン太鼓()
+    public CAct演奏Drumsレーン太鼓(CStage演奏画面共通 stage演奏ドラム画面, CAct演奏Drumsレーン actLane, TaikoLaneFlash actTaikoLaneFlash)
     {
+        this.stage演奏ドラム画面 = stage演奏ドラム画面;
+        this.actLane = actLane;
+        this.actTaikoLaneFlash = actTaikoLaneFlash;
     }
 
     public override void On活性化()
@@ -114,10 +117,10 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
         #region[ 分岐レイヤー ]
         for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
         {
-            if (TJAPlayerPI.stage演奏ドラム画面.bUseBranch[i] == true)
+            if (stage演奏ドラム画面.bUseBranch[i] == true)
             {
                 #region[ 動いていない ]
-                CTexture? base_tex = TJAPlayerPI.app.Tx.Lane_Base[TJAPlayerPI.stage演奏ドラム画面.n次回のコース[i]];
+                CTexture? base_tex = TJAPlayerPI.app.Tx.Lane_Base[stage演奏ドラム画面.n次回のコース[i]];
                 if (base_tex is not null)
                 {
                     base_tex.Opacity = 255;
@@ -205,7 +208,7 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
                 }
                 else if (TJAPlayerPI.app.ConfigToml.Game.BranchAnime == 0)
                 {
-                    TJAPlayerPI.stage演奏ドラム画面.actLane.On進行描画();
+                    actLane.On進行描画();
                 }
             }
         }
@@ -213,7 +216,7 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
         for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
         {
             #region[ ゴーゴータイムレーン背景レイヤー ]
-            if (TJAPlayerPI.app.Tx.Lane_Background_GoGo is not null && TJAPlayerPI.stage演奏ドラム画面.bIsGOGOTIME[i])
+            if (TJAPlayerPI.app.Tx.Lane_Background_GoGo is not null && stage演奏ドラム画面.bIsGOGOTIME[i])
             {
                 if (!this.ctゴーゴー.b停止中)
                 {
@@ -256,13 +259,13 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
 
         for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
         {
-            if (TJAPlayerPI.stage演奏ドラム画面.bUseBranch[i] == true)
+            if (stage演奏ドラム画面.bUseBranch[i] == true)
             {
                 if (TJAPlayerPI.app.ConfigToml.Game.BranchAnime == 0)
                 {
                     if (!this.stBranch[i].ct分岐アニメ進行.b進行中)
                     {
-                        CTexture? lane_tex = TJAPlayerPI.app.Tx.Lane_Text[TJAPlayerPI.stage演奏ドラム画面.n次回のコース[i]];
+                        CTexture? lane_tex = TJAPlayerPI.app.Tx.Lane_Text[stage演奏ドラム画面.n次回のコース[i]];
                         if (lane_tex is not null)
                         {
                             lane_tex.Opacity = 255;
@@ -445,7 +448,7 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
 
                     if (this.stBranch[i].nY座標 == 0)
                     {
-                        CTexture? lane_tex = TJAPlayerPI.app.Tx.Lane_Text[TJAPlayerPI.stage演奏ドラム画面.n次回のコース[i]];
+                        CTexture? lane_tex = TJAPlayerPI.app.Tx.Lane_Text[stage演奏ドラム画面.n次回のコース[i]];
                         if (lane_tex is not null)
                         {
                             lane_tex.Opacity = 255;
@@ -520,7 +523,7 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
             }
         }
 
-        TJAPlayerPI.stage演奏ドラム画面.actTaikoLaneFlash.On進行描画();
+        actTaikoLaneFlash.On進行描画();
 
 
         for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
@@ -537,13 +540,13 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
             if (this.n総移動時間[nPlayer] != -1)
             {
                 TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] = this.n移動開始X[nPlayer] + (int)((((int)nTime - this.n移動開始時刻[nPlayer]) / (double)(this.n総移動時間[nPlayer])) * this.n移動距離px[nPlayer]);
-                TJAPlayerPI.stage演奏ドラム画面.FlyingNotes.StartPointX[nPlayer] = this.n移動開始X[nPlayer] + (int)((((int)nTime - this.n移動開始時刻[nPlayer]) / (double)(this.n総移動時間[nPlayer])) * this.n移動距離px[nPlayer]);
+                stage演奏ドラム画面.FlyingNotes.StartPointX[nPlayer] = this.n移動開始X[nPlayer] + (int)((((int)nTime - this.n移動開始時刻[nPlayer]) / (double)(this.n総移動時間[nPlayer])) * this.n移動距離px[nPlayer]);
 
                 if (((int)nTime) > this.n移動開始時刻[nPlayer] + this.n総移動時間[nPlayer])
                 {
                     this.n総移動時間[nPlayer] = -1;
                     TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] = this.n移動目的場所X[nPlayer];
-                    TJAPlayerPI.stage演奏ドラム画面.FlyingNotes.StartPointX[nPlayer] = this.n移動目的場所X[nPlayer];
+                    stage演奏ドラム画面.FlyingNotes.StartPointX[nPlayer] = this.n移動目的場所X[nPlayer];
                 }
             }
         }
@@ -581,7 +584,7 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
         #region[ ゴーゴー炎 ]
         for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
         {
-            if (TJAPlayerPI.stage演奏ドラム画面.bIsGOGOTIME[i])
+            if (stage演奏ドラム画面.bIsGOGOTIME[i])
             {
                 this.ctゴーゴー炎.t進行Loop();
 
@@ -719,7 +722,7 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
     public void GOGOSTART()
     {
         this.ctゴーゴー = new CCounter(0, 17, 18, TJAPlayerPI.app.Timer);
-        if (TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount == 1 && TJAPlayerPI.stage選曲.n確定された曲の難易度[0] != (int)Difficulty.Dan) TJAPlayerPI.stage演奏ドラム画面.GoGoSplash.StartSplash();
+        if (TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount == 1 && TJAPlayerPI.app.n確定された曲の難易度[0] != (int)Difficulty.Dan) stage演奏ドラム画面.GoGoSplash.StartSplash();
     }
 
 
@@ -737,7 +740,7 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
         this.stBranch[nPlayer].nBefore = n現在;
         this.stBranch[nPlayer].nAfter = n次回;
 
-        TJAPlayerPI.stage演奏ドラム画面.actLane.t分岐レイヤー_コース変化(n現在, n次回, nPlayer);
+        actLane.t分岐レイヤー_コース変化(n現在, n次回, nPlayer);
     }
 
     public void t判定枠移動(int n移動開始時間, double db移動時間, int n移動px, int nPlayer)
@@ -746,7 +749,7 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
         {
             int position = TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] + n移動px;
             TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] = position;
-            TJAPlayerPI.stage演奏ドラム画面.FlyingNotes.StartPointX[nPlayer] = position;
+            stage演奏ドラム画面.FlyingNotes.StartPointX[nPlayer] = position;
         }
         else
         {
@@ -765,7 +768,7 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
         int judgeposition = TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - n移動px;
 
         TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] = judgeposition;
-        TJAPlayerPI.stage演奏ドラム画面.FlyingNotes.StartPointX[0] = judgeposition;
+        stage演奏ドラム画面.FlyingNotes.StartPointX[0] = judgeposition;
     }
 
     public void t判定枠Reset()
@@ -774,12 +777,15 @@ internal class CAct演奏Drumsレーン太鼓 : CActivity
         TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldY[0] = this.nDefaultJudgePos[0, 1];
         TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[1] = this.nDefaultJudgePos[1, 0];
         TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldY[1] = this.nDefaultJudgePos[1, 1];
-        TJAPlayerPI.stage演奏ドラム画面.FlyingNotes.StartPointX[0] = this.nDefaultJudgePos[0, 0];
-        TJAPlayerPI.stage演奏ドラム画面.FlyingNotes.StartPointX[1] = this.nDefaultJudgePos[1, 0];
+        stage演奏ドラム画面.FlyingNotes.StartPointX[0] = this.nDefaultJudgePos[0, 0];
+        stage演奏ドラム画面.FlyingNotes.StartPointX[1] = this.nDefaultJudgePos[1, 0];
     }
 
     #region[ private ]
     //-----------------
+    private CStage演奏画面共通 stage演奏ドラム画面;
+    private CAct演奏Drumsレーン actLane;
+    private TaikoLaneFlash actTaikoLaneFlash;
     //private CTexture txLane;
     //private CTexture txLaneB;
     //private CTexture tx枠線;

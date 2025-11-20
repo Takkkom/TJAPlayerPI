@@ -12,9 +12,10 @@ namespace TJAPlayerPI;
 //
 internal class CActChara : CActivity
 {
-    public CActChara()
+    public CActChara(CStage演奏画面共通 stage演奏ドラム画面, CAct演奏ゲージ共通 actGauge)
     {
-
+        this.stage演奏ドラム画面 = stage演奏ドラム画面;
+        this.actGauge = actGauge;
     }
 
     public override void On活性化()
@@ -130,13 +131,13 @@ internal class CActChara : CActivity
 
             if (this.b風船連打中[nPlayer] != true && this.bマイどんアクション中[nPlayer] != true && CharaAction_Balloon_Delay[nPlayer].b終了値に達した)
             {
-                if (!TJAPlayerPI.stage演奏ドラム画面.bIsGOGOTIME[nPlayer])
+                if (!stage演奏ドラム画面.bIsGOGOTIME[nPlayer])
                 {
-                    if (TJAPlayerPI.stage演奏ドラム画面.actGauge.cGauge[nPlayer].bIsMaxed && TJAPlayerPI.app.Skin.Game_Chara_Ptn_Clear[nPlayer] != 0)
+                    if (actGauge.cGauge[nPlayer].bIsMaxed && TJAPlayerPI.app.Skin.Game_Chara_Ptn_Clear[nPlayer] != 0)
                     {
                         TJAPlayerPI.app.Tx.Chara_Normal_Maxed[nPlayer][this.arクリアモーション番号[nPlayer][(int)this.ctChara_Clear[nPlayer].db現在の値]].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.X[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.Y[nPlayer]);
                     }
-                    else if (TJAPlayerPI.stage演奏ドラム画面.actGauge.cGauge[nPlayer].bIsCleared && TJAPlayerPI.app.Skin.Game_Chara_Ptn_Clear[nPlayer] != 0)
+                    else if (actGauge.cGauge[nPlayer].bIsCleared && TJAPlayerPI.app.Skin.Game_Chara_Ptn_Clear[nPlayer] != 0)
                     {
                         TJAPlayerPI.app.Tx.Chara_Normal_Cleared[nPlayer][this.arクリアモーション番号[nPlayer][(int)this.ctChara_Clear[nPlayer].db現在の値]].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.X[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.Y[nPlayer]);
                     }
@@ -149,7 +150,7 @@ internal class CActChara : CActivity
                 {
                     if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGo[nPlayer] != 0)
                     {
-                        if (TJAPlayerPI.stage演奏ドラム画面.actGauge.cGauge[nPlayer].bIsMaxed)
+                        if (actGauge.cGauge[nPlayer].bIsMaxed)
                         {
                             TJAPlayerPI.app.Tx.Chara_GoGoTime_Maxed[nPlayer][this.arゴーゴーモーション番号[nPlayer][(int)this.ctChara_GoGo[nPlayer].db現在の値]].t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.X[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.Y[nPlayer]);
                         }
@@ -254,7 +255,7 @@ internal class CActChara : CActivity
             }
             if (this.b風船連打中[nPlayer] != true && CharaAction_Balloon_Delay[nPlayer].b終了値に達した)
             {
-                TJAPlayerPI.stage演奏ドラム画面.PuchiChara[nPlayer].On進行描画(TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.X[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Y[nPlayer], TJAPlayerPI.stage演奏ドラム画面.bIsAlreadyMaxed[nPlayer], nPlayer);
+                stage演奏ドラム画面.PuchiChara[nPlayer].On進行描画(TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.X[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.Y[nPlayer], stage演奏ドラム画面.bIsAlreadyMaxed[nPlayer], nPlayer);
             }
         }
         return base.On進行描画();
@@ -292,9 +293,9 @@ internal class CActChara : CActivity
                     if (TJAPlayerPI.app.Tx.Chara_Balloon_Broke[nPlayer][CharaAction_Balloon_Broke[nPlayer].n現在の値] is not null)
                     {
                         TJAPlayerPI.app.Tx.Chara_Balloon_Broke[nPlayer][CharaAction_Balloon_Broke[nPlayer].n現在の値].Opacity = nowOpacity;
-                        TJAPlayerPI.app.Tx.Chara_Balloon_Broke[nPlayer][CharaAction_Balloon_Broke[nPlayer].n現在の値].t2D描画(TJAPlayerPI.app.Device, (TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - TJAPlayerPI.stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[nPlayer, 0]) + TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BalloonX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BalloonY[nPlayer]);
+                        TJAPlayerPI.app.Tx.Chara_Balloon_Broke[nPlayer][CharaAction_Balloon_Broke[nPlayer].n現在の値].t2D描画(TJAPlayerPI.app.Device, (TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[nPlayer, 0]) + TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BalloonX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BalloonY[nPlayer]);
                     }
-                    TJAPlayerPI.stage演奏ドラム画面.PuchiChara[nPlayer].On進行描画((TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - TJAPlayerPI.stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[nPlayer, 0]) + TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.BalloonX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.BalloonY[nPlayer], false, nPlayer, nowOpacity, true);
+                    stage演奏ドラム画面.PuchiChara[nPlayer].On進行描画((TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[nPlayer, 0]) + TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.BalloonX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.BalloonY[nPlayer], false, nPlayer, nowOpacity, true);
                     if (CharaAction_Balloon_Broke[nPlayer].b終了値に達した)
                     {
                         CharaAction_Balloon_Broke[nPlayer].t停止();
@@ -311,9 +312,9 @@ internal class CActChara : CActivity
                     if (TJAPlayerPI.app.Tx.Chara_Balloon_Miss[nPlayer][CharaAction_Balloon_Miss[nPlayer].n現在の値] is not null)
                     {
                         TJAPlayerPI.app.Tx.Chara_Balloon_Miss[nPlayer][CharaAction_Balloon_Miss[nPlayer].n現在の値].Opacity = nowOpacity;
-                        TJAPlayerPI.app.Tx.Chara_Balloon_Miss[nPlayer][CharaAction_Balloon_Miss[nPlayer].n現在の値].t2D描画(TJAPlayerPI.app.Device, (TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - TJAPlayerPI.stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[nPlayer, 0]) + TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BalloonX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BalloonY[nPlayer]);
+                        TJAPlayerPI.app.Tx.Chara_Balloon_Miss[nPlayer][CharaAction_Balloon_Miss[nPlayer].n現在の値].t2D描画(TJAPlayerPI.app.Device, (TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[nPlayer, 0]) + TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BalloonX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BalloonY[nPlayer]);
                     }
-                    TJAPlayerPI.stage演奏ドラム画面.PuchiChara[nPlayer].On進行描画((TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - TJAPlayerPI.stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[nPlayer, 0]) + TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.BalloonX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.BalloonY[nPlayer], false, nPlayer, nowOpacity, true);
+                    stage演奏ドラム画面.PuchiChara[nPlayer].On進行描画((TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[nPlayer, 0]) + TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.BalloonX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.BalloonY[nPlayer], false, nPlayer, nowOpacity, true);
                     if (CharaAction_Balloon_Miss[nPlayer].b終了値に達した)
                     {
                         CharaAction_Balloon_Miss[nPlayer].t停止();
@@ -323,8 +324,8 @@ internal class CActChara : CActivity
                 }
                 else if (CharaAction_Balloon_Breaking[nPlayer]?.b進行中 == true && TJAPlayerPI.app.Skin.Game_Chara_Ptn_Balloon_Breaking[nPlayer] != 0)
                 {
-                    TJAPlayerPI.app.Tx.Chara_Balloon_Breaking[nPlayer][CharaAction_Balloon_Breaking[nPlayer].n現在の値]?.t2D描画(TJAPlayerPI.app.Device, (TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - TJAPlayerPI.stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[nPlayer, 0]) + TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BalloonX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BalloonY[nPlayer]);
-                    TJAPlayerPI.stage演奏ドラム画面.PuchiChara[nPlayer].On進行描画((TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - TJAPlayerPI.stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[nPlayer, 0]) + TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.BalloonX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.BalloonY[nPlayer], false, nPlayer, 255, true);
+                    TJAPlayerPI.app.Tx.Chara_Balloon_Breaking[nPlayer][CharaAction_Balloon_Breaking[nPlayer].n現在の値]?.t2D描画(TJAPlayerPI.app.Device, (TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[nPlayer, 0]) + TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BalloonX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BalloonY[nPlayer]);
+                    stage演奏ドラム画面.PuchiChara[nPlayer].On進行描画((TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[nPlayer, 0]) + TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.BalloonX[nPlayer], TJAPlayerPI.app.Skin.SkinConfig.Game.PuchiChara.BalloonY[nPlayer], false, nPlayer, 255, true);
                 }
             }
         }
@@ -353,6 +354,8 @@ internal class CActChara : CActivity
         CharaAction_Balloon_Miss[nPlayer].n現在の値 = 0;
         //CharaAction_Balloon_Delay[nPlayer].n現在の値 = 0;
     }
+    private CStage演奏画面共通 stage演奏ドラム画面;
+    private CAct演奏ゲージ共通 actGauge;
 
     public int[][] arモーション番号;
     public int[][] arゴーゴーモーション番号;

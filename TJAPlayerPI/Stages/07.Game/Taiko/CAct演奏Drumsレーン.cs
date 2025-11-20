@@ -4,8 +4,9 @@ namespace TJAPlayerPI;
 
 internal class CAct演奏Drumsレーン : CActivity
 {
-    public CAct演奏Drumsレーン()
+    public CAct演奏Drumsレーン(CStage演奏画面共通 stage演奏ドラム画面)
     {
+        this.stage演奏ドラム画面 = stage演奏ドラム画面;
     }
 
     public override void On活性化()
@@ -51,7 +52,7 @@ internal class CAct演奏Drumsレーン : CActivity
         //アニメーション中の分岐レイヤー(背景)の描画を行う。
         for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
         {
-            if (TJAPlayerPI.stage演奏ドラム画面.bUseBranch[i] == true)
+            if (stage演奏ドラム画面.bUseBranch[i] == true)
             {
                 if (this.ct分岐アニメ進行[i].b進行中)
                 {
@@ -154,6 +155,7 @@ internal class CAct演奏Drumsレーン : CActivity
 
     #region[ private ]
     //-----------------
+    private CStage演奏画面共通 stage演奏ドラム画面;
     public bool[] bState = new bool[4];
     public CCounter[] ct分岐アニメ進行 = new CCounter[4];
     private int[] nBefore;

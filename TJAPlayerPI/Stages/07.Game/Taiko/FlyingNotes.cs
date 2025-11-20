@@ -7,8 +7,10 @@ internal class FlyingNotes : CActivity
 {
     // コンストラクタ
 
-    public FlyingNotes()
+    public FlyingNotes(CActChipEffects actChipEffects, FireWorks fireWorks)
     {
+        this.actChipEffects = actChipEffects;
+        this.FireWorks = fireWorks;
     }
 
 
@@ -86,7 +88,7 @@ internal class FlyingNotes : CActivity
                     {
                         Flying[i].Counter.t停止();
                         Flying[i].IsUsing = false;
-                        TJAPlayerPI.stage演奏ドラム画面.actChipEffects.Start(Flying[i].Player, Flying[i].Lane);
+                        actChipEffects.Start(Flying[i].Player, Flying[i].Lane);
                     }
                     for (int n = Flying[i].OldValue; n < Flying[i].Counter.n現在の値; n++)
                     {
@@ -105,7 +107,7 @@ internal class FlyingNotes : CActivity
                         {
                             if (Flying[i].Lane == 3 || Flying[i].Lane == 4)
                             {
-                                TJAPlayerPI.stage演奏ドラム画面.FireWorks.Start(Flying[i].Lane, Flying[i].Player, Flying[i].X, Flying[i].Y);
+                                FireWorks.Start(Flying[i].Lane, Flying[i].Player, Flying[i].X, Flying[i].Y);
                             }
                         }
 
@@ -170,6 +172,9 @@ internal class FlyingNotes : CActivity
         public int EndPointX;
         public int EndPointY;
     }
+
+    private CActChipEffects actChipEffects;
+    private FireWorks FireWorks;
 
     private Status[] Flying = new Status[128];
 

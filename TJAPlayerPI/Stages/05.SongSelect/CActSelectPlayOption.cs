@@ -1,11 +1,17 @@
 ﻿using FDK;
-using TJAPlayerPI.Common;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
 
 internal class CActSelectPlayOption : CActivity
 {
     // コンストラクタ
+
+    public CActSelectPlayOption(CActSelectDifficultySelect actDifficultySelect, CActSelectChangeSE actChangeSE)
+    {
+        this.actDifficultySelect = actDifficultySelect;
+        this.actChangeSE = actChangeSE;
+    }
 
     private List<CItemBase> MakeListCItemBase(int nPlayer)
     {
@@ -121,7 +127,7 @@ internal class CActSelectPlayOption : CActivity
                     if (TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount == 1)
                     {
                         this.tDeativatePopupMenu(1);
-                        TJAPlayerPI.stage選曲.actChangeSE.tDeativateChangeSE(1);
+                        actChangeSE.tDeativateChangeSE(1);
                     }
                     break;
             }
@@ -190,7 +196,7 @@ internal class CActSelectPlayOption : CActivity
 
     public override void On活性化()
     {
-        this.Font = CFontHelper.tCreateFont(20);
+        this.Font = HFontHelper.tCreateFont(20);
         lci = new List<CItemBase>[2];
         for (int nPlayer = 0; nPlayer < 2; nPlayer++)
         {
@@ -298,33 +304,33 @@ internal class CActSelectPlayOption : CActivity
                 if (NowRow[1] >= lci[1].Count)
                     tDeativatePopupMenu(1);
             }
-            if (TJAPlayerPI.app.Pad.bPressed(EPad.LBlue2P) || (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.LeftArrow) && TJAPlayerPI.stage選曲.actDifficultySelect.選択済み[0]))
+            if (TJAPlayerPI.app.Pad.bPressed(EPad.LBlue2P) || (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.LeftArrow) && actDifficultySelect.選択済み[0]))
             {
                 TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音]?.t再生する();
                 lci[1][NowRow[1]].tMoveItemValueToForward();
                 SaveValue(1);
             }
-            if (TJAPlayerPI.app.Pad.bPressed(EPad.RBlue2P) || (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.RightArrow) && TJAPlayerPI.stage選曲.actDifficultySelect.選択済み[0]))
+            if (TJAPlayerPI.app.Pad.bPressed(EPad.RBlue2P) || (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.RightArrow) && actDifficultySelect.選択済み[0]))
             {
                 TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音]?.t再生する();
                 lci[1][NowRow[1]].tMoveItemValueToNext();
                 SaveValue(1);
             }
-            if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.UpArrow) && TJAPlayerPI.stage選曲.actDifficultySelect.選択済み[0])
+            if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.UpArrow) && actDifficultySelect.選択済み[0])
             {
                 TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音]?.t再生する();
                 NowRow[1]--;
                 if (NowRow[1] < 0)
                     NowRow[1] = lci[1].Count - 1;
             }
-            if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.DownArrow) && TJAPlayerPI.stage選曲.actDifficultySelect.選択済み[0])
+            if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.DownArrow) && actDifficultySelect.選択済み[0])
             {
                 TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音]?.t再生する();
                 NowRow[1]++;
                 if (NowRow[1] >= lci[1].Count)
                     NowRow[1] = 0;
             }
-            if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Return) && TJAPlayerPI.stage選曲.actDifficultySelect.選択済み[0])
+            if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Return) && actDifficultySelect.選択済み[0])
             {
                 TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND決定音]?.t再生する();
                 tDeativatePopupMenu(1);
@@ -436,6 +442,8 @@ internal class CActSelectPlayOption : CActivity
     private List<ItemTextureList>[] NameTexture = new List<ItemTextureList>[2];
     private List<CItemBase>[] lci;
     private CCachedFontRenderer Font;
+    private CActSelectDifficultySelect actDifficultySelect;
+    private CActSelectChangeSE actChangeSE;
 
     private enum EChangeSEPhase
     {

@@ -62,7 +62,35 @@ internal class CStageStartUp : CStage
                 this.list進行文字列.Add("");
 
                 es = new CEnumSongs();
-                es.StartEnumFromCache();										// 曲リスト取得(別スレッドで実行される)
+                es.StartEnumFromCache(() =>
+                {
+                    eフェーズID = CStage.Eフェーズ.起動0_システムサウンドを構築;
+                }, () =>
+                {
+                    lock (list進行文字列)
+                    {
+                        list進行文字列.Add("SYSTEM SOUND...OK");
+                    }
+                }, () =>
+                {
+                    eフェーズID = CStage.Eフェーズ.起動00_songlistから曲リストを作成する;
+                },
+                () =>
+                {
+                    lock (list進行文字列)
+                    {
+                        list進行文字列.Add("SONG LIST...OK");
+                    }
+                }, () =>
+                {
+                    lock (list進行文字列)
+                    {
+                        list進行文字列.Add("SONG LIST...SKIPPED");
+                    }
+                }, () =>
+                {
+                    eフェーズID = CStage.Eフェーズ.起動7_完了;
+                });										// 曲リスト取得(別スレッドで実行される)
                 base.b初めての進行描画 = false;
                 return 0;
             }

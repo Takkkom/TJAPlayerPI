@@ -130,55 +130,56 @@ public class TJAPlayerPI : Game
         private set;
     }
 
-    internal static CStageStartUp stageStartUp
+    private static CStageStartUp stageStartUp
     {
         get;
-        private set;
+        set;
     }
-    internal static CStageTitle stageTitle
+    private static CStageTitle stageTitle
     {
         get;
-        private set;
+        set;
     }
-    internal static CStageConfig stageConfig
+    private static CStageConfig stageConfig
     {
         get;
-        private set;
+        set;
     }
-    internal static CStage選曲 stage選曲
+    [Obsolete]
+    private static CStage選曲 stage選曲
     {
         get;
-        private set;
+        set;
     }
-    internal static CStageSongLoading stageSongLoading
+    private static CStageSongLoading stageSongLoading
     {
         get;
-        private set;
+        set;
     }
-    internal static CStage演奏画面共通 stage演奏ドラム画面
+    private static CStage演奏画面共通 stage演奏ドラム画面
     {
         get;
-        private set;
+        set;
     }
-    internal static CStageResult stageResult
+    private static CStageResult stageResult
     {
         get;
-        private set;
+        set;
     }
-    internal static CStageChangeSkin stageChangeSkin
+    private static CStageChangeSkin stageChangeSkin
     {
         get;
-        private set;
+        set;
     }
-    internal static CStageEnding stageEnding
+    private static CStageEnding stageEnding
     {
         get;
-        private set;
+        set;
     }
-    internal static CStageMaintenance stageMaintenance
+    private static CStageMaintenance stageMaintenance
     {
         get;
-        private set;
+        set;
     }
     internal static CNamePlate actNamePlate
     {
@@ -222,6 +223,22 @@ public class TJAPlayerPI : Game
         set;
     }
     private static Size currentClientSize       // #23510 2010.10.27 add yyagi to keep current window size
+    {
+        get;
+        set;
+    }
+
+    internal int[] n確定された曲の難易度
+    {
+        get;
+        set;
+    } = new int[4];
+    internal Cスコア r確定されたスコア
+    {
+        get;
+        set;
+    }
+    internal C曲リストノード r確定された曲
     {
         get;
         set;
@@ -978,6 +995,7 @@ public class TJAPlayerPI : Game
                         Trace.TraceInformation("■ 演奏（ドラム画面）");
                         r直前のステージ = r現在のステージ;
                         r現在のステージ = stage演奏ドラム画面;
+                        r現在のステージ.On活性化();
 
                         this.tガベージコレクションを実行する();
                     }
@@ -992,7 +1010,7 @@ public class TJAPlayerPI : Game
                     {
                         case (int)E演奏画面の戻り値.再読込_再演奏:
                             #region [ DTXファイルを再読み込みして、再演奏 ]
-                            DTX[0].t全チップの再生停止();
+                            //DTX[0].t全チップの再生停止();
                             DTX[0].On非活性化();
                             r現在のステージ.On非活性化();
                             stageSongLoading.On活性化();
@@ -1011,7 +1029,7 @@ public class TJAPlayerPI : Game
                             this.tUpdateScoreJson();
 
 
-                            DTX[0].t全チップの再生停止();
+                            //DTX[0].t全チップの再生停止();
                             DTX[0].On非活性化();
                             r現在のステージ.On非活性化();
 
@@ -1032,7 +1050,7 @@ public class TJAPlayerPI : Game
                             //-----------------------------
                             this.tUpdateScoreJson();
 
-                            DTX[0].t全チップの再生停止();
+                            //DTX[0].t全チップの再生停止();
                             DTX[0].On非活性化();
                             r現在のステージ.On非活性化();
 
@@ -1080,7 +1098,7 @@ public class TJAPlayerPI : Game
                     if (this.n進行描画の戻り値 != 0)
                     {
                         //DTX.t全チップの再生一時停止();
-                        DTX[0].t全チップの再生停止とミキサーからの削除();
+                        //DTX[0].t全チップの再生停止とミキサーからの削除();
                         DTX[0].On非活性化();
                         r現在のステージ.On非活性化();
                         this.tガベージコレクションを実行する();
@@ -1698,7 +1716,7 @@ public class TJAPlayerPI : Game
         json.BGMAdjust = DTX[0].nBGMAdjust;
 
         if (TJAPlayerPI.app.ConfigToml.PlayOption.AutoPlay[0] == false)
-            json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[0]].PlayCount++;
+            json.Records[n確定された曲の難易度[0]].PlayCount++;
 
         json.Save(strFilename);
     }

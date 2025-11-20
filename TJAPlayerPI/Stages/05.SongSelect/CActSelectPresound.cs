@@ -9,16 +9,15 @@ internal class CActSelectPresound : CActivity
     public CActSelectPresound()
     {
     }
-    public void t選択曲が変更された()
+    public void t選択曲が変更された(Cスコア score)
     {
-        Cスコア cスコア = TJAPlayerPI.stage選曲.act曲リスト.r現在選択中のスコア;
-
+        r現在選択中のスコア = score;
         this.tサウンドの停止MT();
-        if ((cスコア is not null) && ((!(cスコア.FileInfo.DirAbsolutePath + cスコア.譜面情報.strBGMファイル名).Equals(this.str現在のファイル名) || (this.sound is null)) || !this.sound.bPlaying))
+        if ((r現在選択中のスコア is not null) && ((!(r現在選択中のスコア.FileInfo.DirAbsolutePath + r現在選択中のスコア.譜面情報.strBGMファイル名).Equals(this.str現在のファイル名) || (this.sound is null)) || !this.sound.bPlaying))
         {
             this.tBGMFadeIn開始();
             this.long再生位置 = -1;
-            if ((cスコア.譜面情報.strBGMファイル名 is not null) && (cスコア.譜面情報.strBGMファイル名.Length > 0))
+            if ((r現在選択中のスコア.譜面情報.strBGMファイル名 is not null) && (r現在選択中のスコア.譜面情報.strBGMファイル名.Length > 0))
             {
                 this.ct再生待ちウェイト = new CCounter(0, 1, 500, TJAPlayerPI.app.Timer);
             }
@@ -81,17 +80,16 @@ internal class CActSelectPresound : CActivity
 
             if (this.sound is not null && CSoundManager.rc演奏用タイマ is not null)
             {
-                Cスコア cスコア = TJAPlayerPI.stage選曲.act曲リスト.r現在選択中のスコア;
                 if (long再生位置 == -1)
                 {
                     this.long再生開始時のシステム時刻 = CSoundManager.rc演奏用タイマ.nシステム時刻ms;
-                    this.long再生位置 = cスコア.譜面情報.nデモBGMオフセット;
-                    this.sound.t再生位置を変更する(cスコア.譜面情報.nデモBGMオフセット);
+                    this.long再生位置 = r現在選択中のスコア.譜面情報.nデモBGMオフセット;
+                    this.sound.t再生位置を変更する(r現在選択中のスコア.譜面情報.nデモBGMオフセット);
                 }
                 else
                 {
                     this.long再生位置 = CSoundManager.rc演奏用タイマ.nシステム時刻ms - this.long再生開始時のシステム時刻;
-                    if (this.long再生位置 >= this.sound.nDurationms - cスコア.譜面情報.nデモBGMオフセット) //2020.04.18 Mr-Ojii #DEMOSTARTから何度も再生するために追加
+                    if (this.long再生位置 >= this.sound.nDurationms - r現在選択中のスコア.譜面情報.nデモBGMオフセット) //2020.04.18 Mr-Ojii #DEMOSTARTから何度も再生するために追加
                         this.long再生位置 = -1;
                 }
             }
@@ -112,6 +110,7 @@ internal class CActSelectPresound : CActivity
     private long long再生開始時のシステム時刻;
     private CSound? sound;
     private string? str現在のファイル名;
+    private Cスコア? r現在選択中のスコア;
 
     private void tBGMFadeOut開始()
     {
@@ -133,10 +132,13 @@ internal class CActSelectPresound : CActivity
     }
     private async void tプレビューサウンドの作成()
     {
-        Cスコア cスコア = TJAPlayerPI.stage選曲.act曲リスト.r現在選択中のスコア;
-        if ((cスコア is not null) && !string.IsNullOrEmpty(cスコア.譜面情報.strBGMファイル名) && TJAPlayerPI.stage選曲.eフェーズID != CStage.Eフェーズ.選曲_NowLoading画面へのFadeOut)
+        if ((r現在選択中のスコア is not null) && !string.IsNullOrEmpty(r現在選択中のスコア.譜面情報.strBGMファイル名)
+            /*
+            && TJAPlayerPI.stage選曲.eフェーズID != CStage.Eフェーズ.選曲_NowLoading画面へのFadeOut
+            */
+            )
         {
-            string strPreviewFilename = cスコア.FileInfo.DirAbsolutePath + cスコア.譜面情報.strBGMファイル名;
+            string strPreviewFilename = r現在選択中のスコア.FileInfo.DirAbsolutePath + r現在選択中のスコア.譜面情報.strBGMファイル名;
             try
             {
                 // 2020.06.15 Mr-Ojii TJAP2fPCより拝借-----------
@@ -157,18 +159,18 @@ internal class CActSelectPresound : CActivity
                 //                           Initialization, song enumeration, and/or interactions may have
                 //                           caused background scanning and the metadata may now be available.
                 //                           If is not yet available then we wish to queue scanning.
-                var loudnessMetadata = cスコア.譜面情報.SongLoudnessMetadata
+                var loudnessMetadata = r現在選択中のスコア.譜面情報.SongLoudnessMetadata
                                         ?? LoudnessMetadataScanner.LoadForAudioPath(strPreviewFilename);
                 if (this.sound is not null)
-                    TJAPlayerPI.SongGainController.Set(cスコア.譜面情報.SongVol, loudnessMetadata, this.sound);
+                    TJAPlayerPI.SongGainController.Set(r現在選択中のスコア.譜面情報.SongVol, loudnessMetadata, this.sound);
 
                 this.long再生位置 = -1;
                 this.sound?.t再生を開始する(true);
                 if (this.long再生位置 == -1 && CSoundManager.rc演奏用タイマ is not null)
                 {
                     this.long再生開始時のシステム時刻 = CSoundManager.rc演奏用タイマ.nシステム時刻ms;
-                    this.long再生位置 = cスコア.譜面情報.nデモBGMオフセット;
-                    this.sound?.t再生位置を変更する(cスコア.譜面情報.nデモBGMオフセット);
+                    this.long再生位置 = r現在選択中のスコア.譜面情報.nデモBGMオフセット;
+                    this.sound?.t再生位置を変更する(r現在選択中のスコア.譜面情報.nデモBGMオフセット);
                     this.long再生位置 = CSoundManager.rc演奏用タイマ.nシステム時刻ms - this.long再生開始時のシステム時刻;
                 }
 
@@ -196,7 +198,7 @@ internal class CActSelectPresound : CActivity
             if (this.ct再生待ちウェイト.b終了値に達した)
             {
                 this.ct再生待ちウェイト.t停止();
-                if (!TJAPlayerPI.stage選曲.act曲リスト.bスクロール中)
+                //if (!TJAPlayerPI.stage選曲.act曲リスト.bスクロール中)
                 {
                     this.tプレビューサウンドの作成();
                 }

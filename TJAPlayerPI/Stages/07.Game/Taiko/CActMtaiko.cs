@@ -169,9 +169,9 @@ internal class CActMtaiko : CActivity
 
         for (int nPlayer = 0; nPlayer < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; nPlayer++)
         {
-            if (TJAPlayerPI.app.Tx.Couse_Symbol[TJAPlayerPI.stage選曲.n確定された曲の難易度[nPlayer]] is not null)
+            if (TJAPlayerPI.app.Tx.Couse_Symbol[TJAPlayerPI.app.n確定された曲の難易度[nPlayer]] is not null)
             {
-                TJAPlayerPI.app.Tx.Couse_Symbol[TJAPlayerPI.stage選曲.n確定された曲の難易度[nPlayer]].t2D描画(TJAPlayerPI.app.Device,
+                TJAPlayerPI.app.Tx.Couse_Symbol[TJAPlayerPI.app.n確定された曲の難易度[nPlayer]].t2D描画(TJAPlayerPI.app.Device,
                     TJAPlayerPI.app.Skin.SkinConfig.Game.CourseSymbol.X[nPlayer],
                     TJAPlayerPI.app.Skin.SkinConfig.Game.CourseSymbol.Y[nPlayer]
                     );

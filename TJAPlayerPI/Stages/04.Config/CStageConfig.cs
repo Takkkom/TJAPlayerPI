@@ -1,5 +1,5 @@
 ﻿using FDK;
-using TJAPlayerPI.Common;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
 
@@ -44,7 +44,7 @@ internal class CStageConfig : CStage
         {
             this.n現在のメニュー番号 = 0;                                                    //
 
-            this.privatefont = CFontHelper.tCreateFont(14, CFontRenderer.FontStyle.Bold);
+            this.privatefont = HFontHelper.tCreateFont(14, CFontRenderer.FontStyle.Bold);
 
             for (int i = 0; i < 4; i++)													//
             {																				//
@@ -55,7 +55,7 @@ internal class CStageConfig : CStage
 
             string[] strMenuItem = { "System", "Drums", "Exit" };
             txMenuItemLeft = new CTexture?[strMenuItem.Length, 2];
-            using (var prvFont = CFontHelper.tCreateFont(20))
+            using (var prvFont = HFontHelper.tCreateFont(20))
             {
                 for (int i = 0; i < strMenuItem.Length; i++)
                 {
@@ -211,7 +211,7 @@ internal class CStageConfig : CStage
         switch (this.eItemPanelモード)
         {
             case EItemPanelモード.パッド一覧:
-                this.actList.t進行描画(!this.bメニューにフォーカス中);
+                this.actList.t進行描画(t項目変更通知, !this.bメニューにフォーカス中);
                 break;
 
             case EItemPanelモード.KeyCode一覧:
@@ -262,7 +262,7 @@ internal class CStageConfig : CStage
                 {
                     if (this.eItemPanelモード == EItemPanelモード.KeyCode一覧)
                     {
-                        TJAPlayerPI.stageConfig.tアサイン完了通知();
+                        tアサイン完了通知();
                         return 0;
                     }
                     if (!this.actList.bIsKeyAssignSelected && !this.actList.bIsFocusingParameter)	// #24525 2011.3.15 yyagi, #32059 2013.9.17 yyagi
@@ -298,7 +298,7 @@ internal class CStageConfig : CStage
                     {
                         case EItemPanelモード.パッド一覧:
                             bool bIsKeyAssignSelectedBeforeHitEnter = this.actList.bIsKeyAssignSelected;	// #24525 2011.3.15 yyagi
-                            this.actList.tPushedEnter();
+                            this.actList.tPushedEnter(tパッド選択通知);
                             if (this.actList.b現在選択されている項目はReturnToMenuである)
                             {
                                 this.t説明文パネルに現在選択されているメニューの説明を描画する();
@@ -310,7 +310,7 @@ internal class CStageConfig : CStage
                             break;
 
                         case EItemPanelモード.KeyCode一覧:
-                            this.actKeyAssign.tPushedEnter();
+                            this.actKeyAssign.tPushedEnter(tアサイン完了通知);
                             break;
                     }
                 }

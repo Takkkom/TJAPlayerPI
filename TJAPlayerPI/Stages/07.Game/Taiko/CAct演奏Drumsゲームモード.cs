@@ -8,8 +8,9 @@ internal class CAct演奏Drumsゲームモード : CActivity
     /// 現時点では「完走!叩ききりまショー!」のみ。
     ///
     /// </summary>
-    public CAct演奏Drumsゲームモード()
+    public CAct演奏Drumsゲームモード(CStage演奏画面共通 stage演奏ドラム画面)
     {
+        this.stage演奏ドラム画面 = stage演奏ドラム画面;
     }
 
     //叩ききりまショー!
@@ -25,6 +26,8 @@ internal class CAct演奏Drumsゲームモード : CActivity
     //_ズレ時間
     //_最大コンボ数
     //その他諸々
+
+    private CStage演奏画面共通 stage演奏ドラム画面;
 
     public ST叩ききりまショー st叩ききりまショー;
     public struct ST叩ききりまショー
@@ -244,7 +247,7 @@ internal class CAct演奏Drumsゲームモード : CActivity
             };
 
             //★10の場合超激辛モードになる。
-            if (TJAPlayerPI.DTX[0].LEVELtaiko[TJAPlayerPI.stage選曲.n確定された曲の難易度[0]] >= 10)
+            if (TJAPlayerPI.DTX[0].LEVELtaiko[TJAPlayerPI.app.n確定された曲の難易度[0]] >= 10)
             {
                 #region[ 超激辛 ]
                 this.st叩ききりまショー.b超激辛 = true;
@@ -372,7 +375,7 @@ internal class CAct演奏Drumsゲームモード : CActivity
                 if (!this.st叩ききりまショー.ct残り時間.b停止中 || this.st叩ききりまショー.b加算アニメ中 == true)
                 {
                     this.st叩ききりまショー.ct残り時間.t進行();
-                    if (!TJAPlayerPI.stage演奏ドラム画面.r検索範囲内にチップがあるか調べる((long)(CSoundManager.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0)), 5000, 0) || this.st叩ききりまショー.b加算アニメ中 == true)
+                    if (!stage演奏ドラム画面.r検索範囲内にチップがあるか調べる((long)(CSoundManager.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0)), 5000, 0) || this.st叩ききりまショー.b加算アニメ中 == true)
                     {
                         this.st叩ききりまショー.bタイマー使用中 = false;
                         this.st叩ききりまショー.ct残り時間.t停止();
@@ -382,7 +385,7 @@ internal class CAct演奏Drumsゲームモード : CActivity
 
             if (!this.st叩ききりまショー.bタイマー使用中 && this.st叩ききりまショー.b加算アニメ中 == false)
             {
-                if ((this.st叩ききりまショー.b最初のチップが叩かれた == true && (TJAPlayerPI.stage演奏ドラム画面.r検索範囲内にチップがあるか調べる(CSoundManager.rc演奏用タイマ.n現在時刻ms, 2000, 0))))
+                if ((this.st叩ききりまショー.b最初のチップが叩かれた == true && (stage演奏ドラム画面.r検索範囲内にチップがあるか調べる(CSoundManager.rc演奏用タイマ.n現在時刻ms, 2000, 0))))
                 {
                     this.st叩ききりまショー.bタイマー使用中 = true;
                     int nCount = this.st叩ききりまショー.ct残り時間.n現在の値;
@@ -557,9 +560,9 @@ internal class CAct演奏Drumsゲームモード : CActivity
                 }
             }
             #region[ 全体 ]
-            if (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Perfect != 0 || TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Good != 0)
+            if (stage演奏ドラム画面.nヒット数[0].Perfect != 0 || stage演奏ドラム画面.nヒット数[0].Good != 0)
             {
-                double db全体精度 = ((double)(TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Perfect + TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Good) / this.st叩ききりまショー.n区間ノート数) * 100.0;
+                double db全体精度 = ((double)(stage演奏ドラム画面.nヒット数[0].Perfect + stage演奏ドラム画面.nヒット数[0].Good) / this.st叩ききりまショー.n区間ノート数) * 100.0;
                 for (int i = 0; i < this.n全体精度ボーナス.Length; i++)
                 {
                     if (db全体精度 >= this.n全体精度ボーナス[i].ret)
@@ -584,9 +587,9 @@ internal class CAct演奏Drumsゲームモード : CActivity
                 }
             }
             #endregion
-            if (TJAPlayerPI.stage演奏ドラム画面.actCombo.n現在のコンボ数.Max[0] != 0)
+            if (stage演奏ドラム画面.actCombo.n現在のコンボ数.Max[0] != 0)
             {
-                double db全体コンボ率 = ((double)TJAPlayerPI.stage演奏ドラム画面.actCombo.n現在のコンボ数.Max[0] / this.st叩ききりまショー.n現在通過したノート数) * 100.0;
+                double db全体コンボ率 = ((double)stage演奏ドラム画面.actCombo.n現在のコンボ数.Max[0] / this.st叩ききりまショー.n現在通過したノート数) * 100.0;
                 for (int i = 0; i < this.n全体コンボ率ボーナス.Length; i++)
                 {
                     if (db全体コンボ率 >= this.n全体コンボ率ボーナス[i].ret)
@@ -597,7 +600,7 @@ internal class CAct演奏Drumsゲームモード : CActivity
                 }
             }
 
-            double db全体ミス率 = (((double)TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Bad + TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Miss) / this.st叩ききりまショー.n現在通過したノート数) * 100.0;
+            double db全体ミス率 = (((double)stage演奏ドラム画面.nヒット数[0].Bad + stage演奏ドラム画面.nヒット数[0].Miss) / this.st叩ききりまショー.n現在通過したノート数) * 100.0;
             for (int i = 0; i < this.n全体ミス率ボーナス.Length; i++)
             {
                 if (db全体ミス率 >= this.n全体ミス率ボーナス[i].ret)

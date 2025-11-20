@@ -7,8 +7,9 @@ internal class CActDancer : CActivity
     /// <summary>
     /// 踊り子
     /// </summary>
-    public CActDancer()
+    public CActDancer(CAct演奏ゲージ共通 actGauge)
     {
+        this.actGauge = actGauge;
     }
 
     public override void On活性化()
@@ -42,7 +43,7 @@ internal class CActDancer : CActivity
                 {
                     if (TJAPlayerPI.app.Tx.Dancer[i][this.ar踊り子モーション番号[(int)this.ct踊り子モーション.db現在の値]] is not null)
                     {
-                        if ((int)TJAPlayerPI.stage演奏ドラム画面.actGauge.db現在のゲージ値[0] >= TJAPlayerPI.app.Skin.SkinConfig.Game.Dancer.Gauge[i])
+                        if ((int)actGauge.db現在のゲージ値[0] >= TJAPlayerPI.app.Skin.SkinConfig.Game.Dancer.Gauge[i])
                             TJAPlayerPI.app.Tx.Dancer[i][this.ar踊り子モーション番号[(int)this.ct踊り子モーション.db現在の値]].t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Center, TJAPlayerPI.app.Skin.SkinConfig.Game.Dancer.X[i], TJAPlayerPI.app.Skin.SkinConfig.Game.Dancer.Y[i]);
                     }
                 }
@@ -53,6 +54,7 @@ internal class CActDancer : CActivity
 
     #region[ private ]
     //-----------------
+    private CAct演奏ゲージ共通 actGauge;
     public int[] ar踊り子モーション番号 = new int[] { 0, 0 };
     public CCounter? ct踊り子モーション;
     //-----------------

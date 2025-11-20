@@ -1,5 +1,5 @@
 ﻿using FDK;
-using TJAPlayerPI.Common;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
 
@@ -91,8 +91,8 @@ internal class CActPanel : CActivity
 
     public override void On活性化()
     {
-        this.pfMusicName = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.MusicNameFontSize);
-        this.pfSubTitleName = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.SubTitleNameFontSize);
+        this.pfMusicName = HFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.MusicNameFontSize);
+        this.pfSubTitleName = HFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.SubTitleNameFontSize);
 
         this.txPanel = null;
         this.ct進行用 = new CCounter();
@@ -116,7 +116,6 @@ internal class CActPanel : CActivity
     }
     public override int On進行描画()
     {
-        if (TJAPlayerPI.stage演奏ドラム画面.actDan.IsAnimating) return 0;
         if (!base.b活性化してない && !this.bMute && this.ct進行用 is not null)
         {
             this.ct進行用.t進行Loop();

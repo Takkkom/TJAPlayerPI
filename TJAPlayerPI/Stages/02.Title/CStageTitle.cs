@@ -1,5 +1,5 @@
 ﻿using FDK;
-using TJAPlayerPI.Common;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
 
@@ -31,7 +31,7 @@ internal class CStageTitle : CStage
                 { "やめる","Quit"}
             };
             int lang = (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ja") ? 0 : 1;
-            using (var pf = CFontHelper.tCreateFont(28))
+            using (var pf = HFontHelper.tCreateFont(28))
             {
                 texttexture[0] = this.文字テクスチャを生成する(str[0, lang], Color.White, Color.SaddleBrown, pf);
                 texttexture[1] = this.文字テクスチャを生成する(str[1, lang], Color.White, Color.SaddleBrown, pf);
@@ -76,7 +76,7 @@ internal class CStageTitle : CStage
             //---------------------
             if (base.b初めての進行描画)
             {
-                if (TJAPlayerPI.r直前のステージ == TJAPlayerPI.stageStartUp)
+                if (TJAPlayerPI.r直前のステージ is CStageStartUp)
                 {
                     this.actFI.tFadeIn開始();
                     base.eフェーズID = CStage.Eフェーズ.タイトル_起動画面からのFadeIn;

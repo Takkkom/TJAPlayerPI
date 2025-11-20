@@ -586,59 +586,6 @@ internal class CDTX : CActivity
         }
     }
 
-    public void tWave再生位置自動補正()
-    {
-        foreach (CWAV cwav in this.listWAV.Values)
-        {
-            this.tWave再生位置自動補正(cwav);
-        }
-    }
-    public void tWave再生位置自動補正(CWAV wc)
-    {
-        if (wc.rSound is not null && wc.rSound.nDurationms >= 5000)
-        {
-            if ((wc.rSound is not null) && (wc.rSound.bPlaying))
-            {
-                long nCurrentTime = CSoundManager.rc演奏用タイマ.nシステム時刻ms;
-                if (nCurrentTime > wc.n再生開始時刻)
-                {
-                    long nAbsTimeFromStartPlaying = nCurrentTime - wc.n再生開始時刻;
-
-                    // WASAPI/ASIO用↓
-                    if (!TJAPlayerPI.stage演奏ドラム画面.bPAUSE)
-                    {
-                        if (wc.rSound.b一時停止中) wc.rSound.t再生を再開する(nAbsTimeFromStartPlaying);
-                        else wc.rSound.t再生位置を変更する(nAbsTimeFromStartPlaying);
-                    }
-                    else
-                    {
-                        wc.rSound.t再生を一時停止する();
-                    }
-                }
-            }
-        }
-    }
-    public void tWavの再生停止(int nWaveの内部番号)
-    {
-        tWavの再生停止(nWaveの内部番号, false);
-    }
-    public void tWavの再生停止(int nWaveの内部番号, bool bミキサーからも削除する)
-    {
-        if (this.listWAV.TryGetValue(nWaveの内部番号, out CWAV cwav))
-        {
-            if (cwav.rSound is not null && cwav.rSound.bPlaying)
-            {
-                if (bミキサーからも削除する)
-                {
-                    cwav.rSound.t再生を停止する();
-                }
-                else
-                {
-                    cwav.rSound.t再生を停止する();
-                }
-            }
-        }
-    }
     public void tWAVの読み込み(CWAV cwav)
     {
         string str = string.IsNullOrEmpty(this.PATH_WAV) ? this.strフォルダ名 : this.PATH_WAV;
@@ -754,34 +701,6 @@ internal class CDTX : CActivity
     }
 
     #region [ チップの再生と停止 ]
-    public void tチップの再生(CChip pChip, long n再生開始システム時刻ms)
-    {
-        if (TJAPlayerPI.app.ConfigToml.PlayOption.PlayBGMOnlyPlaySpeedEqualsOne && TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed != 20)
-            return;
-
-        if (pChip.n整数値_内部番号 >= 0)
-        {
-            if (this.listWAV.TryGetValue(pChip.n整数値_内部番号, out CWAV wc))
-            {
-                CSound sound = wc.rSound;
-                if (sound is not null)
-                {
-                    sound.dbPlaySpeed = ((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0;
-                    // 再生速度によって、WASAPI/ASIOで使う使用mixerが決まるため、付随情報の設定(音量/PAN)は、再生速度の設定後に行う
-
-                    // 2018-08-27 twopointzero - DON'T attempt to load (or queue scanning) loudness metadata here.
-                    //                           This code is called right after loading the .tja, and that code
-                    //                           will have just made such an attempt.
-                    TJAPlayerPI.SongGainController.Set(wc.SongVol, wc.SongLoudnessMetadata, sound);
-
-                    sound.nPanning = 0;
-                    sound.t再生を開始する();
-                }
-                wc.n再生開始時刻 = n再生開始システム時刻ms;
-                this.tWave再生位置自動補正(wc);
-            }
-        }
-    }
     public void t各自動再生音チップの再生時刻を変更する(int nBGMAdjustの増減値)
     {
         this.nBGMAdjust += nBGMAdjustの増減値;
@@ -806,42 +725,6 @@ internal class CDTX : CActivity
             {
                 cwav.n再生開始時刻 += nBGMAdjustの増減値;
             }
-        }
-    }
-    public void t全チップの再生一時停止()
-    {
-        foreach (CWAV cwav in this.listWAV.Values)
-        {
-            if ((cwav.rSound is not null) && cwav.rSound.bPlaying)
-            {
-                cwav.rSound.t再生を一時停止する();
-                cwav.n一時停止時刻 = CSoundManager.rc演奏用タイマ.nシステム時刻ms;
-            }
-        }
-    }
-    public void t全チップの再生再開()
-    {
-        foreach (CWAV cwav in this.listWAV.Values)
-        {
-            if ((cwav.rSound is not null) && cwav.rSound.b一時停止中)
-            {
-                cwav.rSound.t再生を再開する(cwav.n一時停止時刻 - cwav.n再生開始時刻);
-                cwav.n再生開始時刻 += CSoundManager.rc演奏用タイマ.nシステム時刻ms - cwav.n一時停止時刻;
-            }
-        }
-    }
-    public void t全チップの再生停止()
-    {
-        foreach (CWAV cwav in this.listWAV.Values)
-        {
-            this.tWavの再生停止(cwav.n内部番号);
-        }
-    }
-    public void t全チップの再生停止とミキサーからの削除()
-    {
-        foreach (CWAV cwav in this.listWAV.Values)
-        {
-            this.tWavの再生停止(cwav.n内部番号, true);
         }
     }
     #endregion
@@ -1952,7 +1835,7 @@ internal class CDTX : CActivity
 
         #region[ 読み込ませるコースを決定 ]
         if (TJAPlayerPI.r現在のステージ.eStageID == CStage.EStage.SongLoading)//2020.05.12 Mr-Ojii 起動直後の曲読み込みでエラーを吐くので対策
-            n読み込むコース = TJAPlayerPI.stage選曲.n確定された曲の難易度[nPlayerSide];
+            n読み込むコース = TJAPlayerPI.app.n確定された曲の難易度[nPlayerSide];
 
         if (this.b譜面が存在する[n読み込むコース] == false)
         {
@@ -2797,7 +2680,7 @@ internal class CDTX : CActivity
         #region[ 読み込ませるコースを決定 ]
         int n読み込むコース = 3;
         if (TJAPlayerPI.r現在のステージ.eStageID == CStage.EStage.SongLoading)//2020.05.12 Mr-Ojii 起動直後の曲読み込みでエラーを吐くので対策
-            n読み込むコース = TJAPlayerPI.stage選曲.n確定された曲の難易度[nPlayerSide];
+            n読み込むコース = TJAPlayerPI.app.n確定された曲の難易度[nPlayerSide];
         if (this.b譜面が存在する[n読み込むコース] == false)
         {
             n読み込むコース++;

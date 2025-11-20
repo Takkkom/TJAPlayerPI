@@ -1,6 +1,6 @@
 ﻿using FDK;
 using System.Runtime.CompilerServices;
-using TJAPlayerPI.Common;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
 
@@ -58,8 +58,9 @@ internal class CActSelect曲リスト : CActivity
 
     // コンストラクタ
 
-    public CActSelect曲リスト()
+    public CActSelect曲リスト(CStage選曲 stage選曲)
     {
+        this.stage選曲 = stage選曲;
         this.r現在選択中の曲 = null;
         n現在のアンカ難易度レベル = new int[2];
         for (int nPlayer = 0; nPlayer < 2; nPlayer++)
@@ -163,7 +164,7 @@ internal class CActSelect曲リスト : CActivity
         this.t選択曲が変更された(false);                                 // #27648 項目数変更を反映させる
         this.b選択曲が変更された = true;
 
-        TJAPlayerPI.stage選曲.t選択曲変更通知();
+        stage選曲.t選択曲変更通知();
     }
 
     public void tBOXに入る()
@@ -194,7 +195,7 @@ internal class CActSelect曲リスト : CActivity
                 this.b選択曲が変更された = true;
             }
         }
-        TJAPlayerPI.stage選曲.t選択曲変更通知();
+        stage選曲.t選択曲変更通知();
     }
     public void tBOXを出る()
     {
@@ -229,7 +230,7 @@ internal class CActSelect曲リスト : CActivity
                 this.b選択曲が変更された = true;
             }
         }
-        TJAPlayerPI.stage選曲.t選択曲変更通知();
+        stage選曲.t選択曲変更通知();
     }
     public void t次に移動()
     {
@@ -257,7 +258,7 @@ internal class CActSelect曲リスト : CActivity
         this.t現在選択中の曲を元に曲バーを再構成する();
         this.t選択曲が変更された(false);
         this.b選択曲が変更された = true;
-        TJAPlayerPI.stage選曲.t選択曲変更通知();
+        stage選曲.t選択曲変更通知();
     }
     public void tかなり前に移動()
     {
@@ -269,7 +270,7 @@ internal class CActSelect曲リスト : CActivity
         this.t現在選択中の曲を元に曲バーを再構成する();
         this.t選択曲が変更された(false);
         this.b選択曲が変更された = true;
-        TJAPlayerPI.stage選曲.t選択曲変更通知();
+        stage選曲.t選択曲変更通知();
     }
     public void tフォルダのはじめに移動()
     {
@@ -283,7 +284,7 @@ internal class CActSelect曲リスト : CActivity
         this.t現在選択中の曲を元に曲バーを再構成する();
         this.t選択曲が変更された(false);
         this.b選択曲が変更された = true;
-        TJAPlayerPI.stage選曲.t選択曲変更通知();
+        stage選曲.t選択曲変更通知();
     }
     public void tフォルダの最後に移動()
     {
@@ -297,7 +298,7 @@ internal class CActSelect曲リスト : CActivity
         this.t現在選択中の曲を元に曲バーを再構成する();
         this.t選択曲が変更された(false);
         this.b選択曲が変更された = true;
-        TJAPlayerPI.stage選曲.t選択曲変更通知();
+        stage選曲.t選択曲変更通知();
     }
     public void t難易度レベルをひとつ進める(int nPlayer)
     {
@@ -399,7 +400,7 @@ internal class CActSelect曲リスト : CActivity
     /// </summary>
     public void t選択曲が変更された(bool bForce) // #27648
     {
-        C曲リストノード song = TJAPlayerPI.stage選曲.act曲リスト.r現在選択中の曲;
+        C曲リストノード song = r現在選択中の曲;
         if (song is null)
             return;
         if (song == song_last && bForce == false)
@@ -429,7 +430,7 @@ internal class CActSelect曲リスト : CActivity
             nCurrentPosition = current;
             nNumOfItems = count;
         }
-        TJAPlayerPI.stage選曲.actHistoryPanel.tSongChange();
+        stage選曲.actHistoryPanel.tSongChange(r現在選択中の曲, r現在選択中のスコア);
     }
 
     // CActivity 実装
@@ -443,8 +444,8 @@ internal class CActSelect曲リスト : CActivity
         // enter or return to the song select screen.
         TJAPlayerPI.IsPerformingCalibration = false;
 
-        this.pfMusicName = CFontHelper.tCreateFont(30);
-        this.pfSubtitle = CFontHelper.tCreateFont(23);
+        this.pfMusicName = HFontHelper.tCreateFont(30);
+        this.pfSubtitle = HFontHelper.tCreateFont(23);
 
         this.n目標のスクロールカウンタ = 0;
         this.n現在のスクロールカウンタ = 0;
@@ -474,7 +475,7 @@ internal class CActSelect曲リスト : CActivity
         {
             string[] s1 = { "曲データが見つかりません。\n曲データをTJAPlayer3-f以下の\nフォルダにインストールして下さい。", "Songs not found.\nYou need to install songs." };
 
-            using (CFontRenderer pffont = CFontHelper.tCreateFont(32))
+            using (CFontRenderer pffont = HFontHelper.tCreateFont(32))
             {
                 this.txSongNotFound = TJAPlayerPI.app.tCreateTexture(pffont.DrawText(s1[c], Color.White));
                 if (this.txSongNotFound is not null)
@@ -493,7 +494,7 @@ internal class CActSelect曲リスト : CActivity
         {
             string[] s1 = { "曲データを検索しています。\nそのまましばらくお待ち下さい。", "Now enumerating songs.\nPlease wait..." };
 
-            using (CFontRenderer pffont = CFontHelper.tCreateFont(32))
+            using (CFontRenderer pffont = HFontHelper.tCreateFont(32))
             {
                 this.txEnumeratingSongs = TJAPlayerPI.app.tCreateTexture(pffont.DrawText(s1[c], Color.White));
                 if (this.txEnumeratingSongs is not null)
@@ -547,7 +548,7 @@ internal class CActSelect曲リスト : CActivity
         if (this.b初めての進行描画)
         {
             this.nスクロールタイマ = (long)(CSoundManager.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
-            TJAPlayerPI.stage選曲.t選択曲変更通知();
+            stage選曲.t選択曲変更通知();
 
             this.ct三角矢印アニメ.t開始(0, 1000, 1, TJAPlayerPI.app.Timer);
             this.ct分岐フェード用タイマー.t進行();
@@ -598,10 +599,10 @@ internal class CActSelect曲リスト : CActivity
         //DifficultySelectフェード用
 
         int 全体Opacity;
-        if (TJAPlayerPI.stage選曲.現在の選曲画面状況 == CStage選曲.E選曲画面.難易度選択In)
-            全体Opacity = (int)(255.0f - (TJAPlayerPI.stage選曲.ctDifficultySelectIN用タイマー.n現在の値 * 255.0f / TJAPlayerPI.stage選曲.ctDifficultySelectIN用タイマー.n終了値));
-        else if (TJAPlayerPI.stage選曲.現在の選曲画面状況 == CStage選曲.E選曲画面.難易度選択Out)
-            全体Opacity = (int)(TJAPlayerPI.stage選曲.ctDifficultySelectOUT用タイマー.n現在の値 * 255.0f / TJAPlayerPI.stage選曲.ctDifficultySelectOUT用タイマー.n終了値);
+        if (stage選曲.現在の選曲画面状況 == CStage選曲.E選曲画面.難易度選択In)
+            全体Opacity = (int)(255.0f - (stage選曲.ctDifficultySelectIN用タイマー.n現在の値 * 255.0f / stage選曲.ctDifficultySelectIN用タイマー.n終了値));
+        else if (stage選曲.現在の選曲画面状況 == CStage選曲.E選曲画面.難易度選択Out)
+            全体Opacity = (int)(stage選曲.ctDifficultySelectOUT用タイマー.n現在の値 * 255.0f / stage選曲.ctDifficultySelectOUT用タイマー.n終了値);
         else
             全体Opacity = 255;
 
@@ -753,7 +754,7 @@ internal class CActSelect曲リスト : CActivity
 
 
                 if (this.n目標のスクロールカウンタ == 0)
-                    TJAPlayerPI.stage選曲.t選択曲変更通知();      // スクロール完了＝選択曲変更！
+                    stage選曲.t選択曲変更通知();      // スクロール完了＝選択曲変更！
 
                 //-----------------
                 #endregion
@@ -790,7 +791,7 @@ internal class CActSelect曲リスト : CActivity
                 this.ttk選択している曲のサブタイトル = null;
 
                 if (this.n目標のスクロールカウンタ == 0)
-                    TJAPlayerPI.stage選曲.t選択曲変更通知();      // スクロール完了＝選択曲変更！
+                    stage選曲.t選択曲変更通知();      // スクロール完了＝選択曲変更！
                                                         //-----------------
                 #endregion
             }
@@ -827,9 +828,9 @@ internal class CActSelect曲リスト : CActivity
             if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Escape))
             {
                 TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND取消音].t再生する();
-                TJAPlayerPI.stage選曲.eFadeOut完了時の戻り値 = CStage選曲.E戻り値.タイトルに戻る;
-                TJAPlayerPI.stage選曲.actFIFO.tFadeOut開始();
-                TJAPlayerPI.stage選曲.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
+                stage選曲.eFadeOut完了時の戻り値 = CStage選曲.E戻り値.タイトルに戻る;
+                stage選曲.actFIFO.tFadeOut開始();
+                stage選曲.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
                 return 0;
             }
             //-----------------
@@ -964,19 +965,19 @@ internal class CActSelect曲リスト : CActivity
             int xAnime = TJAPlayerPI.app.Skin.SkinConfig.SongSelect.BarX[n見た目の行番号] + ((int)((TJAPlayerPI.app.Skin.SkinConfig.SongSelect.BarX[n次のパネル番号] - TJAPlayerPI.app.Skin.SkinConfig.SongSelect.BarX[n見た目の行番号]) * (((double)Math.Abs(this.n現在のスクロールカウンタ)) / 100.0)));
 
             #region [曲決定時のバーの横移動]
-            if (TJAPlayerPI.stage選曲.現在の選曲画面状況 == CStage選曲.E選曲画面.難易度選択Out)
+            if (stage選曲.現在の選曲画面状況 == CStage選曲.E選曲画面.難易度選択Out)
             {
                 if (n見た目の行番号 < 6)
-                    xAnime += (TJAPlayerPI.stage選曲.ctDifficultySelectOUT用タイマー.n現在の値 - TJAPlayerPI.stage選曲.ctDifficultySelectOUT用タイマー.n終了値) * 3;
+                    xAnime += (stage選曲.ctDifficultySelectOUT用タイマー.n現在の値 - stage選曲.ctDifficultySelectOUT用タイマー.n終了値) * 3;
                 else if (n見た目の行番号 > 6)
-                    xAnime -= (TJAPlayerPI.stage選曲.ctDifficultySelectOUT用タイマー.n現在の値 - TJAPlayerPI.stage選曲.ctDifficultySelectOUT用タイマー.n終了値) * 3;
+                    xAnime -= (stage選曲.ctDifficultySelectOUT用タイマー.n現在の値 - stage選曲.ctDifficultySelectOUT用タイマー.n終了値) * 3;
             }
-            else if (TJAPlayerPI.stage選曲.現在の選曲画面状況 == CStage選曲.E選曲画面.難易度選択In)
+            else if (stage選曲.現在の選曲画面状況 == CStage選曲.E選曲画面.難易度選択In)
             {
                 if (n見た目の行番号 < 6)
-                    xAnime -= TJAPlayerPI.stage選曲.ctDifficultySelectIN用タイマー.n現在の値 * 3;
+                    xAnime -= stage選曲.ctDifficultySelectIN用タイマー.n現在の値 * 3;
                 else if (n見た目の行番号 > 6)
-                    xAnime += TJAPlayerPI.stage選曲.ctDifficultySelectIN用タイマー.n現在の値 * 3;
+                    xAnime += stage選曲.ctDifficultySelectIN用タイマー.n現在の値 * 3;
             }
             #endregion
 
@@ -1066,7 +1067,7 @@ internal class CActSelect曲リスト : CActivity
                         if (TJAPlayerPI.app.Tx.SongSelect_Frame_Score is not null)
                         {
                             // 難易度がTower、Danではない
-                            if (TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Tower && TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Dan)
+                            if (stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Tower && stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Dan)
                             {
                                 for (int i = 0; i < (int)Difficulty.Edit + 1; i++)
                                 {
@@ -1075,7 +1076,7 @@ internal class CActSelect曲リスト : CActivity
                                     else
                                         TJAPlayerPI.app.Tx.SongSelect_Frame_Score.color = Color.FromArgb(255, 127, 127, 127);
 
-                                    if (i == 4 && TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] == 4)
+                                    if (i == 4 && stage選曲.n現在選択中の曲の難易度[0] == 4)
                                     {
                                         // エディット
                                         TJAPlayerPI.app.Tx.SongSelect_Frame_Score.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Down, 494 + (3 * 60), TJAPlayerPI.app.Skin.SkinConfig.SongSelect.OverallY + 463, new Rectangle(60 * i, 0, 60, 360));
@@ -1088,12 +1089,12 @@ internal class CActSelect曲リスト : CActivity
                             }
                             else
                             {
-                                if (r現在選択中のスコア.譜面情報.b譜面が存在する[TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0]])
+                                if (r現在選択中のスコア.譜面情報.b譜面が存在する[stage選曲.n現在選択中の曲の難易度[0]])
                                     TJAPlayerPI.app.Tx.SongSelect_Frame_Score.color = Color.FromArgb(255, 255, 255, 255);
                                 else
                                     TJAPlayerPI.app.Tx.SongSelect_Frame_Score.color = Color.FromArgb(255, 127, 127, 127);
 
-                                TJAPlayerPI.app.Tx.SongSelect_Frame_Score.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Down, 494 + 120, TJAPlayerPI.app.Skin.SkinConfig.SongSelect.OverallY + 463, new Rectangle(0, 360 + (360 * (TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] - (int)Difficulty.Tower)), TJAPlayerPI.app.Tx.SongSelect_Frame_Score.szTextureSize.Width, 360));
+                                TJAPlayerPI.app.Tx.SongSelect_Frame_Score.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Down, 494 + 120, TJAPlayerPI.app.Skin.SkinConfig.SongSelect.OverallY + 463, new Rectangle(0, 360 + (360 * (stage選曲.n現在選択中の曲の難易度[0] - (int)Difficulty.Tower)), TJAPlayerPI.app.Tx.SongSelect_Frame_Score.szTextureSize.Width, 360));
                             }
                         }
                         #endregion
@@ -1102,7 +1103,7 @@ internal class CActSelect曲リスト : CActivity
                         {
                             // 全難易度表示
                             // 難易度がTower、Danではない
-                            if (TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Tower && TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Dan)
+                            if (stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Tower && stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Dan)
                             {
                                 for (int i = 0; i < (int)Difficulty.Edit + 1; i++)
                                 {
@@ -1111,8 +1112,8 @@ internal class CActSelect曲リスト : CActivity
                                         // 星11以上はループ終了
                                         //if (n > 9) break;
                                         // 裏なら鬼と同じ場所に
-                                        if (i == 3 && TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] == 4) break;
-                                        if (i == 4 && TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] == 4)
+                                        if (i == 3 && stage選曲.n現在選択中の曲の難易度[0] == 4) break;
+                                        if (i == 4 && stage選曲.n現在選択中の曲の難易度[0] == 4)
                                         {
                                             TJAPlayerPI.app.Tx.SongSelect_Level.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Down, 494 + (3 * 60), TJAPlayerPI.app.Skin.SkinConfig.SongSelect.OverallY + 413 - (n * 17), new Rectangle(32 * i, 0, 32, 32));
                                         }
@@ -1125,9 +1126,9 @@ internal class CActSelect曲リスト : CActivity
                             }
                             else
                             {
-                                for (int i = 0; i < this.r現在選択中のスコア.譜面情報.Level[TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0]]; i++)
+                                for (int i = 0; i < this.r現在選択中のスコア.譜面情報.Level[stage選曲.n現在選択中の曲の難易度[0]]; i++)
                                 {
-                                    TJAPlayerPI.app.Tx.SongSelect_Level.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Down, 494, TJAPlayerPI.app.Skin.SkinConfig.SongSelect.OverallY + 413 - (i * 17), new Rectangle(32 * TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0], 0, 32, 32));
+                                    TJAPlayerPI.app.Tx.SongSelect_Level.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Down, 494, TJAPlayerPI.app.Skin.SkinConfig.SongSelect.OverallY + 413 - (i * 17), new Rectangle(32 * stage選曲.n現在選択中の曲の難易度[0], 0, 32, 32));
                                 }
                             }
                         }
@@ -1136,11 +1137,11 @@ internal class CActSelect曲リスト : CActivity
                         if (TJAPlayerPI.app.Tx.SongSelect_Lyric_Text[TJAPlayerPI.app.Skin.nStrジャンルtoNum(this.r現在選択中の曲.strGenre)] is not null && this.r現在選択中のスコア.譜面情報.b歌詞あり)
                             TJAPlayerPI.app.Tx.SongSelect_Lyric_Text[TJAPlayerPI.app.Skin.nStrジャンルtoNum(this.r現在選択中の曲.strGenre)].t2D描画(TJAPlayerPI.app.Device, 483, TJAPlayerPI.app.Skin.SkinConfig.SongSelect.OverallY + 21);
 
-                        if (TJAPlayerPI.app.Tx.SongSelect_Branch_Text_NEW is not null && TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Tower && TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Dan)
+                        if (TJAPlayerPI.app.Tx.SongSelect_Branch_Text_NEW is not null && stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Tower && stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Dan)
                         {
                             for (int i = 0; i < 4; i++)
                             {
-                                if (i == 3 && TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] == 4)
+                                if (i == 3 && stage選曲.n現在選択中の曲の難易度[0] == 4)
                                 {
                                     if (this.r現在選択中のスコア.譜面情報.b譜面分岐[4])
                                     {
@@ -1156,11 +1157,11 @@ internal class CActSelect曲リスト : CActivity
                                 }
                             }
                         }
-                        if (TJAPlayerPI.app.Tx.SongSelect_PapaMama is not null && TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Tower && TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Dan)
+                        if (TJAPlayerPI.app.Tx.SongSelect_PapaMama is not null && stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Tower && stage選曲.n現在選択中の曲の難易度[0] != (int)Difficulty.Dan)
                         {
                             for (int i = 0; i < 4; i++)
                             {
-                                if (i == 3 && TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] == 4)
+                                if (i == 3 && stage選曲.n現在選択中の曲の難易度[0] == 4)
                                 {
                                     if (this.r現在選択中のスコア.譜面情報.bPapaMamaSupport[4])
                                     {
@@ -1181,13 +1182,13 @@ internal class CActSelect曲リスト : CActivity
                         if (TJAPlayerPI.app.Tx.Crown_t is not null && TJAPlayerPI.app.Tx.DanC_Crown_t is not null)
                         {
                             TJAPlayerPI.app.Tx.Crown_t.vcScaling = new Vector2(0.25f);
-                            if (TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] <= 4)
+                            if (stage選曲.n現在選択中の曲の難易度[0] <= 4)
                             {
                                 for (int i = 0; i < 4; i++)
                                 {
                                     if (TJAPlayerPI.app.Tx.Crown_t is not null && this.r現在選択中のスコア.譜面情報.nCrown[i] >= 0 && this.r現在選択中のスコア.譜面情報.nCrown[i] <= 3)
                                     {
-                                        if (i == 3 && TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] == 4)
+                                        if (i == 3 && stage選曲.n現在選択中の曲の難易度[0] == 4)
                                         {
                                             TJAPlayerPI.app.Tx.Crown_t.t2D描画(TJAPlayerPI.app.Device, i * 60 + 482, TJAPlayerPI.app.Skin.SkinConfig.SongSelect.OverallY + 85, new Rectangle((this.r現在選択中のスコア.譜面情報.nCrown[4]) * 100, 0, 100, 100));
                                         }
@@ -1198,7 +1199,7 @@ internal class CActSelect曲リスト : CActivity
                                     }
                                 }
                             }
-                            else if (TJAPlayerPI.stage選曲.n現在選択中の曲の難易度[0] == (int)Difficulty.Tower)
+                            else if (stage選曲.n現在選択中の曲の難易度[0] == (int)Difficulty.Tower)
                             {
                                 TJAPlayerPI.app.Tx.Crown_t.t2D描画(TJAPlayerPI.app.Device, 482, TJAPlayerPI.app.Skin.SkinConfig.SongSelect.OverallY + 57, new Rectangle((this.r現在選択中のスコア.譜面情報.nCrown[5]) * 100, 0, 100, 100));
                             }
@@ -1334,6 +1335,7 @@ internal class CActSelect曲リスト : CActivity
     private CCachedFontRenderer? pfSubtitle;
     internal CTexture タイトルtmp;
     internal CTexture サブタイトルtmp;
+    private CStage選曲 stage選曲;
 
     private readonly Dictionary<TitleTextureKey, CTexture> _titledictionary
         = new Dictionary<TitleTextureKey, CTexture>();
@@ -1404,7 +1406,7 @@ internal class CActSelect曲リスト : CActivity
                 this.t現在選択中の曲を元に曲バーを再構成する();
                 this.t選択曲が変更された(false);
                 this.b選択曲が変更された = true;
-                TJAPlayerPI.stage選曲.t選択曲変更通知();
+                stage選曲.t選択曲変更通知();
             }
             return;
         }

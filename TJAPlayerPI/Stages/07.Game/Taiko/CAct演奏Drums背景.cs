@@ -8,8 +8,9 @@ internal class CAct演奏Drums背景 : CActivity
     //
     // 拡張性とかないんで。はい、ヨロシクゥ!
     //
-    public CAct演奏Drums背景()
+    public CAct演奏Drums背景(CStage演奏画面共通 stage演奏ドラム画面)
     {
+        this.stage演奏ドラム画面 = stage演奏ドラム画面;
     }
 
     public void ClearIn(int player)
@@ -151,7 +152,7 @@ internal class CAct演奏Drums背景 : CActivity
                 CTexture? up_clear = TJAPlayerPI.app.Tx.Background_Up_Clear[i];
                 if (up_clear is not null)
                 {
-                    if (TJAPlayerPI.stage演奏ドラム画面.bIsAlreadyCleared[i])
+                    if (stage演奏ドラム画面.bIsAlreadyCleared[i])
                         up_clear.Opacity = ((this.ct上背景クリアインタイマー[i].n現在の値 * 0xff) / 100);
                     else
                         up_clear.Opacity = 0;
@@ -186,7 +187,7 @@ internal class CAct演奏Drums背景 : CActivity
                     CTexture? up_sakura_clear = TJAPlayerPI.app.Tx.Background_Up_Sakura_Clear[i];
                     if (up_sakura_clear is not null)
                     {
-                        if (TJAPlayerPI.stage演奏ドラム画面.bIsAlreadyCleared[i])
+                        if (stage演奏ドラム画面.bIsAlreadyCleared[i])
                             up_sakura_clear.Opacity = ((this.ct上背景クリアインタイマー[i].n現在の値 * 0xff) / 100);
                         else
                             up_sakura_clear.Opacity = 0;
@@ -306,7 +307,7 @@ internal class CAct演奏Drums背景 : CActivity
                                 break;
                         }
 
-                        if (TJAPlayerPI.stage演奏ドラム画面.bIsAlreadyCleared[i])
+                        if (stage演奏ドラム画面.bIsAlreadyCleared[i])
                             up_ymove_clear.Opacity = ((this.ct上背景クリアインタイマー[i].n現在の値 * 0xff) / 100);
                         else
                             up_ymove_clear.Opacity = 0;
@@ -326,7 +327,7 @@ internal class CAct演奏Drums背景 : CActivity
         }
         #endregion
         #region 1P-下背景
-        if (!TJAPlayerPI.stage演奏ドラム画面.bDoublePlay)
+        if (!stage演奏ドラム画面.bDoublePlay)
         {
             {
                 if (TJAPlayerPI.app.Tx.Background_Down is not null)
@@ -334,7 +335,7 @@ internal class CAct演奏Drums背景 : CActivity
                     TJAPlayerPI.app.Tx.Background_Down.t2D描画(TJAPlayerPI.app.Device, 0, 360);
                 }
             }
-            if (TJAPlayerPI.stage演奏ドラム画面.bIsAlreadyCleared[0])
+            if (stage演奏ドラム画面.bIsAlreadyCleared[0])
             {
                 if (TJAPlayerPI.app.Tx.Background_Down_Clear is not null && TJAPlayerPI.app.Tx.Background_Down_Scroll is not null)
                 {
@@ -365,6 +366,7 @@ internal class CAct演奏Drums背景 : CActivity
 
     #region[ private ]
     //-----------------
+    private CStage演奏画面共通 stage演奏ドラム画面;
     private CCounter[] ct上背景スクロール用タイマー; //上背景のX方向スクロール用
     private CCounter[] ct上背景上下用タイマー; //上背景のY方向上下用
     private CCounter[] ct上背景桜用タイマー; //上背景の桜用

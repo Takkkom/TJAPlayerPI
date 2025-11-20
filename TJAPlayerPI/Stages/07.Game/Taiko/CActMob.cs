@@ -7,8 +7,9 @@ internal class CActMob : CActivity
     /// <summary>
     /// 踊り子
     /// </summary>
-    public CActMob()
+    public CActMob(CAct演奏ゲージ共通 actGauge)
     {
+        this.actGauge = actGauge;
     }
 
     public override void On活性化()
@@ -34,7 +35,7 @@ internal class CActMob : CActivity
         {
             ctMob.t進行LoopDb();
             ctMobPtn.t進行LoopDb();
-            if (TJAPlayerPI.stage演奏ドラム画面.actGauge.db現在のゲージ値[0] >= 100)
+            if (actGauge.db現在のゲージ値[0] >= 100)
             {
                 TJAPlayerPI.app.Tx.Mob[(int)ctMobPtn.db現在の値]?.t2D描画(TJAPlayerPI.app.Device, 0, (720 - (TJAPlayerPI.app.Tx.Mob[0].szTextureSize.Height - 70)) + -((float)Math.Sin((float)this.ctMob.db現在の値 * (Math.PI / 180)) * 70));
             }
@@ -43,6 +44,7 @@ internal class CActMob : CActivity
     }
     #region[ private ]
     //-----------------
+    private CAct演奏ゲージ共通 actGauge;
     public CCounter? ctMob;
     public CCounter? ctMobPtn;
     //-----------------

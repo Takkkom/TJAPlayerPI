@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
 
@@ -6,8 +7,9 @@ internal class CActResultParameterPanel : CActivity
 {
     // コンストラクタ
 
-    public CActResultParameterPanel()
+    public CActResultParameterPanel(CStageResult stageResult)
     {
+        this.stageResult = stageResult;
     }
 
 
@@ -41,9 +43,9 @@ internal class CActResultParameterPanel : CActivity
         this.AllPlayerCannotGetCrown = true;
         for (int index = 0; index < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; index++)
         {
-            if (TJAPlayerPI.stage選曲.n確定された曲の難易度[index] == (int)Difficulty.Dan)
+            if (TJAPlayerPI.app.n確定された曲の難易度[index] == (int)Difficulty.Dan)
             {
-                switch (TJAPlayerPI.stage演奏ドラム画面.actDan.GetExamStatus(TJAPlayerPI.stageResult.cRecords[index].DanC, TJAPlayerPI.stageResult.cRecords[index].DanCGauge))
+                switch (HDanHelper.GetExamStatus(stageResult.cRecords[index].DanC, stageResult.cRecords[index].DanCGauge))
                 {
                     case Exam.Status.Failure:
                         this.CrownState[index] = 0;
@@ -60,16 +62,16 @@ internal class CActResultParameterPanel : CActivity
             }
             else
             {
-                if (TJAPlayerPI.stageResult.cRecords[index].Gauge < 80)
+                if (stageResult.cRecords[index].Gauge < 80)
                 {
                     this.CrownState[index] = 0;
                 }
-                else if (TJAPlayerPI.stageResult.cRecords[index].MissCount != 0 && TJAPlayerPI.stageResult.cRecords[index].BadCount != 0)
+                else if (stageResult.cRecords[index].MissCount != 0 && stageResult.cRecords[index].BadCount != 0)
                 {
                     this.CrownState[index] = 1;
                     this.AllPlayerCannotGetCrown = false;
                 }
-                else if (TJAPlayerPI.stageResult.cRecords[index].GoodCount != 0)
+                else if (stageResult.cRecords[index].GoodCount != 0)
                 {
                     this.CrownState[index] = 2;
                     this.AllPlayerCannotGetCrown = false;
@@ -154,24 +156,24 @@ internal class CActResultParameterPanel : CActivity
                 }
                 if (TJAPlayerPI.app.Tx.Result_v2_GaugeBase is not null && TJAPlayerPI.app.Tx.Result_v2_Gauge is not null)
                 {
-                    int width = (int)(TJAPlayerPI.app.Tx.Result_v2_Gauge.szTextureSize.Width * (Math.Min((TJAPlayerPI.stageResult.cRecords[i].Gauge / 100f), this.ctGauge.n現在の値 / 100f))) / (TJAPlayerPI.app.Tx.Result_v2_Gauge.szTextureSize.Width / 50) * (TJAPlayerPI.app.Tx.Result_v2_Gauge.szTextureSize.Width / 50);// 2020/10/13 Mr-Ojii 最後の意味が無いように見える乗算、除算には意味があります。消さないで。
+                    int width = (int)(TJAPlayerPI.app.Tx.Result_v2_Gauge.szTextureSize.Width * (Math.Min((stageResult.cRecords[i].Gauge / 100f), this.ctGauge.n現在の値 / 100f))) / (TJAPlayerPI.app.Tx.Result_v2_Gauge.szTextureSize.Width / 50) * (TJAPlayerPI.app.Tx.Result_v2_Gauge.szTextureSize.Width / 50);// 2020/10/13 Mr-Ojii 最後の意味が無いように見える乗算、除算には意味があります。消さないで。
                     Rectangle rec = new Rectangle(0, 0, width, TJAPlayerPI.app.Tx.Result_v2_Gauge.szTextureSize.Height);
                     TJAPlayerPI.app.Tx.Result_v2_GaugeBase.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Result.v2GaugeBodyX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2GaugeBodyY[i]);
                     TJAPlayerPI.app.Tx.Result_v2_Gauge.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Result.v2GaugeBodyX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2GaugeBodyY[i], rec);
                 }
 
-                this.t小文字表示V2(TJAPlayerPI.app.Skin.SkinConfig.Result.v2PerfectX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2PerfectY[i], TJAPlayerPI.stageResult.cRecords[i].PerfectCount, false, EPhaseV2.Perfect, i);
-                this.t小文字表示V2(TJAPlayerPI.app.Skin.SkinConfig.Result.v2GoodX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2GoodY[i], TJAPlayerPI.stageResult.cRecords[i].GoodCount, false, EPhaseV2.Good, i);
-                this.t小文字表示V2(TJAPlayerPI.app.Skin.SkinConfig.Result.v2BadX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2BadY[i], TJAPlayerPI.stageResult.cRecords[i].MissCount + TJAPlayerPI.stageResult.cRecords[i].BadCount, false, EPhaseV2.Bad, i);
-                this.t小文字表示V2(TJAPlayerPI.app.Skin.SkinConfig.Result.v2RollX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2RollY[i], TJAPlayerPI.stageResult.cRecords[i].RollCount, false, EPhaseV2.Roll, i);
-                this.t小文字表示V2(TJAPlayerPI.app.Skin.SkinConfig.Result.v2ComboX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2ComboY[i], TJAPlayerPI.stageResult.cRecords[i].MaxCombo, false, EPhaseV2.Combo, i);
+                this.t小文字表示V2(TJAPlayerPI.app.Skin.SkinConfig.Result.v2PerfectX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2PerfectY[i],stageResult.cRecords[i].PerfectCount, false, EPhaseV2.Perfect, i);
+                this.t小文字表示V2(TJAPlayerPI.app.Skin.SkinConfig.Result.v2GoodX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2GoodY[i], stageResult.cRecords[i].GoodCount, false, EPhaseV2.Good, i);
+                this.t小文字表示V2(TJAPlayerPI.app.Skin.SkinConfig.Result.v2BadX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2BadY[i], stageResult.cRecords[i].MissCount + stageResult.cRecords[i].BadCount, false, EPhaseV2.Bad, i);
+                this.t小文字表示V2(TJAPlayerPI.app.Skin.SkinConfig.Result.v2RollX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2RollY[i], stageResult.cRecords[i].RollCount, false, EPhaseV2.Roll, i);
+                this.t小文字表示V2(TJAPlayerPI.app.Skin.SkinConfig.Result.v2ComboX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2ComboY[i], stageResult.cRecords[i].MaxCombo, false, EPhaseV2.Combo, i);
 
-                this.t小文字表示V2(TJAPlayerPI.app.Skin.SkinConfig.Result.v2ScoreX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2ScoreY[i], TJAPlayerPI.stageResult.cRecords[i].Score, true, EPhaseV2.Score, i);
+                this.t小文字表示V2(TJAPlayerPI.app.Skin.SkinConfig.Result.v2ScoreX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.v2ScoreY[i], stageResult.cRecords[i].Score, true, EPhaseV2.Score, i);
 
                 #region 段位認定モード用+王冠
-                if (TJAPlayerPI.stage選曲.n確定された曲の難易度[i] == (int)Difficulty.Dan)
+                if (TJAPlayerPI.app.n確定された曲の難易度[i] == (int)Difficulty.Dan)
                 {
-                    TJAPlayerPI.stage演奏ドラム画面.actDan.DrawExam(TJAPlayerPI.stageResult.cRecords[i].DanC);
+                    //HDanHelper.DrawExam(stageResult.cRecords[i].DanC);
 
                     TJAPlayerPI.app.Tx.Result_Dan?.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Result.DanXY[0], TJAPlayerPI.app.Skin.SkinConfig.Result.DanXY[1], new Rectangle(TJAPlayerPI.app.Skin.SkinConfig.Result.DanWH[0] * CrownState[i], 0, TJAPlayerPI.app.Skin.SkinConfig.Result.DanWH[0], TJAPlayerPI.app.Skin.SkinConfig.Result.DanWH[1]));
                     // Dan_Plate
@@ -371,18 +373,18 @@ internal class CActResultParameterPanel : CActivity
                 */
 
                 //演奏中のやつ使いまわせなかった。ファック。
-                this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.ScoreX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.ScoreY[i], TJAPlayerPI.stageResult.cRecords[i].Score, true, EPhase.Score, i);
-                this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.PerfectX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.PerfectY[i], TJAPlayerPI.stageResult.cRecords[i].PerfectCount, false, EPhase.Perfect, i);
-                this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.GoodX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.GoodY[i], TJAPlayerPI.stageResult.cRecords[i].GoodCount, false, EPhase.Good, i);
-                this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.BadX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.BadY[i], TJAPlayerPI.stageResult.cRecords[i].MissCount + TJAPlayerPI.stageResult.cRecords[i].BadCount, false, EPhase.Bad, i);
+                this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.ScoreX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.ScoreY[i], stageResult.cRecords[i].Score, true, EPhase.Score, i);
+                this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.PerfectX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.PerfectY[i], stageResult.cRecords[i].PerfectCount, false, EPhase.Perfect, i);
+                this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.GoodX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.GoodY[i], stageResult.cRecords[i].GoodCount, false, EPhase.Good, i);
+                this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.BadX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.BadY[i], stageResult.cRecords[i].MissCount + stageResult.cRecords[i].BadCount, false, EPhase.Bad, i);
 
-                this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.ComboX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.ComboY[i], TJAPlayerPI.stageResult.cRecords[i].MaxCombo, false, EPhase.Combo, i);
-                this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.RollX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.RollY[i], TJAPlayerPI.stageResult.cRecords[i].RollCount, false, EPhase.Roll, i);
+                this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.ComboX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.ComboY[i], stageResult.cRecords[i].MaxCombo, false, EPhase.Combo, i);
+                this.t小文字表示(TJAPlayerPI.app.Skin.SkinConfig.Result.RollX[i], TJAPlayerPI.app.Skin.SkinConfig.Result.RollY[i], stageResult.cRecords[i].RollCount, false, EPhase.Roll, i);
 
                 #region 段位認定モード用+王冠
-                if (TJAPlayerPI.stage選曲.n確定された曲の難易度[i] == (int)Difficulty.Dan)
+                if (TJAPlayerPI.app.n確定された曲の難易度[i] == (int)Difficulty.Dan)
                 {
-                    TJAPlayerPI.stage演奏ドラム画面.actDan.DrawExam(TJAPlayerPI.stageResult.cRecords[i].DanC);
+                    //HDanHelper.DrawExam(stageResult.cRecords[i].DanC);
 
                     TJAPlayerPI.app.Tx.Result_Dan?.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Result.DanXY[0], TJAPlayerPI.app.Skin.SkinConfig.Result.DanXY[1], new Rectangle(TJAPlayerPI.app.Skin.SkinConfig.Result.DanWH[0] * CrownState[i], 0, TJAPlayerPI.app.Skin.SkinConfig.Result.DanWH[0], TJAPlayerPI.app.Skin.SkinConfig.Result.DanWH[1]));
                     // Dan_Plate
@@ -505,6 +507,9 @@ internal class CActResultParameterPanel : CActivity
         Roll,
         Loop
     }
+
+    private CStageResult stageResult;
+
     #endregion
     #region[V2]
     private EPhaseV2 ephase_v2;

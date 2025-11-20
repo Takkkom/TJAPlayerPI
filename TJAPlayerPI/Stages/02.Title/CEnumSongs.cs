@@ -76,9 +76,9 @@ internal class CEnumSongs							// #27060 2011.2.7 yyagi 曲リストを取得�
     /// <summary>
     /// 曲リストのキャッシュ(songlist.db)取得スレッドの開始
     /// </summary>
-    public void StartEnumFromCache()
+    public void StartEnumFromCache(Action systemSoundLoading, Action systemSoundLoaded, Action songListLoading, Action songListLoaded, Action songListSkipped, Action finished)
     {
-        this.thDTXFileEnumerate = new Thread(new ThreadStart(this.t曲リストの構築1));
+        this.thDTXFileEnumerate = new Thread(new ThreadStart(() => this.t曲リストの構築1(systemSoundLoading, systemSoundLoaded, songListLoading, songListLoaded, songListSkipped, finished)));
         this.thDTXFileEnumerate.Name = "曲リストの構築";
         this.thDTXFileEnumerate.IsBackground = true;
         this.thDTXFileEnumerate.Start();
@@ -167,7 +167,7 @@ internal class CEnumSongs							// #27060 2011.2.7 yyagi 曲リストを取得�
     /// <summary>
     /// songlist.dbからの曲リスト構築
     /// </summary>
-    public void t曲リストの構築1()
+    public void t曲リストの構築1(Action systemSoundLoading, Action systemSoundLoaded, Action songListLoading, Action songListLoaded, Action songListSkipped, Action finished)
     {
         // ！注意！
         // 本メソッドは別スレッドで動作するが、プラグイン側でカレントディレクトリを変更しても大丈夫なように、
@@ -179,7 +179,7 @@ internal class CEnumSongs							// #27060 2011.2.7 yyagi 曲リストを取得�
         {
             #region [ 0) システムサウンドの構築  ]
             //-----------------------------
-            TJAPlayerPI.stageStartUp.eフェーズID = CStage.Eフェーズ.起動0_システムサウンドを構築;
+            systemSoundLoading?.Invoke();
 
             Trace.TraceInformation("0) システムサウンドを構築します。");
             Trace.Indent();
@@ -212,10 +212,7 @@ internal class CEnumSongs							// #27060 2011.2.7 yyagi 曲リストを取得�
                         }
                     }
                 }
-                lock (TJAPlayerPI.stageStartUp.list進行文字列)
-                {
-                    TJAPlayerPI.stageStartUp.list進行文字列.Add("SYSTEM SOUND...OK");
-                }
+                systemSoundLoaded?.Invoke();
             }
             finally
             {
@@ -226,7 +223,7 @@ internal class CEnumSongs							// #27060 2011.2.7 yyagi 曲リストを取得�
 
             #region [ 00) songlist.dbの読み込みによる曲リストの構築  ]
             //-----------------------------
-            TJAPlayerPI.stageStartUp.eフェーズID = CStage.Eフェーズ.起動00_songlistから曲リストを作成する;
+            songListLoading?.Invoke();
 
             Trace.TraceInformation("1) songlist.dbを読み込みます。");
             Trace.Indent();
@@ -244,18 +241,12 @@ internal class CEnumSongs							// #27060 2011.2.7 yyagi 曲リストを取得�
 
                     int scores = this.SongsManager.n検索されたスコア数;
                     Trace.TraceInformation("songlist.db の読み込みを完了しました。[{0}スコア]", scores);
-                    lock (TJAPlayerPI.stageStartUp.list進行文字列)
-                    {
-                        TJAPlayerPI.stageStartUp.list進行文字列.Add("SONG LIST...OK");
-                    }
+                    songListLoaded?.Invoke();
                 }
                 else
                 {
                     Trace.TraceInformation("初回の起動であるかまたはDTXManiaのバージョンが上がったため、songlist.db の読み込みをスキップします。");
-                    lock (TJAPlayerPI.stageStartUp.list進行文字列)
-                    {
-                        TJAPlayerPI.stageStartUp.list進行文字列.Add("SONG LIST...SKIPPED");
-                    }
+                    songListSkipped?.Invoke();
                 }
             }
             finally
@@ -267,7 +258,7 @@ internal class CEnumSongs							// #27060 2011.2.7 yyagi 曲リストを取得�
         }
         finally
         {
-            TJAPlayerPI.stageStartUp.eフェーズID = CStage.Eフェーズ.起動7_完了;
+            finished?.Invoke();
             TimeSpan span = (TimeSpan)(DateTime.Now - now);
             Trace.TraceInformation("起動所要時間: {0}", span.ToString());
             lock (this)							// #28700 2012.6.12 yyagi; state change must be in finally{} for exiting as of compact mode.

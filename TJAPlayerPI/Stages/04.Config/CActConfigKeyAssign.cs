@@ -1,5 +1,5 @@
 ﻿using FDK;
-using TJAPlayerPI.Common;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
 
@@ -30,7 +30,7 @@ internal class CActConfigKeyAssign : CActivity
         }
     }
 
-    public void tPushedEnter()
+    public void tPushedEnter(Action exit)
     {
         if (!this.bキー入力待ち)
         {
@@ -47,7 +47,7 @@ internal class CActConfigKeyAssign : CActivity
                     return;
 
                 case 0x11:
-                    TJAPlayerPI.stageConfig.tアサイン完了通知();
+                    exit?.Invoke();
                     return;
             }
             this.bキー入力待ち = true;
@@ -80,7 +80,7 @@ internal class CActConfigKeyAssign : CActivity
         this.n現在の選択行 = 0;
         this.bキー入力待ち = false;
         this.structReset用KeyAssign = new CConfigIni.CKeyAssign.STKEYASSIGN[0x10];
-        this.fontRenderer = CFontHelper.tCreateFont(16, CFontRenderer.FontStyle.Italic);
+        this.fontRenderer = HFontHelper.tCreateFont(16, CFontRenderer.FontStyle.Italic);
         base.On活性化();
     }
     public override void On非活性化()

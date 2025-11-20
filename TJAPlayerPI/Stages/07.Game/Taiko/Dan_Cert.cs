@@ -7,8 +7,9 @@ internal class Dan_Cert : CActivity
     /// <summary>
     /// 段位認定
     /// </summary>
-    public Dan_Cert()
+    public Dan_Cert(CStage演奏画面共通 stage演奏ドラム画面)
     {
+        this.stage演奏ドラム画面 = stage演奏ドラム画面;
     }
 
     //
@@ -33,12 +34,12 @@ internal class Dan_Cert : CActivity
 
         Counter_In = new CCounter(0, 999, 1, TJAPlayerPI.app.Timer);
         ScreenPoint = new double[] { TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldBGX[0] - (TJAPlayerPI.app.Tx.DanC_Screen?.szTextureSize.Width ?? 1280) / 2, 1280 }; //2020.06.06 Mr-Ojii twopointzero氏のソースコードをもとに改良
-        TJAPlayerPI.stage演奏ドラム画面.ReSetScore(TJAPlayerPI.DTX[0].List_DanSongs[NowShowingNumber].ScoreInit, TJAPlayerPI.DTX[0].List_DanSongs[NowShowingNumber].ScoreDiff, 0);
+        stage演奏ドラム画面.ReSetScore(TJAPlayerPI.DTX[0].List_DanSongs[NowShowingNumber].ScoreInit, TJAPlayerPI.DTX[0].List_DanSongs[NowShowingNumber].ScoreDiff, 0);
         IsAnimating = true;
 
         string subtitle = (TJAPlayerPI.app.ConfigToml.Game._SubtitleDispMode == ESubtitleDispMode.On || (TJAPlayerPI.app.ConfigToml.Game._SubtitleDispMode == ESubtitleDispMode.Compliant && TJAPlayerPI.DTX[0].SUBTITLEDisp)) ? TJAPlayerPI.DTX[0].List_DanSongs[NowShowingNumber].SubTitle : null;
 
-        TJAPlayerPI.stage演奏ドラム画面.actPanel.SetPanelString(TJAPlayerPI.DTX[0].List_DanSongs[NowShowingNumber].Title, subtitle, TJAPlayerPI.DTX[0].List_DanSongs[NowShowingNumber].Genre, 1 + NowShowingNumber + "曲目");
+        stage演奏ドラム画面.actPanel.SetPanelString(TJAPlayerPI.DTX[0].List_DanSongs[NowShowingNumber].Title, subtitle, TJAPlayerPI.DTX[0].List_DanSongs[NowShowingNumber].Genre, 1 + NowShowingNumber + "曲目");
         Sound_Section?.t再生を開始する();
     }
 
@@ -80,7 +81,7 @@ internal class Dan_Cert : CActivity
         }
         IsEnded = false;
 
-        if (TJAPlayerPI.stage選曲.n確定された曲の難易度[0] == (int)Difficulty.Dan)
+        if (TJAPlayerPI.app.n確定された曲の難易度[0] == (int)Difficulty.Dan)
             IsAnimating = true;
 
         Dan_Plate = TJAPlayerPI.app.tCreateTexture(Path.GetDirectoryName(TJAPlayerPI.DTX[0].strFilenameの絶対パス) + @"/Dan_Plate.png");
@@ -94,8 +95,8 @@ internal class Dan_Cert : CActivity
         if (Gauge is not null)
             if (Gauge.IsEnable)
             {
-                Gauge.Update((int)TJAPlayerPI.stage演奏ドラム画面.actGauge.db現在のゲージ値[0]);
-                var notesRemain = TJAPlayerPI.DTX[0].nノーツ数[3] - (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Perfect) - (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Good) - (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Bad) - (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Miss);
+                Gauge.Update((int)stage演奏ドラム画面.actGauge.db現在のゲージ値[0]);
+                var notesRemain = TJAPlayerPI.DTX[0].nノーツ数[3] - (stage演奏ドラム画面.nヒット数[0].Perfect) - (stage演奏ドラム画面.nヒット数[0].Good) - (stage演奏ドラム画面.nヒット数[0].Bad) - (stage演奏ドラム画面.nヒット数[0].Miss);
                 // 残り音符数が0になったときに判断されるやつ
                 if (notesRemain <= 0)
                 {
@@ -111,28 +112,28 @@ internal class Dan_Cert : CActivity
             switch (Challenge[i].Type)
             {
                 case Exam.Type.Gauge:
-                    isChangedAmount = Challenge[i].Update((int)TJAPlayerPI.stage演奏ドラム画面.actGauge.db現在のゲージ値[0]);
+                    isChangedAmount = Challenge[i].Update((int)stage演奏ドラム画面.actGauge.db現在のゲージ値[0]);
                     break;
                 case Exam.Type.JudgePerfect:
-                    isChangedAmount = Challenge[i].Update((int)TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Perfect);
+                    isChangedAmount = Challenge[i].Update((int)stage演奏ドラム画面.nヒット数[0].Perfect);
                     break;
                 case Exam.Type.JudgeGood:
-                    isChangedAmount = Challenge[i].Update((int)TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Good);
+                    isChangedAmount = Challenge[i].Update((int)stage演奏ドラム画面.nヒット数[0].Good);
                     break;
                 case Exam.Type.JudgeBad:
-                    isChangedAmount = Challenge[i].Update((int)TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Miss + TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Bad);
+                    isChangedAmount = Challenge[i].Update((int)stage演奏ドラム画面.nヒット数[0].Miss + stage演奏ドラム画面.nヒット数[0].Bad);
                     break;
                 case Exam.Type.Score:
-                    isChangedAmount = Challenge[i].Update((int)TJAPlayerPI.stage演奏ドラム画面.actScore.GetScore(0));
+                    isChangedAmount = Challenge[i].Update((int)stage演奏ドラム画面.actScore.GetScore(0));
                     break;
                 case Exam.Type.Roll:
-                    isChangedAmount = Challenge[i].Update((int)(TJAPlayerPI.stage演奏ドラム画面.GetRoll(0)));
+                    isChangedAmount = Challenge[i].Update((int)(stage演奏ドラム画面.GetRoll(0)));
                     break;
                 case Exam.Type.Hit:
-                    isChangedAmount = Challenge[i].Update((int)(TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Perfect + TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Good + TJAPlayerPI.stage演奏ドラム画面.GetRoll(0)));
+                    isChangedAmount = Challenge[i].Update((int)(stage演奏ドラム画面.nヒット数[0].Perfect + stage演奏ドラム画面.nヒット数[0].Good + stage演奏ドラム画面.GetRoll(0)));
                     break;
                 case Exam.Type.Combo:
-                    isChangedAmount = Challenge[i].Update((int)TJAPlayerPI.stage演奏ドラム画面.actCombo.n現在のコンボ数.Max[0]);
+                    isChangedAmount = Challenge[i].Update((int)stage演奏ドラム画面.actCombo.n現在のコンボ数.Max[0]);
                     break;
                 default:
                     break;
@@ -159,7 +160,7 @@ internal class Dan_Cert : CActivity
             }
             else
             {
-                var notesRemain = TJAPlayerPI.DTX[0].nノーツ数[3] - (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Perfect) - (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Good) - (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Bad) - (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Miss);
+                var notesRemain = TJAPlayerPI.DTX[0].nノーツ数[3] - (stage演奏ドラム画面.nヒット数[0].Perfect) - (stage演奏ドラム画面.nヒット数[0].Good) - (stage演奏ドラム画面.nヒット数[0].Bad) - (stage演奏ドラム画面.nヒット数[0].Miss);
                 // 残り音符数が0になったときに判断されるやつ
                 if (notesRemain <= 0)
                 {
@@ -186,7 +187,7 @@ internal class Dan_Cert : CActivity
                         if (notesRemain < (Challenge[i].GetValue(false) - Challenge[i].GetAmount())) Challenge[i].SetReached(true);
                         break;
                     case Exam.Type.Combo:
-                        if (notesRemain + TJAPlayerPI.stage演奏ドラム画面.actCombo.n現在のコンボ数[0] < ((Challenge[i].GetValue(false))) && TJAPlayerPI.stage演奏ドラム画面.actCombo.n現在のコンボ数.Max[0] < (Challenge[i].GetValue(false))) Challenge[i].SetReached(true);
+                        if (notesRemain + stage演奏ドラム画面.actCombo.n現在のコンボ数[0] < ((Challenge[i].GetValue(false))) && stage演奏ドラム画面.actCombo.n現在のコンボ数.Max[0] < (Challenge[i].GetValue(false))) Challenge[i].SetReached(true);
                         break;
                     default:
                         break;
@@ -261,7 +262,7 @@ internal class Dan_Cert : CActivity
 
     public override int On進行描画()
     {
-        if (TJAPlayerPI.stage選曲.n確定された曲の難易度[0] != (int)Difficulty.Dan) return base.On進行描画();
+        if (TJAPlayerPI.app.n確定された曲の難易度[0] != (int)Difficulty.Dan) return base.On進行描画();
         Counter_In?.t進行();
         Counter_Wait?.t進行();
         Counter_Out?.t進行();
@@ -322,7 +323,7 @@ internal class Dan_Cert : CActivity
             TJAPlayerPI.app.Tx.DanC_Background?.t2D描画(TJAPlayerPI.app.Device, 0, 0);
 
             // 残り音符数を描画する。
-            var notesRemain = TJAPlayerPI.DTX[0].nノーツ数[3] - (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Perfect) - (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Good) - (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Bad) - (TJAPlayerPI.stage演奏ドラム画面.nヒット数[0].Miss);
+            var notesRemain = TJAPlayerPI.DTX[0].nノーツ数[3] - (stage演奏ドラム画面.nヒット数[0].Perfect) - (stage演奏ドラム画面.nヒット数[0].Good) - (stage演奏ドラム画面.nヒット数[0].Bad) - (stage演奏ドラム画面.nヒット数[0].Miss);
 
             DrawNumber(notesRemain, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC.NumberXY[0], TJAPlayerPI.app.Skin.SkinConfig.Game.DanC.NumberXY[1], TJAPlayerPI.app.Skin.SkinConfig.Game.DanC.NumberPadding);
 
@@ -835,37 +836,6 @@ internal class Dan_Cert : CActivity
         return isFailed;
     }
 
-    /// <summary>
-    /// n個の条件で段位認定モードのステータスを返します。
-    /// </summary>
-    /// <param name="dan_C">条件。</param>
-    /// <returns>ExamStatus。</returns>
-    public Exam.Status GetExamStatus(Dan_C[] dan_C, Dan_C Gauge)
-    {
-        var status = Exam.Status.Better_Success;
-        var count = 0;
-        for (int i = 0; i < 3; i++)
-        {
-            if (dan_C[i] is not null && dan_C[i].IsEnable == true)
-                count++;
-        }
-        for (int i = 0; i < count; i++)
-        {
-            if (!dan_C[i].GetCleared(true)) status = Exam.Status.Success;
-        }
-        if (Gauge.IsEnable)
-            if (!Gauge.GetCleared(true))
-                status = Exam.Status.Success;
-        for (int i = 0; i < count; i++)
-        {
-            if (!dan_C[i].GetCleared(false)) status = Exam.Status.Failure;
-        }
-        if (Gauge.IsEnable)
-            if (!Gauge.GetCleared(false))
-                status = Exam.Status.Failure;
-        return status;
-    }
-
     public Dan_C[] GetExam()
     {
         return Challenge;
@@ -902,6 +872,7 @@ internal class Dan_Cert : CActivity
 
     #region[ private ]
     //-----------------
+    private CStage演奏画面共通 stage演奏ドラム画面;
     private int ExamCount;
     private ChallengeStatus[] Status = new ChallengeStatus[3];
     private CTexture Dan_Plate;

@@ -5,21 +5,6 @@ namespace TJAPlayerPI;
 internal class CStage選曲 : CStage
 {
     // プロパティ
-    public int[] n確定された曲の難易度
-    {
-        get;
-        private set;
-    }
-    public Cスコア r確定されたスコア
-    {
-        get;
-        internal set;
-    }
-    public C曲リストノード r確定された曲
-    {
-        get;
-        private set;
-    }
     public int[] n現在選択中の曲の難易度
     {
         get
@@ -36,13 +21,13 @@ internal class CStage選曲 : CStage
         base.listChildren.Add(this.actFIFO = new CActFIFOBlack());
         base.listChildren.Add(this.actFIfromResult = new CActFIFOBlack());
         base.listChildren.Add(this.actFOtoNowLoading = new CActFIFOStart());
-        base.listChildren.Add(this.act曲リスト = new CActSelect曲リスト());
-        base.listChildren.Add(this.actDifficultySelect = new CActSelectDifficultySelect());
-        base.listChildren.Add(this.actHistoryPanel = new CActSelectHistoryPanel());
+        base.listChildren.Add(this.act曲リスト = new CActSelect曲リスト(this));
+        base.listChildren.Add(this.actDifficultySelect = new CActSelectDifficultySelect(this));
+        base.listChildren.Add(this.actHistoryPanel = new CActSelectHistoryPanel(this));
         base.listChildren.Add(this.actPresound = new CActSelectPresound());
         base.listChildren.Add(this.actSortSongs = new CActSortSongs());
-        base.listChildren.Add(this.actPlayOption = new CActSelectPlayOption());
-        base.listChildren.Add(this.actChangeSE = new CActSelectChangeSE());
+        base.listChildren.Add(this.actChangeSE = new CActSelectChangeSE(actDifficultySelect));
+        base.listChildren.Add(this.actPlayOption = new CActSelectPlayOption(actDifficultySelect, actChangeSE));
     }
 
 
@@ -50,7 +35,7 @@ internal class CStage選曲 : CStage
 
     public void t選択曲変更通知()
     {
-        this.actPresound.t選択曲が変更された();
+        this.actPresound.t選択曲が変更された(act曲リスト.r現在選択中のスコア);
     }
 
     // CStage 実装
@@ -70,7 +55,6 @@ internal class CStage選曲 : CStage
         Trace.Indent();
         try
         {
-            this.n確定された曲の難易度 = new int[4];
             this.eFadeOut完了時の戻り値 = E戻り値.継続;
             this.bBGM再生済み = false;
             for (int i = 0; i < 4; i++)
@@ -130,7 +114,7 @@ internal class CStage選曲 : CStage
             if (base.b初めての進行描画)
             {
                 this.ct登場時アニメ用共通 = new CCounter(0, 100, 3, TJAPlayerPI.app.Timer);
-                if (TJAPlayerPI.r直前のステージ == TJAPlayerPI.stageResult)
+                if (TJAPlayerPI.r直前のステージ is CStageResult)
                 {
                     this.actFIfromResult.tFadeIn開始();
                     base.eフェーズID = CStage.Eフェーズ.選曲_結果画面からのFadeIn;
@@ -1216,11 +1200,11 @@ internal class CStage選曲 : CStage
     }
     private void t曲を選択する()
     {
-        this.r確定された曲 = this.act曲リスト.r現在選択中の曲;
-        this.r確定されたスコア = this.act曲リスト.r現在選択中のスコア;
-        this.n確定された曲の難易度[0] = this.act曲リスト.n現在選択中の曲の難易度レベル[0];
-        this.n確定された曲の難易度[1] = this.act曲リスト.n現在選択中の曲の難易度レベル[1];
-        if ((this.r確定された曲 is not null) && (this.r確定されたスコア is not null))
+        TJAPlayerPI.app.r確定された曲 = this.act曲リスト.r現在選択中の曲;
+        TJAPlayerPI.app.r確定されたスコア = this.act曲リスト.r現在選択中のスコア;
+        TJAPlayerPI.app.n確定された曲の難易度[0] = this.act曲リスト.n現在選択中の曲の難易度レベル[0];
+        TJAPlayerPI.app.n確定された曲の難易度[1] = this.act曲リスト.n現在選択中の曲の難易度レベル[1];
+        if ((TJAPlayerPI.app.r確定された曲 is not null) && (TJAPlayerPI.app.r確定されたスコア is not null))
         {
             this.eFadeOut完了時の戻り値 = E戻り値.選曲した;
             this.actFOtoNowLoading.tFadeOut開始();				// #27787 2012.3.10 yyagi 曲決定時の画面FadeOutの省略
@@ -1230,11 +1214,11 @@ internal class CStage選曲 : CStage
     }
     public void t曲を選択する(int nCurrentLevel)
     {
-        this.r確定された曲 = this.act曲リスト.r現在選択中の曲;
-        this.r確定されたスコア = this.act曲リスト.r現在選択中のスコア;
-        this.n確定された曲の難易度[0] = nCurrentLevel;
-        this.n確定された曲の難易度[1] = nCurrentLevel;
-        if ((this.r確定された曲 is not null) && (this.r確定されたスコア is not null))
+        TJAPlayerPI.app.r確定された曲 = this.act曲リスト.r現在選択中の曲;
+        TJAPlayerPI.app.r確定されたスコア = this.act曲リスト.r現在選択中のスコア;
+        TJAPlayerPI.app.n確定された曲の難易度[0] = nCurrentLevel;
+        TJAPlayerPI.app.n確定された曲の難易度[1] = nCurrentLevel;
+        if ((TJAPlayerPI.app.r確定された曲 is not null) && (TJAPlayerPI.app.r確定されたスコア is not null))
         {
             this.eFadeOut完了時の戻り値 = E戻り値.選曲した;
             this.actFOtoNowLoading.tFadeOut開始();				// #27787 2012.3.10 yyagi 曲決定時の画面FadeOutの省略
@@ -1245,11 +1229,11 @@ internal class CStage選曲 : CStage
     }
     public void t曲を選択する(int nCurrentLevel, int nCurrentLevel2)
     {
-        this.r確定された曲 = this.act曲リスト.r現在選択中の曲;
-        this.r確定されたスコア = this.act曲リスト.r現在選択中のスコア;
-        this.n確定された曲の難易度[0] = nCurrentLevel;
-        this.n確定された曲の難易度[1] = nCurrentLevel2;
-        if ((this.r確定された曲 is not null) && (this.r確定されたスコア is not null))
+        TJAPlayerPI.app.r確定された曲 = this.act曲リスト.r現在選択中の曲;
+        TJAPlayerPI.app.r確定されたスコア = this.act曲リスト.r現在選択中のスコア;
+        TJAPlayerPI.app.n確定された曲の難易度[0] = nCurrentLevel;
+        TJAPlayerPI.app.n確定された曲の難易度[1] = nCurrentLevel2;
+        if ((TJAPlayerPI.app.r確定された曲 is not null) && (TJAPlayerPI.app.r確定されたスコア is not null))
         {
             this.eFadeOut完了時の戻り値 = E戻り値.選曲した;
             this.actFOtoNowLoading.tFadeOut開始();                // #27787 2012.3.10 yyagi 曲決定時の画面FadeOutの省略

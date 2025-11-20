@@ -1,16 +1,14 @@
-﻿using DiscordRPC.Helper;
-using FDK;
+﻿using FDK;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Formats.Asn1.AsnWriter;
 
-namespace TJAPlayerPI.Common
+namespace TJAPlayerPI.Helper
 {
-    internal static class CFontHelper
+    internal static class HFontHelper
     {
         public enum FontType
         {

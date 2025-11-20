@@ -84,11 +84,13 @@ internal class CAct演奏Drums風船 : CActivity
             this.t文字表示(TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.BalloonNumberX[nPlayer] + TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[nPlayer] - 414, TJAPlayerPI.app.Skin.SkinConfig.Game.Balloon.BalloonNumberY[nPlayer], n連打数, nPlayer);
             //CDTXMania.act文字コンソール.tPrint( 0, 0, C文字コンソール.EFontType.白, n連打数.ToString() );
         }
+        /*
         if (n連打数 == 0 && TJAPlayerPI.stage演奏ドラム画面.actChara.b風船連打中[nPlayer])
         {
             TJAPlayerPI.stage演奏ドラム画面.actChara.b風船連打中[nPlayer] = false;
             TJAPlayerPI.stage演奏ドラム画面.b連打中[nPlayer] = false;
         }
+        */
 
         if (this.bIsNowPlayBalloonBrokeAnimation[nPlayer])
         {

@@ -4,8 +4,10 @@ namespace TJAPlayerPI;
 
 class CAct演奏Drums特訓モード : CActivity
 {
-    public CAct演奏Drums特訓モード()
+    public CAct演奏Drums特訓モード(CStage演奏画面共通 stage演奏ドラム画面, CActPlayInfo actPlayInfo)
     {
+        this.stage演奏ドラム画面 = stage演奏ドラム画面;
+        this.actPlayInfo = actPlayInfo;
     }
 
     public override void On活性化()
@@ -116,7 +118,7 @@ class CAct演奏Drums特訓モード : CActivity
                     if (this.n現在の小節線 > 1)
                     {
                         this.n現在の小節線--;
-                        TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0] = this.n現在の小節線;
+                        actPlayInfo.NowMeasure[0] = this.n現在の小節線;
 
                         this.t譜面の表示位置を合わせる(true);
                         TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND特訓スクロール].t再生する();
@@ -128,7 +130,7 @@ class CAct演奏Drums特訓モード : CActivity
                             if (this.JumpPointList[index].Time <= CSoundManager.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0))
                             {
                                 this.n現在の小節線 = this.JumpPointList[index].Measure;
-                                TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0] = this.n現在の小節線;
+                                actPlayInfo.NowMeasure[0] = this.n現在の小節線;
                                 this.t譜面の表示位置を合わせる(false);
                                 break;
                             }
@@ -143,7 +145,7 @@ class CAct演奏Drums特訓モード : CActivity
                     if (this.n現在の小節線 < this.n小節の総数)
                     {
                         this.n現在の小節線++;
-                        TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0] = this.n現在の小節線;
+                        actPlayInfo.NowMeasure[0] = this.n現在の小節線;
 
                         this.t譜面の表示位置を合わせる(true);
                         TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND特訓スクロール].t再生する();
@@ -155,7 +157,7 @@ class CAct演奏Drums特訓モード : CActivity
                             if (this.JumpPointList[index].Time >= CSoundManager.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0))
                             {
                                 this.n現在の小節線 = this.JumpPointList[index].Measure;
-                                TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0] = this.n現在の小節線;
+                                actPlayInfo.NowMeasure[0] = this.n現在の小節線;
                                 this.t譜面の表示位置を合わせる(false);
                                 break;
                             }
@@ -171,7 +173,7 @@ class CAct演奏Drums特訓モード : CActivity
                     this.n現在の小節線 -= TJAPlayerPI.app.ConfigToml.PlayOption.TrainingSkipMeasures;
                     this.n現在の小節線 = Math.Clamp(this.n現在の小節線, 1, this.n小節の総数);
 
-                    TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0] = this.n現在の小節線;
+                    actPlayInfo.NowMeasure[0] = this.n現在の小節線;
 
                     this.t譜面の表示位置を合わせる(true);
                     TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND特訓スクロール].t再生する();
@@ -184,7 +186,7 @@ class CAct演奏Drums特訓モード : CActivity
                     this.n現在の小節線 += TJAPlayerPI.app.ConfigToml.PlayOption.TrainingSkipMeasures;
                     this.n現在の小節線 = Math.Clamp(this.n現在の小節線, 1, this.n小節の総数);
 
-                    TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0] = this.n現在の小節線;
+                    actPlayInfo.NowMeasure[0] = this.n現在の小節線;
 
                     this.t譜面の表示位置を合わせる(true);
                     TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND特訓スクロール].t再生する();
@@ -219,7 +221,7 @@ class CAct演奏Drums特訓モード : CActivity
                     if (this.n現在の小節線 > 1)
                     {
                         this.n現在の小節線 = 1;
-                        TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0] = this.n現在の小節線;
+                        actPlayInfo.NowMeasure[0] = this.n現在の小節線;
 
                         this.t譜面の表示位置を合わせる(true);
                         TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND特訓スクロール].t再生する();
@@ -233,7 +235,7 @@ class CAct演奏Drums特訓モード : CActivity
                     if (this.n現在の小節線 < this.n小節の総数)
                     {
                         this.n現在の小節線 = this.n小節の総数;
-                        TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0] = this.n現在の小節線;
+                        actPlayInfo.NowMeasure[0] = this.n現在の小節線;
 
                         this.t譜面の表示位置を合わせる(true);
                         TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND特訓スクロール].t再生する();
@@ -257,9 +259,9 @@ class CAct演奏Drums特訓モード : CActivity
             }
             if (!this.b特訓PAUSE)
             {
-                if (this.n現在の小節線 < TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0])
+                if (this.n現在の小節線 < actPlayInfo.NowMeasure[0])
                 {
-                    this.n現在の小節線 = TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0];
+                    this.n現在の小節線 = actPlayInfo.NowMeasure[0];
                 }
 
                 if (CSoundManager.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0) > this.n最終演奏位置ms)
@@ -331,7 +333,7 @@ class CAct演奏Drums特訓モード : CActivity
         if (TJAPlayerPI.app.Tx.Tokkun_Speed_Measure is not null)
             TJAPlayerPI.app.Tx.Tokkun_Speed_Measure.t2D描画(TJAPlayerPI.app.Device, 0, 360);
         var maxMeasureStr = this.n小節の総数.ToString();
-        var measureStr = TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0].ToString();
+        var measureStr = actPlayInfo.NowMeasure[0].ToString();
         if (TJAPlayerPI.app.Tx.Tokkun_SmallNumber is not null)
         {
             var x = TJAPlayerPI.app.Skin.SkinConfig.Game.Training.MaxMeasureCountXY[0];
@@ -382,11 +384,11 @@ class CAct演奏Drums特訓モード : CActivity
     {
         CDTX dTX = TJAPlayerPI.DTX[0];
 
-        TJAPlayerPI.stage演奏ドラム画面.actLaneTaiko.t判定枠Reset();
+        stage演奏ドラム画面.actLaneTaiko.t判定枠Reset();
 
         this.nスクロール後ms = CSoundManager.rc演奏用タイマ.n現在時刻ms;
 
-        TJAPlayerPI.stage演奏ドラム画面.On活性化();
+        stage演奏ドラム画面.On活性化();
         CSoundManager.rc演奏用タイマ.t一時停止();
 
         for (int i = 0; i < dTX.listChip.Count; i++)
@@ -400,9 +402,9 @@ class CAct演奏Drums特訓モード : CActivity
             }
         }
 
-        TJAPlayerPI.DTX[0].t全チップの再生一時停止();
-        TJAPlayerPI.stage演奏ドラム画面.bPAUSE = true;
-        TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0] = this.n現在の小節線;
+        stage演奏ドラム画面.t全チップの再生一時停止();
+        stage演奏ドラム画面.bPAUSE = true;
+        actPlayInfo.NowMeasure[0] = this.n現在の小節線;
         this.b特訓PAUSE = true;
 
         this.t譜面の表示位置を合わせる(false);
@@ -412,25 +414,25 @@ class CAct演奏Drums特訓モード : CActivity
     {
         CDTX dTX = TJAPlayerPI.DTX[0];
 
-        TJAPlayerPI.stage演奏ドラム画面.actLaneTaiko.t判定枠Reset();
+        stage演奏ドラム画面.actLaneTaiko.t判定枠Reset();
 
         this.bスクロール中 = false;
         CSoundManager.rc演奏用タイマ.n現在時刻ms = this.nスクロール後ms;
 
-        int n演奏開始Chip = TJAPlayerPI.stage演奏ドラム画面.n現在のトップChip;
+        int n演奏開始Chip = stage演奏ドラム画面.n現在のトップChip;
         int finalStartBar;
 
         finalStartBar = this.n現在の小節線 - 2;
         if (finalStartBar < 0) finalStartBar = 0;
 
-        TJAPlayerPI.stage演奏ドラム画面.t演奏位置の変更(finalStartBar, 0);
+        stage演奏ドラム画面.t演奏位置の変更(finalStartBar, 0);
 
 
-        int n少し戻ってから演奏開始Chip = TJAPlayerPI.stage演奏ドラム画面.n現在のトップChip;
+        int n少し戻ってから演奏開始Chip = stage演奏ドラム画面.n現在のトップChip;
 
-        TJAPlayerPI.stage演奏ドラム画面.actPlayInfo.NowMeasure[0] = 0;
-        TJAPlayerPI.stage演奏ドラム画面.t数値の初期化(true, true);
-        TJAPlayerPI.stage演奏ドラム画面.On活性化();
+        actPlayInfo.NowMeasure[0] = 0;
+        stage演奏ドラム画面.t数値の初期化(true, true);
+        stage演奏ドラム画面.On活性化();
 
         for (int i = 0; i < dTX.listChip.Count; i++)
         {
@@ -458,7 +460,7 @@ class CAct演奏Drums特訓モード : CActivity
 
         for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
         {
-            TJAPlayerPI.stage演奏ドラム画面.chip現在処理中の連打チップ[i] = null;
+            stage演奏ドラム画面.chip現在処理中の連打チップ[i] = null;
         }
 
         this.b特訓PAUSE = false;
@@ -478,30 +480,30 @@ class CAct演奏Drums特訓モード : CActivity
             if (pChip.nチャンネル番号 == 0x50 && pChip.n整数値_内部番号 > n現在の小節線 - 1)
             {
                 bSuccessSeek = true;
-                TJAPlayerPI.stage演奏ドラム画面.n現在のトップChip = i;
+                stage演奏ドラム画面.n現在のトップChip = i;
                 break;
             }
         }
         if (!bSuccessSeek)
         {
-            TJAPlayerPI.stage演奏ドラム画面.n現在のトップChip = 0;
+            stage演奏ドラム画面.n現在のトップChip = 0;
         }
         else
         {
-            while (dTX.listChip[TJAPlayerPI.stage演奏ドラム画面.n現在のトップChip].n発声時刻ms == dTX.listChip[TJAPlayerPI.stage演奏ドラム画面.n現在のトップChip - 1].n発声時刻ms && TJAPlayerPI.stage演奏ドラム画面.n現在のトップChip != 0)
-                TJAPlayerPI.stage演奏ドラム画面.n現在のトップChip--;
+            while (dTX.listChip[stage演奏ドラム画面.n現在のトップChip].n発声時刻ms == dTX.listChip[stage演奏ドラム画面.n現在のトップChip - 1].n発声時刻ms && stage演奏ドラム画面.n現在のトップChip != 0)
+                stage演奏ドラム画面.n現在のトップChip--;
         }
 
         if (doScroll)
         {
-            this.nスクロール後ms = (long)(dTX.listChip[TJAPlayerPI.stage演奏ドラム画面.n現在のトップChip].n発声時刻ms / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
+            this.nスクロール後ms = (long)(dTX.listChip[stage演奏ドラム画面.n現在のトップChip].n発声時刻ms / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
             this.bスクロール中 = true;
 
             this.ctスクロールカウンター = new CCounter(0, TJAPlayerPI.app.Skin.SkinConfig.Game.Training.ScrollTime, 1, TJAPlayerPI.app.Timer);
         }
         else
         {
-            CSoundManager.rc演奏用タイマ.n現在時刻ms = (long)(dTX.listChip[TJAPlayerPI.stage演奏ドラム画面.n現在のトップChip].n発声時刻ms / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
+            CSoundManager.rc演奏用タイマ.n現在時刻ms = (long)(dTX.listChip[stage演奏ドラム画面.n現在のトップChip].n発声時刻ms / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
             this.nスクロール後ms = CSoundManager.rc演奏用タイマ.n現在時刻ms;
         }
     }
@@ -531,6 +533,8 @@ class CAct演奏Drums特訓モード : CActivity
     public int n小節の総数;
 
     #region [private]
+    private CStage演奏画面共通 stage演奏ドラム画面;
+    private CActPlayInfo actPlayInfo;
     private long nスクロール前ms;
     private long nスクロール後ms;
     private long n最終演奏位置ms;

@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI.Common
 {
@@ -14,8 +15,8 @@ namespace TJAPlayerPI.Common
             if (this.b活性化してる)
                 return;
 
-            pfNameFont = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.NamePlate.NameSize);
-            pfTitleFont = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.NamePlate.TitleSize);
+            pfNameFont = HFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.NamePlate.NameSize);
+            pfTitleFont = HFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.NamePlate.TitleSize);
 
             for (int nPlayer = 0; nPlayer < 2; nPlayer++)
             {
@@ -137,7 +138,7 @@ namespace TJAPlayerPI.Common
             if (pfNameFont is not null)
             {
                 //padding 24
-                txPlayerName[nPlayer] = CFontHelper.tCreateFontTexture(pfNameFont, TJAPlayerPI.app.SaveManager.SaveDatas[nPlayer].Name, Color.White, Color.Black, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio);
+                txPlayerName[nPlayer] = HFontHelper.tCreateFontTexture(pfNameFont, TJAPlayerPI.app.SaveManager.SaveDatas[nPlayer].Name, Color.White, Color.Black, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio);
             }
         }
 
@@ -146,7 +147,7 @@ namespace TJAPlayerPI.Common
             TJAPlayerPI.t安全にDisposeする(ref txTitle[nPlayer]);
             if (pfTitleFont is not null)
             {
-                txTitle[nPlayer] = CFontHelper.tCreateFontTexture(pfTitleFont, "", Color.Black);
+                txTitle[nPlayer] = HFontHelper.tCreateFontTexture(pfTitleFont, "", Color.Black);
             }
         }
 

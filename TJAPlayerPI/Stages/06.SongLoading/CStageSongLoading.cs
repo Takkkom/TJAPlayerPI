@@ -1,5 +1,5 @@
 ﻿using FDK;
-using TJAPlayerPI.Common;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
 
@@ -26,7 +26,7 @@ internal class CStageSongLoading : CStage
             this.nBGM再生開始時刻 = -1;
             this.nBGMの総再生時間ms = 0;
 
-            var 譜面情報 = TJAPlayerPI.stage選曲.r確定されたスコア.譜面情報;
+            var 譜面情報 = TJAPlayerPI.app.r確定されたスコア.譜面情報;
             this.strTitle = 譜面情報.Title;
             this.strSubTitle = 譜面情報.SubTitle;
 
@@ -66,7 +66,7 @@ internal class CStageSongLoading : CStage
 
                 if (!string.IsNullOrEmpty(タイトル))
                 {
-                    using (CFontRenderer pfTITLE = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.SongLoading.TitleFontSize))
+                    using (CFontRenderer pfTITLE = HFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.SongLoading.TitleFontSize))
                     {
                         using (var bmpSongTitle = pfTITLE.DrawText(タイトル, TJAPlayerPI.app.Skin.SkinConfig.SongLoading._TitleForeColor, TJAPlayerPI.app.Skin.SkinConfig.SongLoading._TitleBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
                         {
@@ -77,7 +77,7 @@ internal class CStageSongLoading : CStage
 
                     if (!string.IsNullOrEmpty(サブタイトル))
                     {
-                        using (CFontRenderer pfSUBTITLE = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.SongLoading.SubTitleFontSize))
+                        using (CFontRenderer pfSUBTITLE = HFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.SongLoading.SubTitleFontSize))
                         {
                             using (var bmpSongSubTitle = pfSUBTITLE.DrawText(サブタイトル, TJAPlayerPI.app.Skin.SkinConfig.SongLoading._SubTitleForeColor, TJAPlayerPI.app.Skin.SkinConfig.SongLoading._SubTitleBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
                             {
@@ -130,7 +130,7 @@ internal class CStageSongLoading : CStage
         //-----------------------------
         if (base.b初めての進行描画)
         {
-            if (TJAPlayerPI.stage選曲.n確定された曲の難易度[0] != (int)Difficulty.Dan)
+            if (TJAPlayerPI.app.n確定された曲の難易度[0] != (int)Difficulty.Dan)
             {
                 TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND曲読込開始音].t再生する();
                 this.nBGM再生開始時刻 = CSoundManager.rc演奏用タイマ.n現在時刻ms;
@@ -168,7 +168,7 @@ internal class CStageSongLoading : CStage
                 TJAPlayerPI.app.Tx.SongLoading_BG.t2D拡大率考慮描画(TJAPlayerPI.app.Device, CTexture.RefPnt.Center, TJAPlayerPI.app.LogicalSize.Width / 2, TJAPlayerPI.app.LogicalSize.Height / 2);
         }
 
-        if (TJAPlayerPI.stage選曲.n確定された曲の難易度[0] != (int)Difficulty.Dan)
+        if (TJAPlayerPI.app.n確定された曲の難易度[0] != (int)Difficulty.Dan)
         {
             if (TJAPlayerPI.app.ConfigToml.EnableSkinV2)
             {
@@ -191,7 +191,7 @@ internal class CStageSongLoading : CStage
 
                 if (this.txTitle is not null)
                 {
-                    int nサブタイトル補正 = string.IsNullOrEmpty(TJAPlayerPI.stage選曲.r確定されたスコア.譜面情報.SubTitle) ? 15 : 0;
+                    int nサブタイトル補正 = string.IsNullOrEmpty(TJAPlayerPI.app.r確定されたスコア.譜面情報.SubTitle) ? 15 : 0;
 
                     this.txTitle.Opacity = CConvert.nParsentTo255((this.ct曲名表示.n現在の値 / 30.0));
                     if (TJAPlayerPI.app.Skin.SkinConfig.SongLoading._v2TitleReferencePoint == CSkin.EReferencePoint.Left)
@@ -245,7 +245,7 @@ internal class CStageSongLoading : CStage
 
                 if (this.txTitle is not null)
                 {
-                    int nサブタイトル補正 = string.IsNullOrEmpty(TJAPlayerPI.stage選曲.r確定されたスコア.譜面情報.SubTitle) ? 15 : 0;
+                    int nサブタイトル補正 = string.IsNullOrEmpty(TJAPlayerPI.app.r確定されたスコア.譜面情報.SubTitle) ? 15 : 0;
 
                     this.txTitle.Opacity = CConvert.nParsentTo255((this.ct曲名表示.n現在の値 / 30.0));
                     if (TJAPlayerPI.app.Skin.SkinConfig.SongLoading._TitleReferencePoint == CSkin.EReferencePoint.Left)
@@ -294,7 +294,7 @@ internal class CStageSongLoading : CStage
             case CStage.Eフェーズ.NOWLOADING_DTXファイルを読み込む:
                 {
                     timeBeginLoad = DateTime.Now;
-                    string str = TJAPlayerPI.stage選曲.r確定されたスコア.FileInfo.FileAbsolutePath;
+                    string str = TJAPlayerPI.app.r確定されたスコア.FileInfo.FileAbsolutePath;
 
                     CScoreJson json = CScoreJson.Load(str + ".score.json");
 
@@ -305,7 +305,7 @@ internal class CStageSongLoading : CStage
                     {
                         bool bSession = TJAPlayerPI.app.ConfigToml.PlayOption.Session &&
                                         TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount == 2 &&
-                                        TJAPlayerPI.stage選曲.n確定された曲の難易度[0] == TJAPlayerPI.stage選曲.n確定された曲の難易度[1];
+                                        TJAPlayerPI.app.n確定された曲の難易度[0] == TJAPlayerPI.app.n確定された曲の難易度[1];
 
                         for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
                             TJAPlayerPI.DTX[i] = new CDTX(str, false, json.BGMAdjust, i, bSession);
@@ -322,13 +322,13 @@ internal class CStageSongLoading : CStage
                         Trace.TraceInformation("DTX読込所要時間:           {0}", span.ToString());
 
                         // 段位認定モード用。
-                        if (TJAPlayerPI.stage選曲.n確定された曲の難易度[0] == (int)Difficulty.Dan && TJAPlayerPI.DTX[0].List_DanSongs is not null)
+                        if (TJAPlayerPI.app.n確定された曲の難易度[0] == (int)Difficulty.Dan && TJAPlayerPI.DTX[0].List_DanSongs is not null)
                         {
                             for (int i = 0; i < TJAPlayerPI.DTX[0].List_DanSongs.Count; i++)
                             {
                                 if (!string.IsNullOrEmpty(TJAPlayerPI.DTX[0].List_DanSongs[i].Title))
                                 {
-                                    using (var pfTitle = CFontHelper.tCreateFont(32))
+                                    using (var pfTitle = HFontHelper.tCreateFont(32))
                                     {
                                         using (var bmpSongTitle = pfTitle.DrawText(TJAPlayerPI.DTX[0].List_DanSongs[i].Title, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC._TitleForeColor, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC._TitleBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
                                         {
@@ -340,7 +340,7 @@ internal class CStageSongLoading : CStage
 
                                 if (!string.IsNullOrEmpty(TJAPlayerPI.DTX[0].List_DanSongs[i].SubTitle))
                                 {
-                                    using (var pfSubTitle = CFontHelper.tCreateFont(19))
+                                    using (var pfSubTitle = HFontHelper.tCreateFont(19))
                                     {
                                         using (var bmpSongSubTitle = pfSubTitle.DrawText(TJAPlayerPI.DTX[0].List_DanSongs[i].SubTitle, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC._SubTitleForeColor, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC._SubTitleBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
                                         {
@@ -383,7 +383,7 @@ internal class CStageSongLoading : CStage
                             TJAPlayerPI.DTX[nPlayer].t太鼓チップのランダム化(TJAPlayerPI.app.ConfigToml.PlayOption._Random[nPlayer]);
                         }
 
-                        TJAPlayerPI.stage演奏ドラム画面.On活性化();
+                        //TJAPlayerPI.stage演奏ドラム画面.On活性化();
 
                         span = (TimeSpan)(DateTime.Now - timeBeginLoadWAV);
 

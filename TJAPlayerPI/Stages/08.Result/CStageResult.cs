@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
 
@@ -16,7 +17,7 @@ internal class CStageResult : CStage
         this.cRecords = new CScoreJson.CRecord[2];
         base.eStageID = CStage.EStage.Result;
         base.eフェーズID = CStage.Eフェーズ.共通_通常状態;
-        base.listChildren.Add(this.actParameterPanel = new CActResultParameterPanel());
+        base.listChildren.Add(this.actParameterPanel = new CActResultParameterPanel(this));
         base.listChildren.Add(this.actSongBar = new CActResultSongBar());
         base.listChildren.Add(this.actFI = new CActFIFOResult());
         base.listChildren.Add(this.actFO = new CActFIFOBlack());
@@ -46,67 +47,67 @@ internal class CStageResult : CStage
                 {
                     #region [ .score.json の作成と出力 ]
                     //王冠の更新
-                    if (TJAPlayerPI.stage選曲.n確定された曲の難易度[i] != (int)Difficulty.Dan)
+                    if (TJAPlayerPI.app.n確定された曲の難易度[i] != (int)Difficulty.Dan)
                     {
                         if (this.cRecords[i].Gauge < 80)
-                            json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown, 0);
+                            json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown, 0);
                         else if (this.cRecords[i].MissCount != 0 && this.cRecords[i].BadCount != 0)
-                            json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown, 1);
+                            json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown, 1);
                         else if (this.cRecords[i].GoodCount != 0)
-                            json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown, 2);
+                            json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown, 2);
                         else
-                            json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown, 3);
+                            json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown, 3);
                     }
                     else
                     {
-                        switch (TJAPlayerPI.stage演奏ドラム画面.actDan.GetExamStatus(this.cRecords[i].DanC, this.cRecords[i].DanCGauge))
+                        switch (HDanHelper.GetExamStatus(this.cRecords[i].DanC, this.cRecords[i].DanCGauge))
                         {
                             case Exam.Status.Success:
-                                json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown, 1);
+                                json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown, 1);
                                 break;
                             case Exam.Status.Better_Success:
-                                json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown, 2);
+                                json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown, 2);
                                 break;
                             default:
-                                json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown, 0);
+                                json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown = Math.Max(json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown, 0);
                                 break;
                         }
                     }
 
                     //LastPlayの更新
-                    json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].LastPlay = this.cRecords[i];
+                    json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].LastPlay = this.cRecords[i];
 
                     //HiScoreの更新
                     {
                         int j;
-                        for (j = 0; j < json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].HiScore.Count; j++)
-                            if (this.cRecords[i].Score >= json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].HiScore[j].Score)
+                        for (j = 0; j < json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore.Count; j++)
+                            if (this.cRecords[i].Score >= json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore[j].Score)
                                 break;
 
-                        json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].HiScore.Insert(j, this.cRecords[i]);
+                        json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore.Insert(j, this.cRecords[i]);
                     }
 
                     //3個以上だった場合、3個に丸める
-                    while (json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].HiScore.Count > 3)
-                        json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].HiScore.RemoveAt(3);
+                    while (json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore.Count > 3)
+                        json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore.RemoveAt(3);
 
                     //クリアしていた場合、クリアのカウントを増やす
                     if (this.cRecords[i].Gauge >= 80)
-                        json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].ClearCount++;
+                        json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].ClearCount++;
 
                     //書き出し
                     json.Save(str);
                     #endregion
 
                     #region [ 選曲画面の譜面情報の更新 ]
-                    Cスコア cスコア = TJAPlayerPI.stage選曲.r確定されたスコア;
-                    cスコア.譜面情報.nCrown[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]] = json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].Crown;
-                    for (int k = 0; k < json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].HiScore.Count; k++)
+                    Cスコア cスコア = TJAPlayerPI.app.r確定されたスコア;
+                    cスコア.譜面情報.nCrown[TJAPlayerPI.app.n確定された曲の難易度[i]] = json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].Crown;
+                    for (int k = 0; k < json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore.Count; k++)
                     {
-                        cスコア.譜面情報.nHiScore[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]][k] = (int)json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].HiScore[k].Score;
-                        cスコア.譜面情報.strHiScorerName[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]][k] = json.Records[TJAPlayerPI.stage選曲.n確定された曲の難易度[i]].HiScore[k].PlayerName;
+                        cスコア.譜面情報.nHiScore[TJAPlayerPI.app.n確定された曲の難易度[i]][k] = (int)json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore[k].Score;
+                        cスコア.譜面情報.strHiScorerName[TJAPlayerPI.app.n確定された曲の難易度[i]][k] = json.Records[TJAPlayerPI.app.n確定された曲の難易度[i]].HiScore[k].PlayerName;
                     }
-                    TJAPlayerPI.stage選曲.r確定されたスコア = cスコア;
+                    TJAPlayerPI.app.r確定されたスコア = cスコア;
                     #endregion
 
                 }

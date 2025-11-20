@@ -6,8 +6,9 @@ internal class Rainbow : CActivity
 {
     // コンストラクタ
 
-    public Rainbow()
+    public Rainbow(CStage演奏画面共通 stage演奏ドラム画面)
     {
+        this.stage演奏ドラム画面 = stage演奏ドラム画面;
     }
 
     public virtual void Start(int player)
@@ -75,7 +76,7 @@ internal class Rainbow : CActivity
                         //this.st虹[f].ct進行.n現在の値 = 164;
 
 
-                        TJAPlayerPI.app.Tx.Effects_Rainbow.vcScaling.X = 1.0f - ((float)(TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[0] - TJAPlayerPI.stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[0, 0]) / (float)TJAPlayerPI.app.Tx.Effects_Rainbow.szTextureSize.Width);
+                        TJAPlayerPI.app.Tx.Effects_Rainbow.vcScaling.X = 1.0f - ((float)(TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[0] - stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[0, 0]) / (float)TJAPlayerPI.app.Tx.Effects_Rainbow.szTextureSize.Width);
 
                         if (this.Rainbow1P[f].Counter.n現在の値 < 82)
                         {
@@ -106,7 +107,7 @@ internal class Rainbow : CActivity
                     if (TJAPlayerPI.app.Tx.Effects_Rainbow is not null && this.Rainbow2P[f].Player == 1) //画像が出来るまで
                     {
                         //this.st虹[f].ct進行.n現在の値 = 164;
-                        TJAPlayerPI.app.Tx.Effects_Rainbow.vcScaling.X = 1.0f - ((float)(TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[1] - TJAPlayerPI.stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[1, 0]) / (float)TJAPlayerPI.app.Tx.Effects_Rainbow.szTextureSize.Width);
+                        TJAPlayerPI.app.Tx.Effects_Rainbow.vcScaling.X = 1.0f - ((float)(TJAPlayerPI.app.Skin.SkinConfig.Game.ScrollFieldX[1] - stage演奏ドラム画面.actLaneTaiko.nDefaultJudgePos[1, 0]) / (float)TJAPlayerPI.app.Tx.Effects_Rainbow.szTextureSize.Width);
 
                         if (this.Rainbow2P[f].Counter.n現在の値 < 82)
                         {
@@ -144,6 +145,8 @@ internal class Rainbow : CActivity
 
     private StructRainbow[] Rainbow1P = new StructRainbow[2];
     private StructRainbow[] Rainbow2P = new StructRainbow[2];
+
+    private CStage演奏画面共通 stage演奏ドラム画面;
 
     //-----------------
     #endregion

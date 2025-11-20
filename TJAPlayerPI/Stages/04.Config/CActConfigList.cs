@@ -1,6 +1,6 @@
 ﻿using FDK;
 using SkiaSharp;
-using TJAPlayerPI.Common;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
 
@@ -690,7 +690,7 @@ internal class CActConfigList : CActivity
         }
         // これ以外なら何もしない
     }
-    public void tPushedEnter()
+    public void tPushedEnter(Action<EKeyConfigPad> selected)
     {
         TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND決定音]?.t再生する();
         if (this.b要素値にフォーカス中)
@@ -710,46 +710,46 @@ internal class CActConfigList : CActivity
         //太鼓のキー設定。
         else if (this.list項目リスト[this.n現在の選択項目] == this.iKeyAssignTaikoLRed)
         {
-            TJAPlayerPI.stageConfig.tパッド選択通知(EKeyConfigPad.LRed);
+            selected?.Invoke(EKeyConfigPad.LRed);
         }
         else if (this.list項目リスト[this.n現在の選択項目] == this.iKeyAssignTaikoRRed)
         {
-            TJAPlayerPI.stageConfig.tパッド選択通知(EKeyConfigPad.RRed);
+            selected?.Invoke(EKeyConfigPad.RRed);
         }
         else if (this.list項目リスト[this.n現在の選択項目] == this.iKeyAssignTaikoLBlue)
         {
-            TJAPlayerPI.stageConfig.tパッド選択通知(EKeyConfigPad.LBlue);
+            selected?.Invoke(EKeyConfigPad.LBlue);
         }
         else if (this.list項目リスト[this.n現在の選択項目] == this.iKeyAssignTaikoRBlue)
         {
-            TJAPlayerPI.stageConfig.tパッド選択通知(EKeyConfigPad.RBlue);
+            selected?.Invoke(EKeyConfigPad.RBlue);
         }
 
         //太鼓のキー設定。2P
         else if (this.list項目リスト[this.n現在の選択項目] == this.iKeyAssignTaikoLRed2P)
         {
-            TJAPlayerPI.stageConfig.tパッド選択通知(EKeyConfigPad.LRed2P);
+            selected?.Invoke(EKeyConfigPad.LRed2P);
         }
         else if (this.list項目リスト[this.n現在の選択項目] == this.iKeyAssignTaikoRRed2P)
         {
-            TJAPlayerPI.stageConfig.tパッド選択通知(EKeyConfigPad.RRed2P);
+            selected?.Invoke(EKeyConfigPad.RRed2P);
         }
         else if (this.list項目リスト[this.n現在の選択項目] == this.iKeyAssignTaikoLBlue2P)
         {
-            TJAPlayerPI.stageConfig.tパッド選択通知(EKeyConfigPad.LBlue2P);
+            selected?.Invoke(EKeyConfigPad.LBlue2P);
         }
         else if (this.list項目リスト[this.n現在の選択項目] == this.iKeyAssignTaikoRBlue2P)
         {
-            TJAPlayerPI.stageConfig.tパッド選択通知(EKeyConfigPad.RBlue2P);
+            selected?.Invoke(EKeyConfigPad.RBlue2P);
         }
 
         else if (this.list項目リスト[this.n現在の選択項目] == this.iKeyAssignSystemCapture)
         {
-            TJAPlayerPI.stageConfig.tパッド選択通知(EKeyConfigPad.Capture);
+            selected?.Invoke(EKeyConfigPad.Capture);
         }
         else if (this.list項目リスト[this.n現在の選択項目] == this.iKeyAssignSystemFullScreen)
         {
-            TJAPlayerPI.stageConfig.tパッド選択通知(EKeyConfigPad.FullScreen);
+            selected?.Invoke(EKeyConfigPad.FullScreen);
         }
         #endregion
         else
@@ -981,7 +981,7 @@ internal class CActConfigList : CActivity
         nSkinSampleIndex = -1;
         #endregion
 
-        this.prvFont = CFontHelper.tCreateFont(20);	// t項目リストの設定 の前に必要
+        this.prvFont = HFontHelper.tCreateFont(20);	// t項目リストの設定 の前に必要
 
         //			this.listMenu = new List<stMenuItemRight>();
 
@@ -1083,7 +1083,7 @@ internal class CActConfigList : CActivity
     {
         throw new InvalidOperationException("t進行描画(bool)のほうを使用してください。");
     }
-    public int t進行描画(bool b項目リスト側にフォーカスがある)
+    public int t進行描画(Action changed, bool b項目リスト側にフォーカスがある)
     {
         if (this.b活性化してない)
             return 0;
@@ -1166,7 +1166,7 @@ internal class CActConfigList : CActivity
                 this.n目標のスクロールカウンタ -= 100;
                 if (this.n目標のスクロールカウンタ == 0)
                 {
-                    TJAPlayerPI.stageConfig.t項目変更通知();
+                    changed?.Invoke();
                 }
             }
             else if (this.n現在のスクロールカウンタ <= -100)
@@ -1176,7 +1176,7 @@ internal class CActConfigList : CActivity
                 this.n目標のスクロールカウンタ += 100;
                 if (this.n目標のスクロールカウンタ == 0)
                 {
-                    TJAPlayerPI.stageConfig.t項目変更通知();
+                    changed?.Invoke();
                 }
             }
             //-----------------

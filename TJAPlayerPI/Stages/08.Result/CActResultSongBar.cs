@@ -1,5 +1,5 @@
 ﻿using FDK;
-using TJAPlayerPI.Common;
+using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
 
@@ -33,7 +33,7 @@ internal class CActResultSongBar : CActivity
             ? $"Calibration complete. InputAdjustTime is now {TJAPlayerPI.app.ConfigToml.PlayOption.InputAdjustTimeMs}ms"
             : TJAPlayerPI.DTX[0].TITLE;
 
-        using (var pfMusicName = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Result.MusicNameFontSize))
+        using (var pfMusicName = HFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Result.MusicNameFontSize))
         {
 
             using (var bmpSongTitle = pfMusicName.DrawText(title, TJAPlayerPI.app.Skin.SkinConfig.Result._MusicNameForeColor, TJAPlayerPI.app.Skin.SkinConfig.Result._MusicNameBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
@@ -43,7 +43,7 @@ internal class CActResultSongBar : CActivity
             }
         }
 
-        using (var pfStageText = CFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Result.StageTextFontSize))
+        using (var pfStageText = HFontHelper.tCreateFont(TJAPlayerPI.app.Skin.SkinConfig.Result.StageTextFontSize))
         {
             using (var bmpStageText = pfStageText.DrawText(TJAPlayerPI.app.Skin.SkinConfig.Game.PanelFont.StageText, TJAPlayerPI.app.Skin.SkinConfig.Result._StageTextForeColor, TJAPlayerPI.app.Skin.SkinConfig.Result._StageTextBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
             {
@@ -107,7 +107,7 @@ internal class CActResultSongBar : CActivity
                 this.txMusicName.t2D描画(TJAPlayerPI.app.Device, TJAPlayerPI.app.Skin.SkinConfig.Result.MusicNameX - this.txMusicName.szTextureSize.Width * txMusicName.vcScaling.X, TJAPlayerPI.app.Skin.SkinConfig.Result.MusicNameY);
             }
 
-            if (TJAPlayerPI.stage選曲.n確定された曲の難易度[0] != (int)Difficulty.Dan)
+            if (TJAPlayerPI.app.n確定された曲の難易度[0] != (int)Difficulty.Dan)
             {
                 if (TJAPlayerPI.app.Skin.SkinConfig.Result._StageTextReferencePoint == CSkin.EReferencePoint.Center)
                 {
