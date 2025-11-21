@@ -70,7 +70,8 @@ internal class CActPanel : CActivity
         }
         if (!string.IsNullOrEmpty(genreName))
         {
-            this.txGENRE = TJAPlayerPI.app.Tx.TxCGen(TJAPlayerPI.app.Skin.nStrジャンルtoNum(genreName).ToString());
+            TJAPlayerPI.t安全にDisposeする(ref this.txGENRE);
+            this.txGENRE = TJAPlayerPI.app.tCreateTexture(CSkin.Path($"{TextureLoader.BASE}{TextureLoader.GAME}{TextureLoader.GENRE}{TJAPlayerPI.app.Skin.nStrジャンルtoNum(genreName)}.png"));
         }
 
         this.ct進行用 = new CCounter(0, 2000, 2, TJAPlayerPI.app.Timer);

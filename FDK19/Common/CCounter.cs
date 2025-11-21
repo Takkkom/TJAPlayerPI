@@ -116,7 +116,6 @@ public class CCounter
         this.n現在の値 = 0;
         this.n現在の経過時間ms = CTimer.nUnused;
 
-        this.timerdb = null;
         this.db開始値 = 0;
         this.db終了値 = 0;
         this._db間隔 = 0;
@@ -129,6 +128,13 @@ public class CCounter
         : this()
     {
         this.t開始(n開始値, n終了値, n間隔ms, timer);
+    }
+
+    /// <summary>生成と同時に開始する。(double版)</summary>
+    public CCounter(double db開始値, double db終了値, double db間隔, CTimer timer)
+        : this()
+    {
+        this.t開始(db開始値, db終了値, db間隔 * 1000.0, timer);
     }
 
     /// <summary>生成と同時に開始する。(double版)</summary>
@@ -148,7 +154,7 @@ public class CCounter
     /// <param name="n終了値">最後のカウント値。</param>
     /// <param name="n間隔ms">カウント値を１増加させるのにかける時間（ミリ秒単位）。</param>
     /// <param name="timer">カウントに使用するタイマ。</param>
-    public void t開始(int n開始値, int n終了値, int n間隔ms, CTimer timer)
+    public void t開始(int n開始値, int n終了値, int n間隔ms, CTimerBase timer)
     {
         this.n開始値 = n開始値;
         this.n終了値 = n終了値;
@@ -165,13 +171,13 @@ public class CCounter
     /// <param name="db終了値">最後のカウント値。</param>
     /// <param name="db間隔">カウント値を１増加させるのにかける時間（秒単位）。</param>
     /// <param name="timer">カウントに使用するタイマ。</param>
-    public void t開始(double db開始値, double db終了値, double db間隔, CSoundTimer timer)
+    public void t開始(double db開始値, double db終了値, double db間隔, CTimerBase timer)
     {
         this.db開始値 = db開始値;
         this.db終了値 = db終了値;
         this._db間隔 = db間隔;
-        this.timerdb = timer;
-        this.db現在の経過時間 = this.timerdb.dbシステム時刻ms;
+        this.timer = timer;
+        this.db現在の経過時間 = this.timer.dbシステム時刻ms;
         this.db現在の値 = db開始値;
     }
 
@@ -216,9 +222,9 @@ public class CCounter
     /// </summary>
     public void t時間Resetdb()
     {
-        if ((this.timerdb is not null) && (this.db現在の経過時間 != CSoundTimer.nUnused))
+        if ((this.timer is not null) && (this.db現在の経過時間 != CSoundTimer.nUnused))
         {
-            this.db現在の経過時間 = this.timerdb.n現在時刻ms;
+            this.db現在の経過時間 = this.timer.n現在時刻ms;
         }
     }
 
@@ -229,9 +235,9 @@ public class CCounter
     /// </summary>
     public void t進行db()
     {
-        if ((this.timerdb is not null) && (this.db現在の経過時間 != CSoundTimer.nUnused))
+        if ((this.timer is not null) && (this.db現在の経過時間 != CSoundTimer.nUnused))
         {
-            double num = this.timerdb.n現在時刻ms;
+            double num = this.timer.n現在時刻ms;
             if (num < this.db現在の経過時間)
                 this.db現在の経過時間 = num;
 
@@ -273,9 +279,9 @@ public class CCounter
     /// </summary>
     public void t進行LoopDb()
     {
-        if ((this.timerdb is not null) && (this.db現在の経過時間 != CSoundTimer.nUnused))
+        if ((this.timer is not null) && (this.db現在の経過時間 != CSoundTimer.nUnused))
         {
-            double num = this.timerdb.n現在時刻ms;
+            double num = this.timer.n現在時刻ms;
             if (num < this.n現在の経過時間ms)
                 this.db現在の経過時間 = num;
 
@@ -365,8 +371,7 @@ public class CCounter
 
     #region [ private ]
     //-----------------
-    private CTimer? timer;
-    private CSoundTimer? timerdb;
+    private CTimerBase? timer;
     private int n間隔ms;
     private double db間隔;
     //-----------------

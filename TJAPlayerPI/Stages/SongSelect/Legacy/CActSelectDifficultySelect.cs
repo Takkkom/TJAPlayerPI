@@ -1,13 +1,14 @@
 ﻿using FDK;
 
-namespace TJAPlayerPI;
+namespace TJAPlayerPI.Stages.SongSelect.Legacy;
 
 /// <summary>
 /// DifficultySelect。
 /// </summary>
+[Obsolete]
 internal class CActSelectDifficultySelect : CActivity
 {
-    public CActSelectDifficultySelect(CStage選曲 stage選曲)
+    public CActSelectDifficultySelect(CStage選曲Legacy stage選曲)
     {
         this.stage選曲 = stage選曲;
     }
@@ -379,7 +380,7 @@ internal class CActSelectDifficultySelect : CActivity
     internal bool b開いた直後 = true;
     private CCounter ct分岐表示用タイマー;
     internal CCounter[] ct難易度拡大用 = { new CCounter(0, 180, 1, TJAPlayerPI.app.Timer), new CCounter(0, 180, 1, TJAPlayerPI.app.Timer) };
-    private CStage選曲 stage選曲;
+    private CStage選曲Legacy stage選曲;
 
     private void tBPM小文字表示(int x, int y, long n)
     {

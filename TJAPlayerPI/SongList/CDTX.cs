@@ -1816,7 +1816,7 @@ internal class CDTX : CActivity
         for (int i = 0; i < b譜面が存在する.Length; i++)
             this.b譜面が存在する[i] = false;
 
-        int n読み込むコース = 3;
+        int n読み込むコース = TJAPlayerPI.app.n確定された曲の難易度[nPlayerSide];
         int n譜面数 = 0;
 
         int[] coursesindex = new int[(int)Difficulty.Total] { -1, -1, -1, -1, -1, -1, -1 };
@@ -1834,9 +1834,6 @@ internal class CDTX : CActivity
         }
 
         #region[ 読み込ませるコースを決定 ]
-        if (TJAPlayerPI.r現在のステージ.eStageID == CStage.EStage.SongLoading)//2020.05.12 Mr-Ojii 起動直後の曲読み込みでエラーを吐くので対策
-            n読み込むコース = TJAPlayerPI.app.n確定された曲の難易度[nPlayerSide];
-
         if (this.b譜面が存在する[n読み込むコース] == false)
         {
             n読み込むコース++;
@@ -2678,9 +2675,7 @@ internal class CDTX : CActivity
                 this.b譜面が存在する[i] = false;
         }
         #region[ 読み込ませるコースを決定 ]
-        int n読み込むコース = 3;
-        if (TJAPlayerPI.r現在のステージ.eStageID == CStage.EStage.SongLoading)//2020.05.12 Mr-Ojii 起動直後の曲読み込みでエラーを吐くので対策
-            n読み込むコース = TJAPlayerPI.app.n確定された曲の難易度[nPlayerSide];
+        int n読み込むコース = TJAPlayerPI.app.n確定された曲の難易度[nPlayerSide];
         if (this.b譜面が存在する[n読み込むコース] == false)
         {
             n読み込むコース++;

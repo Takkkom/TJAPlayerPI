@@ -6,11 +6,12 @@ internal class CStageStartUp : CStage
 
     public CStageStartUp()
     {
-        base.eStageID = CStage.EStage.StartUp;
+        //base.eStageID = CStage.EStage.StartUp;
         this.list進行文字列 = new();
     }
 
     public List<string> list進行文字列;
+    public EventHandler<EventArgs>? Finished;
 
     // CStage 実装
 
@@ -21,7 +22,11 @@ internal class CStageStartUp : CStage
         try
         {
             this.list進行文字列.Clear();
-            base.eフェーズID = CStage.Eフェーズ.共通_通常状態;
+            //base.eフェーズID = CStage.Eフェーズ.共通_通常状態;
+            startUpstate = StartUpState.None;
+
+            TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.BGM起動画面].t再生する();
+
             base.On活性化();
             Trace.TraceInformation("起動ステージの活性化を完了しました。");
         }
@@ -64,7 +69,8 @@ internal class CStageStartUp : CStage
                 es = new CEnumSongs();
                 es.StartEnumFromCache(() =>
                 {
-                    eフェーズID = CStage.Eフェーズ.起動0_システムサウンドを構築;
+                    //eフェーズID = CStage.Eフェーズ.起動0_システムサウンドを構築;
+                    startUpstate = StartUpState.CreateSystemSound;
                 }, () =>
                 {
                     lock (list進行文字列)
@@ -73,7 +79,8 @@ internal class CStageStartUp : CStage
                     }
                 }, () =>
                 {
-                    eフェーズID = CStage.Eフェーズ.起動00_songlistから曲リストを作成する;
+                    //eフェーズID = CStage.Eフェーズ.起動00_songlistから曲リストを作成する;
+                    startUpstate = StartUpState.CreateSongListFromCache;
                 },
                 () =>
                 {
@@ -89,52 +96,67 @@ internal class CStageStartUp : CStage
                     }
                 }, () =>
                 {
-                    eフェーズID = CStage.Eフェーズ.起動7_完了;
+                    //eフェーズID = CStage.Eフェーズ.起動7_完了;
+                    startUpstate = StartUpState.LoadingTexture;
                 });										// 曲リスト取得(別スレッドで実行される)
                 base.b初めての進行描画 = false;
                 return 0;
             }
             #region [ this.str現在進行中 の決定 ]
             //-----------------
-            switch (base.eフェーズID)
+            switch (startUpstate)
             {
-                case CStage.Eフェーズ.起動0_システムサウンドを構築:
+                case StartUpState.CreateSystemSound:
                     this.str現在進行中 = "SYSTEM SOUND...";
                     break;
 
-                case CStage.Eフェーズ.起動00_songlistから曲リストを作成する:
+                case StartUpState.CreateSongListFromCache:
                     this.str現在進行中 = "SONG LIST...";
                     break;
 
-                case CStage.Eフェーズ.起動1_SongsDBからスコアキャッシュを構築:
+                case StartUpState.CreateCache:
                     this.str現在進行中 = "SONG DATABASE...";
                     break;
 
-                case CStage.Eフェーズ.起動2_曲を検索してリストを作成する:
+                case StartUpState.SearchSongs:
                     this.str現在進行中 = string.Format("{0} ... {1}", "Enumerating songs", es.SongsManager.n検索されたスコア数);
                     break;
 
-                case CStage.Eフェーズ.起動3_スコアキャッシュをリストに反映する:
+                case StartUpState.ApplyList:
                     this.str現在進行中 = string.Format("{0} ... {1}/{2}", "Loading score properties from songs.db", es.SongsManager.nスコアキャッシュから反映できたスコア数, es.SongsManager.n検索されたスコア数);
                     break;
 
-                case CStage.Eフェーズ.起動4_スコアキャッシュになかった曲をファイルから読み込んで反映する:
+                case StartUpState.LoadingFromFile:
                     this.str現在進行中 = string.Format("{0} ... {1}/{2}", "Loading score properties from files", es.SongsManager.nファイルから反映できたスコア数, es.SongsManager.n検索されたスコア数 - es.SongsManager.nスコアキャッシュから反映できたスコア数);
                     break;
 
-                case CStage.Eフェーズ.起動5_曲リストへ後処理を適用する:
+                case StartUpState.PostProcessing:
                     this.str現在進行中 = string.Format("{0} ... ", "Building songlists");
                     break;
 
-                case CStage.Eフェーズ.起動6_スコアキャッシュをSongsDBに出力する:
+                case StartUpState.ExportCache:
                     this.str現在進行中 = string.Format("{0} ... ", "Saving songs.db");
                     break;
+                case StartUpState.LoadingTexture:
+                    {
+                        this.list進行文字列.Add("LOADING TEXTURES...");
+                        TJAPlayerPI.app.Tx.LoadTexture();
+                        this.list進行文字列.Add("LOADING TEXTURES...OK");
 
-                case CStage.Eフェーズ.起動7_完了:
-                    this.list進行文字列.Add("LOADING TEXTURES...");
-                    TJAPlayerPI.app.Tx.LoadTexture();
-                    this.list進行文字列.Add("LOADING TEXTURES...OK");
-                    this.str現在進行中 = "Setup done.";
+                        TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.BGM起動画面].t停止する();
+                        startUpstate = StartUpState.Finished;
+                    }
+                    break;
+                case StartUpState.Finished:
+                    {
+                        this.str現在進行中 = "Setup done.";
+
+                        if (es is not null && es.IsSongListEnumCompletelyDone && TJAPlayerPI.app.Tx.IsLoaded)                           // 曲リスト作成が終わったら
+                        {
+                            TJAPlayerPI.SongsManager = es.SongsManager;     // 最後に、曲リストを拾い上げる
+                            Finished?.Invoke(this, EventArgs.Empty);
+                        }
+                    }
                     break;
             }
             //-----------------
@@ -154,12 +176,6 @@ internal class CStageStartUp : CStage
             }
             //-----------------
             #endregion
-
-            if (es is not null && es.IsSongListEnumCompletelyDone && TJAPlayerPI.app.Tx.IsLoaded)							// 曲リスト作成が終わったら
-            {
-                TJAPlayerPI.SongsManager = es.SongsManager;		// 最後に、曲リストを拾い上げる
-                return 1;
-            }
         }
         return 0;
     }
@@ -169,7 +185,25 @@ internal class CStageStartUp : CStage
 
     #region [ private ]
     //-----------------
+    private enum StartUpState
+    {
+        None,
+        CreateSystemSound,
+        CreateSongListFromCache,
+        CreateCache,
+        SearchSongs,
+        ApplyList,
+        LoadingFromFile,
+        PostProcessing,
+        ExportCache,
+        LoadingTexture,
+        Finished,
+    }
+
     private string str現在進行中 = "";
     private CEnumSongs es;
+
+    private StartUpState startUpstate;
+
     #endregion
 }

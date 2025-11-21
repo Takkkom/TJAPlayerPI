@@ -1,7 +1,13 @@
 ﻿using FDK;
 using SkiaSharp;
+using System.Security.Principal;
 using TJAPlayerPI.Common;
+using TJAPlayerPI.Fade;
+using TJAPlayerPI.Helper;
 using TJAPlayerPI.Saving;
+using TJAPlayerPI.Stages.SongSelect;
+using TJAPlayerPI.Stages.SongSelect.Legacy;
+using static TJAPlayerPI.Cスコア;
 
 namespace TJAPlayerPI;
 
@@ -146,27 +152,24 @@ public class TJAPlayerPI : Game
         set;
     }
     [Obsolete]
-    private static CStage選曲 stage選曲
+    private static CStage選曲Legacy stage選曲Legacy
     {
         get;
         set;
     }
+    /*
     private static CStageSongLoading stageSongLoading
     {
         get;
         set;
     }
+    */
     private static CStage演奏画面共通 stage演奏ドラム画面
     {
         get;
         set;
     }
     private static CStageResult stageResult
-    {
-        get;
-        set;
-    }
-    private static CStageChangeSkin stageChangeSkin
     {
         get;
         set;
@@ -182,6 +185,11 @@ public class TJAPlayerPI : Game
         set;
     }
     internal static CNamePlate actNamePlate
+    {
+        get;
+        private set;
+    }
+    internal static FadeManager FadeManager
     {
         get;
         private set;
@@ -568,17 +576,40 @@ public class TJAPlayerPI : Game
         r現在のステージ = null;
         r直前のステージ = null;
         actNamePlate = new CNamePlate();
+        FadeManager = new FadeManager();
+
         stageStartUp = new CStageStartUp();
+        stageStartUp.Finished += OnStartupFinished;
+
         stageTitle = new CStageTitle();
+        stageTitle.PressedGameStart += OnTitlePressedGameStart;
+        stageTitle.PressedConfig += OnTitlePressedConfig;
+        stageTitle.PressedExit += OnTitlePressedExit;
+        stageTitle.PressedMaintenance += OnTitlePressedMaintenance;
         //			stageオプション = new CStageオプション();
         stageConfig = new CStageConfig();
-        stage選曲 = new CStage選曲();
-        stageSongLoading = new CStageSongLoading();
+        stageConfig.PressedExit += OnConfigPressedExit;
+
+        stage選曲Legacy = new CStage選曲Legacy();
+        stage選曲Legacy.GoToTitle += OnSongSelectLegacyGoToTitle;
+        stage選曲Legacy.GoToConfig += OnSongSelectLegacyGoToConfig;
+        stage選曲Legacy.GoToGame += OnSongSelectLegacyGoToGame;
+
+        //stageSongLoading = new CStageSongLoading();
         stage演奏ドラム画面 = new CStage演奏画面共通();
+        stage演奏ドラム画面.RestartAndReloadChart += OnGameRestartAndReloadChart;
+        stage演奏ドラム画面.ExitGameAndGoToSongSelect += OnGameExitGameAndGoToSongSelect;
+        stage演奏ドラム画面.ExitGameAndGoToResult += OnGameExitGameAndGoToResult;
+
         stageResult = new CStageResult();
-        stageChangeSkin = new CStageChangeSkin();
+        stageResult.ExitResult += OnResultExitResult;
+
         stageEnding = new CStageEnding();
+        stageEnding.ExitGame += OnEndingExitGame;
+
         stageMaintenance = new CStageMaintenance();
+        stageMaintenance.ExitMaintenance += OnMaintenanceExitMaintenance;
+
         this.listトップレベルActivities = new List<CActivity>();
         this.listトップレベルActivities.Add(actEnumSongs);
         this.listトップレベルActivities.Add(act文字コンソール);
@@ -587,13 +618,14 @@ public class TJAPlayerPI : Game
         this.listトップレベルActivities.Add(stageTitle);
         //			this.listトップレベルActivities.Add( stageオプション );
         this.listトップレベルActivities.Add(stageConfig);
-        this.listトップレベルActivities.Add(stage選曲);
-        this.listトップレベルActivities.Add(stageSongLoading);
+        this.listトップレベルActivities.Add(stage選曲Legacy);
+        //this.listトップレベルActivities.Add(stageSongLoading);
         this.listトップレベルActivities.Add(stage演奏ドラム画面);
         this.listトップレベルActivities.Add(stageResult);
-        this.listトップレベルActivities.Add(stageChangeSkin);
         this.listトップレベルActivities.Add(stageEnding);
         this.listトップレベルActivities.Add(stageMaintenance);
+
+        this.listトップレベルActivities.Add(FadeManager);
         //---------------------
         #endregion
         #region Discordの処理
@@ -610,6 +642,7 @@ public class TJAPlayerPI : Game
         Trace.TraceInformation("■ 起動");
 
         actNamePlate.On活性化();
+        FadeManager.On活性化();
 
         r現在のステージ = stageStartUp;
 
@@ -644,7 +677,7 @@ public class TJAPlayerPI : Game
 
     protected override void OnClosing(CancelEventArgs e)
     {
-        if ((EEndingAnime)ConfigToml.Ending.EndingAnime == EEndingAnime.Force && (r現在のステージ.eStageID != CStage.EStage.Ending))
+        if ((EEndingAnime)ConfigToml.Ending.EndingAnime == EEndingAnime.Force && (r現在のステージ is CStageEnding))
         {
             e.Cancel = true;
             r現在のステージ.On非活性化();
@@ -669,6 +702,8 @@ public class TJAPlayerPI : Game
         InputManager?.tSwapEventList();
         FPS.tUpdateCounter();
 
+        FadeManager.OnUpdate();
+
         if (this.Device is null)
             return;
 
@@ -692,476 +727,30 @@ public class TJAPlayerPI : Game
 
             #region [ 曲検索スレッドの起動/終了 ]					// ここに"Enumerating Songs..."表示を集約
             actEnumSongs.On進行描画();                          // "Enumerating Songs..."アイコンの描画
-            switch (r現在のステージ.eStageID)
+            if (r現在のステージ is CStageTitle or CStageConfig or CStage選曲Legacy && EnumSongs is not null)
             {
-                case CStage.EStage.Title:
-                case CStage.EStage.Config:
-                case CStage.EStage.SongSelect:
-                case CStage.EStage.SongLoading:
-                    if (EnumSongs is not null)
-                    {
-                        #region [ (特定条件時) 曲検索スレッドの起動_開始 ]
-                        if (r現在のステージ.eStageID == CStage.EStage.Title &&
-                                r直前のステージ.eStageID == CStage.EStage.StartUp &&
-                                this.n進行描画の戻り値 == (int)CStageTitle.E戻り値.継続 &&
-                                !EnumSongs.IsSongListEnumStarted)
-                        {
-                            actEnumSongs.On活性化();
-                            TJAPlayerPI.stage選曲.act曲リスト.bIsEnumeratingSongs = true;
-                            EnumSongs.StartEnumFromDisk();      // 曲検索スレッドの起動_開始
-                        }
-                        #endregion
+                #region [ 曲検索が完了したら、実際の曲リストに反映する ]
+                // CStage選曲.On活性化() に回した方がいいかな？
+                if (EnumSongs.IsSongListEnumerated)
+                {
+                    actEnumSongs.On非活性化();
+                    TJAPlayerPI.stage選曲Legacy.act曲リスト.bIsEnumeratingSongs = false;
 
-                        #region [ 曲検索の中断と再開 ]
-                        if (r現在のステージ.eStageID == CStage.EStage.SongSelect && !EnumSongs.IsSongListEnumCompletelyDone)
-                        {
-                            switch (this.n進行描画の戻り値)
-                            {
-                                case 0:     // 何もない
-                                    EnumSongs.Resume();                     // #27060 2012.2.6 yyagi 中止していたバックグランド曲検索を再開
-                                    actEnumSongs.On活性化();
-                                    break;
-
-                                case 2:     // 曲決定
-                                    EnumSongs.Suspend();                        // #27060 バックグラウンドの曲検索を一時停止
-                                    actEnumSongs.On非活性化();
-                                    break;
-                            }
-                        }
-                        #endregion
-
-                        #region [ 曲探索中断待ち待機 ]
-                        if (r現在のステージ.eStageID == CStage.EStage.SongLoading && !EnumSongs.IsSongListEnumCompletelyDone &&
-                            EnumSongs.thDTXFileEnumerate is not null)                           // #28700 2012.6.12 yyagi; at Compact mode, enumerating thread does not exist.
-                        {
-                            EnumSongs.WaitUntilSuspended();                                 // 念のため、曲検索が一時中断されるまで待機
-                        }
-                        #endregion
-
-                        #region [ 曲検索が完了したら、実際の曲リストに反映する ]
-                        // CStage選曲.On活性化() に回した方がいいかな？
-                        if (EnumSongs.IsSongListEnumerated)
-                        {
-                            actEnumSongs.On非活性化();
-                            TJAPlayerPI.stage選曲.act曲リスト.bIsEnumeratingSongs = false;
-
-                            bool bRemakeSongTitleBar = (r現在のステージ.eStageID == CStage.EStage.SongSelect) ? true : false;
-                            TJAPlayerPI.stage選曲.Refresh(EnumSongs.SongsManager, bRemakeSongTitleBar);
-                            EnumSongs.SongListEnumCompletelyDone();
-                        }
-                        #endregion
-                    }
-                    break;
+                    bool bRemakeSongTitleBar = (r現在のステージ is CStage選曲Legacy) ? true : false;
+                    TJAPlayerPI.stage選曲Legacy.Refresh(EnumSongs.SongsManager, bRemakeSongTitleBar);
+                    EnumSongs.SongListEnumCompletelyDone();
+                }
+                #endregion
             }
             #endregion
 
-            switch (r現在のステージ.eStageID)
-            {
-                case CStage.EStage.StartUp:
-                    #region [ *** ]
-                    //-----------------------------
-                    if (this.n進行描画の戻り値 != 0)
-                    {
-                        r現在のステージ.On非活性化();
-                        Trace.TraceInformation("----------------------");
-                        Trace.TraceInformation("■ Title");
-                        stageTitle.On活性化();
-                        r直前のステージ = r現在のステージ;
-                        r現在のステージ = stageTitle;
-
-                        this.tガベージコレクションを実行する();
-                    }
-                    //-----------------------------
-                    #endregion
-                    break;
-
-                case CStage.EStage.Title:
-                    #region [ *** ]
-                    //-----------------------------
-                    switch (this.n進行描画の戻り値)
-                    {
-                        case (int)CStageTitle.E戻り値.GAMESTART:
-                            #region [ 選曲処理へ ]
-                            //-----------------------------
-                            r現在のステージ.On非活性化();
-                            Trace.TraceInformation("----------------------");
-                            Trace.TraceInformation("■ 選曲");
-                            stage選曲.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stage選曲;
-                            //-----------------------------
-                            #endregion
-                            break;
-
-                        case (int)CStageTitle.E戻り値.CONFIG:
-                            #region [ *** ]
-                            //-----------------------------
-                            r現在のステージ.On非活性化();
-                            Trace.TraceInformation("----------------------");
-                            Trace.TraceInformation("■ Config");
-                            stageConfig.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stageConfig;
-                            //-----------------------------
-                            #endregion
-                            break;
-
-                        case (int)CStageTitle.E戻り値.EXIT:
-                            #region [ *** ]
-                            //-----------------------------
-                            r現在のステージ.On非活性化();
-                            Trace.TraceInformation("----------------------");
-                            Trace.TraceInformation("■ Ending");
-                            stageEnding.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stageEnding;
-                            //-----------------------------
-                            #endregion
-                            break;
-
-                        case (int)CStageTitle.E戻り値.MAINTENANCE:
-                            #region [ *** ]
-                            //-----------------------------
-                            r現在のステージ.On非活性化();
-                            Trace.TraceInformation("----------------------");
-                            Trace.TraceInformation("■ Maintenance");
-                            stageMaintenance.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stageMaintenance;
-                            //-----------------------------
-                            #endregion
-                            break;
-                    }
-
-                    //this.tガベージコレクションを実行する();		// #31980 2013.9.3 yyagi タイトル画面でだけ、毎フレームGCを実行して重くなっていた問題の修正
-                    //-----------------------------
-                    #endregion
-                    break;
-
-                case CStage.EStage.Config:
-                    #region [ *** ]
-                    //-----------------------------
-                    if (this.n進行描画の戻り値 != 0)
-                    {
-                        switch (r直前のステージ.eStageID)
-                        {
-                            case CStage.EStage.Title:
-                                #region [ *** ]
-                                //-----------------------------
-                                r現在のステージ.On非活性化();
-                                Trace.TraceInformation("----------------------");
-                                Trace.TraceInformation("■ タイトル");
-                                stageTitle.On活性化();
-                                r直前のステージ = r現在のステージ;
-                                r現在のステージ = stageTitle;
-
-                                this.tガベージコレクションを実行する();
-                                break;
-                            //-----------------------------
-                            #endregion
-
-                            case CStage.EStage.SongSelect:
-                                #region [ *** ]
-                                //-----------------------------
-                                r現在のステージ.On非活性化();
-                                Trace.TraceInformation("----------------------");
-                                Trace.TraceInformation("■ 選曲");
-                                stage選曲.On活性化();
-                                r直前のステージ = r現在のステージ;
-                                r現在のステージ = stage選曲;
-
-                                this.tガベージコレクションを実行する();
-                                break;
-                                //-----------------------------
-                                #endregion
-                        }
-                    }
-                    //-----------------------------
-                    #endregion
-                    break;
-
-                case CStage.EStage.SongSelect:
-                    #region [ *** ]
-                    //-----------------------------
-                    switch (this.n進行描画の戻り値)
-                    {
-                        case (int)CStage選曲.E戻り値.タイトルに戻る:
-                            #region [ *** ]
-                            //-----------------------------
-                            r現在のステージ.On非活性化();
-                            Trace.TraceInformation("----------------------");
-                            Trace.TraceInformation("■ タイトル");
-                            stageTitle.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stageTitle;
-
-                            this.tガベージコレクションを実行する();
-                            break;
-                        //-----------------------------
-                        #endregion
-
-                        case (int)CStage選曲.E戻り値.選曲した:
-                            #region [ *** ]
-                            //-----------------------------
-                            r現在のステージ.On非活性化();
-                            Trace.TraceInformation("----------------------");
-                            Trace.TraceInformation("■ 曲読み込み");
-                            stageSongLoading.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stageSongLoading;
-
-                            this.tガベージコレクションを実行する();
-                            break;
-                        //-----------------------------
-                        #endregion
-
-                        //							case (int) CStage選曲.E戻り値.オプション呼び出し:
-                        #region [ *** ]
-                        //								//-----------------------------
-                        //								r現在のステージ.On非活性化();
-                        //								Trace.TraceInformation( "----------------------" );
-                        //								Trace.TraceInformation( "■ オプション" );
-                        //								stageオプション.On活性化();
-                        //								r直前のステージ = r現在のステージ;
-                        //								r現在のステージ = stageオプション;
-                        //
-                        //								this.tガベージコレクションを実行する();
-                        //								break;
-                        //							//-----------------------------
-                        #endregion
-
-                        case (int)CStage選曲.E戻り値.コンフィグ呼び出し:
-                            #region [ *** ]
-                            //-----------------------------
-                            r現在のステージ.On非活性化();
-                            Trace.TraceInformation("----------------------");
-                            Trace.TraceInformation("■ コンフィグ");
-                            stageConfig.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stageConfig;
-
-                            this.tガベージコレクションを実行する();
-                            break;
-                        //-----------------------------
-                        #endregion
-
-                        case (int)CStage選曲.E戻り値.スキン変更:
-
-                            #region [ *** ]
-                            //-----------------------------
-                            r現在のステージ.On非活性化();
-                            Trace.TraceInformation("----------------------");
-                            Trace.TraceInformation("■ スキン切り替え");
-                            stageChangeSkin.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stageChangeSkin;
-                            break;
-                            //-----------------------------
-                            #endregion
-                    }
-                    //-----------------------------
-                    #endregion
-                    break;
-
-                case CStage.EStage.SongLoading:
-                    #region [ *** ]
-                    //-----------------------------
-                    if (this.n進行描画の戻り値 != 0)
-                    {
-                        TJAPlayerPI.app.Pad.stDetectedDevices.Clear();  // 入力デバイスフラグクリア(2010.9.11)
-                        r現在のステージ.On非活性化();
-                        #region [ ESC押下時は、曲の読み込みを中止して選曲画面に戻る ]
-                        if (this.n進行描画の戻り値 == (int)E曲読込画面の戻り値.読込中止)
-                        {
-                            //DTX.t全チップの再生停止();
-                            if (DTX[0] is not null)
-                                DTX[0].On非活性化();
-                            Trace.TraceInformation("曲の読み込みを中止しました。");
-                            this.tガベージコレクションを実行する();
-                            Trace.TraceInformation("----------------------");
-                            Trace.TraceInformation("■ 選曲");
-                            stage選曲.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stage選曲;
-                            break;
-                        }
-                        #endregion
-
-                        Trace.TraceInformation("----------------------");
-                        Trace.TraceInformation("■ 演奏（ドラム画面）");
-                        r直前のステージ = r現在のステージ;
-                        r現在のステージ = stage演奏ドラム画面;
-                        r現在のステージ.On活性化();
-
-                        this.tガベージコレクションを実行する();
-                    }
-                    //-----------------------------
-                    #endregion
-                    break;
-
-                case CStage.EStage.Playing:
-                    #region [ *** ]
-                    //-----------------------------
-                    switch (this.n進行描画の戻り値)
-                    {
-                        case (int)E演奏画面の戻り値.再読込_再演奏:
-                            #region [ DTXファイルを再読み込みして、再演奏 ]
-                            //DTX[0].t全チップの再生停止();
-                            DTX[0].On非活性化();
-                            r現在のステージ.On非活性化();
-                            stageSongLoading.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stageSongLoading;
-                            this.tガベージコレクションを実行する();
-                            break;
-                        #endregion
-
-                        case (int)E演奏画面の戻り値.継続:
-                            break;
-
-                        case (int)E演奏画面の戻り値.演奏中断:
-                            #region [ 演奏キャンセル ]
-                            //-----------------------------
-                            this.tUpdateScoreJson();
-
-
-                            //DTX[0].t全チップの再生停止();
-                            DTX[0].On非活性化();
-                            r現在のステージ.On非活性化();
-
-                            Trace.TraceInformation("----------------------");
-                            Trace.TraceInformation("■ 選曲");
-                            stage選曲.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stage選曲;
-
-                            this.tガベージコレクションを実行する();
-
-                            break;
-                        //-----------------------------
-                        #endregion
-
-                        case (int)E演奏画面の戻り値.ステージ失敗:
-                            #region [ 演奏失敗(StageFailed) ]
-                            //-----------------------------
-                            this.tUpdateScoreJson();
-
-                            //DTX[0].t全チップの再生停止();
-                            DTX[0].On非活性化();
-                            r現在のステージ.On非活性化();
-
-                            Trace.TraceInformation("----------------------");
-                            Trace.TraceInformation("■ 選曲");
-                            stage選曲.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stage選曲;
-
-                            this.tガベージコレクションを実行する();
-                            break;
-                        //-----------------------------
-                        #endregion
-
-                        case (int)E演奏画面の戻り値.ステージクリア:
-                            #region [ 演奏クリア ]
-                            //-----------------------------
-                            CScoreJson.CRecord[] cRecords = new CScoreJson.CRecord[4];
-                            for (int i = 0; i < ConfigToml.PlayOption.PlayerCount; i++)
-                                stage演奏ドラム画面.tSaveToCRecord(out cRecords[i], i);
-
-                            this.tUpdateScoreJson();
-
-                            r現在のステージ.On非活性化();
-                            Trace.TraceInformation("----------------------");
-                            Trace.TraceInformation("■ Result");
-                            for (int i = 0; i < ConfigToml.PlayOption.PlayerCount; i++)
-                                stageResult.cRecords[i] = cRecords[i];
-
-                            stageResult.On活性化();
-                            r直前のステージ = r現在のステージ;
-                            r現在のステージ = stageResult;
-
-                            break;
-                            //-----------------------------
-                            #endregion
-                    }
-                    //-----------------------------
-                    #endregion
-                    break;
-
-                case CStage.EStage.Result:
-                    #region [ *** ]
-                    //-----------------------------
-                    if (this.n進行描画の戻り値 != 0)
-                    {
-                        //DTX.t全チップの再生一時停止();
-                        //DTX[0].t全チップの再生停止とミキサーからの削除();
-                        DTX[0].On非活性化();
-                        r現在のステージ.On非活性化();
-                        this.tガベージコレクションを実行する();
-
-                        Trace.TraceInformation("----------------------");
-                        Trace.TraceInformation("■ 選曲");
-                        stage選曲.On活性化();
-                        r直前のステージ = r現在のステージ;
-                        r現在のステージ = stage選曲;
-
-                        this.tガベージコレクションを実行する();
-                    }
-                    //-----------------------------
-                    #endregion
-                    break;
-
-                case CStage.EStage.ChangeSkin:
-                    #region [ *** ]
-                    //-----------------------------
-                    if (this.n進行描画の戻り値 != 0)
-                    {
-                        r現在のステージ.On非活性化();
-                        Trace.TraceInformation("----------------------");
-                        Trace.TraceInformation("■ 選曲");
-                        stage選曲.On活性化();
-                        r直前のステージ = r現在のステージ;
-                        r現在のステージ = stage選曲;
-                        this.tガベージコレクションを実行する();
-                    }
-                    //-----------------------------
-                    #endregion
-                    break;
-
-                case CStage.EStage.Ending:
-                    #region [ *** ]
-                    //-----------------------------
-                    if (this.n進行描画の戻り値 != 0)
-                    {
-                        base.Exit();
-                    }
-                    //-----------------------------
-                    #endregion
-                    break;
-
-                case CStage.EStage.Maintenance:
-                    #region [ *** ]
-                    //-----------------------------
-                    if (this.n進行描画の戻り値 != 0)
-                    {
-                        r現在のステージ.On非活性化();
-                        Trace.TraceInformation("----------------------");
-                        Trace.TraceInformation("■ 選曲");
-                        stage選曲.On活性化();
-                        r直前のステージ = r現在のステージ;
-                        r現在のステージ = stage選曲;
-                        this.tガベージコレクションを実行する();
-                    }
-                    //-----------------------------
-                    #endregion
-                    break;
-            }
+            FadeManager.On進行描画();
 
             actScanningLoudness.On進行描画();
 
-            if (r現在のステージ is not null && r現在のステージ.eStageID != CStage.EStage.StartUp && TJAPlayerPI.app.Tx.Network_Connection is not null)
+            if (r現在のステージ is not null && Tx.IsLoaded && Tx.Network_Connection is not null)
             {
-                if (Math.Abs(CSoundManager.rc演奏用タイマ.nシステム時刻ms - this.前回のシステム時刻ms) > 10000)
+                if (Math.Abs(Timer.nシステム時刻ms - this.前回のシステム時刻ms) > 10000)
                 {
                     this.前回のシステム時刻ms = CSoundManager.rc演奏用タイマ.nシステム時刻ms;
                     Task.Factory.StartNew(() =>
@@ -1186,7 +775,7 @@ public class TJAPlayerPI : Game
                     new Rectangle(width * shift, 0, width, height));
             }
             // オーバレイを描画する(テクスチャの生成されていない起動ステージは例外
-            if (r現在のステージ is not null && r現在のステージ.eStageID != CStage.EStage.StartUp)
+            if (r現在のステージ is not null && Tx.IsLoaded)
             {
                 TJAPlayerPI.app.Tx.Overlay?.t2D描画(app.Device, 0, 0);
             }
@@ -1252,6 +841,316 @@ public class TJAPlayerPI : Game
         r確定された曲 = song;
         n確定された曲の難易度[0] = diffP1;
         n確定された曲の難易度[1] = diffP2;
+
+        if (r確定されたスコア?.譜面情報 is ST譜面情報 info)
+        {
+            FadeManager.GetSongLoading().Title = info.Title;
+            FadeManager.GetSongLoading().SubTitle = info.SubTitle;
+        }
+    }
+
+    private void GoToTitle()
+    {
+        r現在のステージ?.On非活性化();
+        Trace.TraceInformation("----------------------");
+        Trace.TraceInformation("■ Title");
+        stageTitle.On活性化();
+        r直前のステージ = r現在のステージ;
+        r現在のステージ = stageTitle;
+
+        this.tガベージコレクションを実行する();
+        TJAPlayerPI.FadeManager.FadeIn();
+    }
+
+    private void GoToConfig()
+    {
+        r現在のステージ.On非活性化();
+        Trace.TraceInformation("----------------------");
+        Trace.TraceInformation("■ Config");
+        stageConfig.On活性化();
+        r直前のステージ = r現在のステージ;
+        r現在のステージ = stageConfig;
+        TJAPlayerPI.FadeManager.FadeIn();
+    }
+
+    private void GoToSongSelectLegacy()
+    {
+        r現在のステージ.On非活性化();
+        Trace.TraceInformation("----------------------");
+        Trace.TraceInformation("■ 選曲");
+        stage選曲Legacy.On活性化();
+        r直前のステージ = r現在のステージ;
+        r現在のステージ = stage選曲Legacy;
+        TJAPlayerPI.FadeManager.FadeIn();
+    }
+
+    private void GoToGame()
+    {
+        r現在のステージ.On非活性化();
+
+        LoadingChart();
+
+        Trace.TraceInformation("----------------------");
+        Trace.TraceInformation("■ 演奏（ドラム画面）");
+        r直前のステージ = r現在のステージ;
+        r現在のステージ = stage演奏ドラム画面;
+        r現在のステージ.On活性化();
+
+        this.tガベージコレクションを実行する();
+        TJAPlayerPI.FadeManager.FadeIn();
+    }
+
+    private void GoToResult()
+    {
+        r現在のステージ.On非活性化();
+        Trace.TraceInformation("----------------------");
+        Trace.TraceInformation("■ Result");
+
+        stageResult.On活性化();
+        r直前のステージ = r現在のステージ;
+        r現在のステージ = stageResult;
+        TJAPlayerPI.FadeManager.FadeIn();
+    }
+
+    private void GoToExit()
+    {
+        r現在のステージ.On非活性化();
+        Trace.TraceInformation("----------------------");
+        Trace.TraceInformation("■ Ending");
+        stageEnding.On活性化();
+        r直前のステージ = r現在のステージ;
+        r現在のステージ = stageEnding;
+        TJAPlayerPI.FadeManager.FadeIn();
+    }
+
+    private void GoToMaintenance()
+    {
+        r現在のステージ.On非活性化();
+        Trace.TraceInformation("----------------------");
+        Trace.TraceInformation("■ Maintenance");
+        stageMaintenance.On活性化();
+        r直前のステージ = r現在のステージ;
+        r現在のステージ = stageMaintenance;
+        TJAPlayerPI.FadeManager.FadeIn();
+    }
+
+    private void LoadingChart()
+    {
+        DateTime timeBeginLoad = DateTime.Now;
+
+        string str = TJAPlayerPI.app.r確定されたスコア?.FileInfo.FileAbsolutePath ?? "";
+
+        CScoreJson json = CScoreJson.Load(str + ".score.json");
+
+        if ((TJAPlayerPI.DTX[0] is not null) && TJAPlayerPI.DTX[0].b活性化してる)
+            TJAPlayerPI.DTX[0].On非活性化();
+
+        //if( CDTXMania.DTX is null )
+        {
+            bool bSession = TJAPlayerPI.app.ConfigToml.PlayOption.Session &&
+                            TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount == 2 &&
+                            TJAPlayerPI.app.n確定された曲の難易度[0] == TJAPlayerPI.app.n確定された曲の難易度[1];
+
+            for (int i = 0; i < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; i++)
+                TJAPlayerPI.DTX[i] = new CDTX(str, false, json.BGMAdjust, i, bSession);
+
+            if (TJAPlayerPI.app.ConfigToml.OverrideScrollMode == false)
+                TJAPlayerPI.app.ConfigToml.ScrollMode = TJAPlayerPI.DTX[0].eScrollMode;
+
+            Trace.TraceInformation("----曲情報-----------------");
+            Trace.TraceInformation("TITLE: {0}", TJAPlayerPI.DTX[0].TITLE);
+            Trace.TraceInformation("FILE: {0}", TJAPlayerPI.DTX[0].strFilenameの絶対パス);
+            Trace.TraceInformation("---------------------------");
+
+            TimeSpan chartLoadingSpan = (TimeSpan)(DateTime.Now - timeBeginLoad);
+            Trace.TraceInformation("DTX読込所要時間:           {0}", chartLoadingSpan.ToString());
+
+            // 段位認定モード用。
+            if (TJAPlayerPI.app.n確定された曲の難易度[0] == (int)Difficulty.Dan && TJAPlayerPI.DTX[0].List_DanSongs is not null)
+            {
+                for (int i = 0; i < TJAPlayerPI.DTX[0].List_DanSongs.Count; i++)
+                {
+                    if (!string.IsNullOrEmpty(TJAPlayerPI.DTX[0].List_DanSongs[i].Title))
+                    {
+                        using (var pfTitle = HFontHelper.tCreateFont(32))
+                        {
+                            using (var bmpSongTitle = pfTitle.DrawText(TJAPlayerPI.DTX[0].List_DanSongs[i].Title, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC._TitleForeColor, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC._TitleBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
+                            {
+                                TJAPlayerPI.DTX[0].List_DanSongs[i].TitleTex = TJAPlayerPI.app.tCreateTexture(bmpSongTitle);
+                                TJAPlayerPI.DTX[0].List_DanSongs[i].TitleTex.vcScaling.X = TJAPlayerPI.GetSongNameXScaling(ref TJAPlayerPI.DTX[0].List_DanSongs[i].TitleTex, 710);
+                            }
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(TJAPlayerPI.DTX[0].List_DanSongs[i].SubTitle))
+                    {
+                        using (var pfSubTitle = HFontHelper.tCreateFont(19))
+                        {
+                            using (var bmpSongSubTitle = pfSubTitle.DrawText(TJAPlayerPI.DTX[0].List_DanSongs[i].SubTitle, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC._SubTitleForeColor, TJAPlayerPI.app.Skin.SkinConfig.Game.DanC._SubTitleBackColor, TJAPlayerPI.app.Skin.SkinConfig.Font.EdgeRatio))
+                            {
+                                TJAPlayerPI.DTX[0].List_DanSongs[i].SubTitleTex = TJAPlayerPI.app.tCreateTexture(bmpSongSubTitle);
+                                TJAPlayerPI.DTX[0].List_DanSongs[i].SubTitleTex.vcScaling.X = TJAPlayerPI.GetSongNameXScaling(ref TJAPlayerPI.DTX[0].List_DanSongs[i].SubTitleTex, 710);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        DateTime timeBeginLoadWAV = DateTime.Now;
+        int nWAVcount = 1;
+        int looptime = (TJAPlayerPI.app.ConfigToml.Window.VSyncWait) ? 3 : 1;   // VSyncWait=ON時は1frame(1/60s)あたり3つ読むようにする
+        for (int i = 0; i < looptime && nWAVcount <= TJAPlayerPI.DTX[0].listWAV.Count; i++)
+        {
+            if (TJAPlayerPI.DTX[0].listWAV[nWAVcount].bUse) // #28674 2012.5.8 yyagi
+            {
+                TJAPlayerPI.DTX[0].tWAVの読み込み(TJAPlayerPI.DTX[0].listWAV[nWAVcount]);
+            }
+            nWAVcount++;
+        }
+        if (nWAVcount > TJAPlayerPI.DTX[0].listWAV.Count)
+        {
+            TimeSpan audioLoadingSpan = (TimeSpan)(DateTime.Now - timeBeginLoadWAV);
+            Trace.TraceInformation("WAV読込所要時間({0,4}):     {1}", TJAPlayerPI.DTX[0].listWAV.Count, audioLoadingSpan.ToString());
+            timeBeginLoadWAV = DateTime.Now;
+
+            TJAPlayerPI.DTX[0].PlanToAddMixerChannel();
+
+            for (int nPlayer = 0; nPlayer < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; nPlayer++)
+            {
+                TJAPlayerPI.DTX[nPlayer].t太鼓チップのランダム化(TJAPlayerPI.app.ConfigToml.PlayOption._Random[nPlayer]);
+            }
+
+            //TJAPlayerPI.stage演奏ドラム画面.On活性化();
+        }
+
+        if (TJAPlayerPI.app.ConfigToml.Game.Background.Movie)
+            TJAPlayerPI.DTX[0].tAVIの読み込み();
+
+        TimeSpan span = (TimeSpan)(DateTime.Now - timeBeginLoad);
+        Trace.TraceInformation("総読込時間:                {0}", span.ToString());
+
+        TJAPlayerPI.app.Timer.t更新();
+    }
+
+    private void OnStartupFinished(object? sender, EventArgs args)
+    {
+        #region [ (特定条件時) 曲検索スレッドの起動_開始 ]
+        if (!EnumSongs.IsSongListEnumStarted)
+        {
+            actEnumSongs.On活性化();
+            TJAPlayerPI.stage選曲Legacy.act曲リスト.bIsEnumeratingSongs = true;
+            EnumSongs.StartEnumFromDisk();      // 曲検索スレッドの起動_開始
+        }
+        #endregion
+
+        GoToTitle();
+    }
+
+    private void OnTitlePressedGameStart(object? sender, EventArgs args)
+    {
+        GoToSongSelectLegacy();
+    }
+
+    private void OnTitlePressedConfig(object? sender, EventArgs args)
+    {
+        GoToConfig();
+    }
+
+    private void OnTitlePressedExit(object? sender, EventArgs args)
+    {
+        GoToExit();
+    }
+
+    private void OnTitlePressedMaintenance(object? sender, EventArgs args)
+    {
+        GoToMaintenance();
+    }
+
+    private void OnConfigPressedExit(object? sender, EventArgs args)
+    {
+        if (r直前のステージ is CStageTitle)
+        {
+            GoToTitle();
+        }
+        else if (r直前のステージ is CStage選曲Legacy)
+        {
+            GoToSongSelectLegacy();
+        }
+    }
+
+    private void OnSongSelectLegacyGoToTitle(object? sender, EventArgs args)
+    {
+        GoToTitle();
+    }
+
+    private void OnSongSelectLegacyGoToConfig(object? sender, EventArgs args)
+    {
+        GoToConfig();
+    }
+
+    private void OnSongSelectLegacyGoToGame(object? sender, EventArgs args)
+    {
+        LoadingChart();
+        GoToGame();
+    }
+
+    private void OnGameRestartAndReloadChart(object? sender, EventArgs args)
+    {
+        //DTX[0].t全チップの再生停止();
+        DTX[0].On非活性化();
+        r現在のステージ.On非活性化();
+
+        LoadingChart();
+        r現在のステージ.On活性化();
+    }
+
+    private void OnGameExitGameAndGoToSongSelect(object? sender, EventArgs args)
+    {
+        this.tUpdateScoreJson();
+
+        //DTX[0].t全チップの再生停止();
+        DTX[0].On非活性化();
+
+        CSoundManager.rc演奏用タイマ?.t再開();
+
+        GoToSongSelectLegacy();
+    }
+
+    private void OnGameExitGameAndGoToResult(object? sender, EventArgs args)
+    {
+        CSoundManager.rc演奏用タイマ?.t再開();
+
+        CScoreJson.CRecord[] cRecords = new CScoreJson.CRecord[4];
+        for (int i = 0; i < ConfigToml.PlayOption.PlayerCount; i++)
+            stage演奏ドラム画面.tSaveToCRecord(out cRecords[i], i);
+
+        this.tUpdateScoreJson();
+
+        for (int i = 0; i < ConfigToml.PlayOption.PlayerCount; i++)
+            stageResult.cRecords[i] = cRecords[i];
+
+        GoToResult();
+    }
+
+    private void OnResultExitResult(object? sender, EventArgs args)
+    {
+        //DTX.t全チップの再生一時停止();
+        //DTX[0].t全チップの再生停止とミキサーからの削除();
+        DTX[0].On非活性化();
+
+        GoToSongSelectLegacy();
+    }
+
+    private void OnEndingExitGame(object? sender, EventArgs args)
+    {
+        base.Exit();
+    }
+
+    private void OnMaintenanceExitMaintenance(object? sender, EventArgs args)
+    {
+        GoToSongSelectLegacy();
     }
 
     // その他
@@ -1394,6 +1293,8 @@ public class TJAPlayerPI : Game
     internal TextureLoader Tx = new TextureLoader();
 
     private List<CActivity> listトップレベルActivities;
+
+    [Obsolete]
     private int n進行描画の戻り値;
     private CancellationTokenSource InputCTS = null;
 
@@ -1445,6 +1346,7 @@ public class TJAPlayerPI : Game
             #region [ 現在のステージの終了処理 ]
             //---------------------
             actNamePlate?.On非活性化();
+            FadeManager?.On非活性化();
 
             if (TJAPlayerPI.r現在のステージ is not null && TJAPlayerPI.r現在のステージ.b活性化してる)		// #25398 2011.06.07 MODIFY FROM
             {
@@ -1736,6 +1638,7 @@ public class TJAPlayerPI : Game
 
         TJAPlayerPI.app.act文字コンソール.On非活性化();
         actNamePlate.On非活性化();
+        FadeManager.On非活性化();
 
         TJAPlayerPI.app.Skin.Dispose();
         TJAPlayerPI.app.Skin = null;
@@ -1747,6 +1650,7 @@ public class TJAPlayerPI : Game
 
         TJAPlayerPI.app.act文字コンソール.On活性化();
         actNamePlate.On活性化();
+        FadeManager.On活性化();
     }
 
     private void RemoveDefaultSkin()
@@ -1818,8 +1722,8 @@ public class TJAPlayerPI : Game
     //-----------------
     private void Window_MouseWheel(object? sender, FDK.Windowing.MouseWheelEventArgs? e)
     {
-        if (TJAPlayerPI.r現在のステージ.eStageID == CStage.EStage.SongSelect && ConfigToml.SongSelect.EnableMouseWheel)
-            TJAPlayerPI.stage選曲.MouseWheel(e.x - e.y);
+        if (ConfigToml.SongSelect.EnableMouseWheel)
+            TJAPlayerPI.stage選曲Legacy.MouseWheel(e.x - e.y);
     }
 
     private void Window_ResizeOrMove(object? sender, EventArgs? e)               // #23510 2010.11.20 yyagi: to get resized window size

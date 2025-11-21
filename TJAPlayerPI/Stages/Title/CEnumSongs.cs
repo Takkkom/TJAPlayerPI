@@ -186,7 +186,6 @@ internal class CEnumSongs							// #27060 2011.2.7 yyagi 曲リストを取得�
 
             try
             {
-                TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.BGM起動画面].t再生する();
                 for (int i = 0; i < TJAPlayerPI.app.Skin.nシステムサウンド数; i++)
                 {
                     if (!TJAPlayerPI.app.Skin[i].b排他)	// BGM系以外のみ読み込む。(BGM系は必要になったときに読み込む)

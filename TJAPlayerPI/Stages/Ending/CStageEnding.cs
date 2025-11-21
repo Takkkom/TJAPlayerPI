@@ -6,10 +6,11 @@ internal class CStageEnding : CStage
 {
     // コンストラクタ
 
+    public EventHandler<EventArgs>? ExitGame;
+
     public CStageEnding()
     {
-        base.eStageID = CStage.EStage.Ending;
-        base.eフェーズID = CStage.Eフェーズ.共通_通常状態;
+        //base.eフェーズID = CStage.Eフェーズ.共通_通常状態;
     }
 
 
@@ -98,7 +99,7 @@ internal class CStageEnding : CStage
 
             if (this.ctAnimation.b終了値に達した && !TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUNDゲーム終了音].b再生中)
             {
-                return 1;
+                ExitGame?.Invoke(this, EventArgs.Empty);
             }
         }
         return 0;

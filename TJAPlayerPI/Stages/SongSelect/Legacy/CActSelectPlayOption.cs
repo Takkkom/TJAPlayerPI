@@ -1,8 +1,9 @@
 ﻿using FDK;
 using TJAPlayerPI.Helper;
 
-namespace TJAPlayerPI;
+namespace TJAPlayerPI.Stages.SongSelect.Legacy;
 
+[Obsolete]
 internal class CActSelectPlayOption : CActivity
 {
     // コンストラクタ

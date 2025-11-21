@@ -1094,7 +1094,7 @@ internal class CActConfigList : CActivity
         //-----------------
         if (base.b初めての進行描画)
         {
-            this.nスクロール用タイマ値 = (long)(CSoundManager.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
+            this.nスクロール用タイマ値 = (long)(TJAPlayerPI.app.Timer.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
             this.ct三角矢印アニメ.t開始(0, 9, 50, TJAPlayerPI.app.Timer);
 
             base.b初めての進行描画 = false;

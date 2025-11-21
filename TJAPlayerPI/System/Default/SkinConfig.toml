@@ -50,6 +50,27 @@ RotateChara = [ "≠", "【", "】", ":", "ー", "-", "~", "～", "<", ">", "(",
 CorrectionXChara = [ ".", "ッ", "ェ", "ョ", "ャ", "[", "]" ]
 CorrectionXCharaValue = [ 10, 5, 7, 7, 7, -10, -10 ]
 
+[SongLoading]
+BackgroundExtension = 96
+MobLeftX = 132
+MobLeftY = 47
+MobRightX = 942
+MobRightY = 67
+MobCenterX = 72
+MobCenterY = 18
+MobCenterExY = 20
+MobSideMovingX = 320
+MobSideMovingY = 470
+MobSideMovingEx = 5
+PlateX = 640
+PlateY = 360
+TitleX = 640
+TitleY = 340
+SubTitleX = 640
+SubTitleY = 390
+TitleFontSize = 30
+SubTitleFontSize = 22
+
 [Game]
 SENotesOffsetY = [ 131, 131 ]
 JudgePointX = [ 413, 413 ]

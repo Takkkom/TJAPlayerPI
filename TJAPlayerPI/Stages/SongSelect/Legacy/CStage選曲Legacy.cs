@@ -1,8 +1,10 @@
 ﻿using FDK;
+using TJAPlayerPI.Fade;
 
-namespace TJAPlayerPI;
+namespace TJAPlayerPI.Stages.SongSelect.Legacy;
 
-internal class CStage選曲 : CStage
+[Obsolete]
+internal class CStage選曲Legacy : CStage
 {
     // プロパティ
     public int[] n現在選択中の曲の難易度
@@ -13,14 +15,16 @@ internal class CStage選曲 : CStage
         }
     }
 
+    public EventHandler<EventArgs>? GoToTitle;
+    public EventHandler<EventArgs>? GoToConfig;
+    public EventHandler<EventArgs>? GoToGame;
+
     // コンストラクタ
-    public CStage選曲()
+    public CStage選曲Legacy()
     {
-        base.eStageID = CStage.EStage.SongSelect;
-        base.eフェーズID = CStage.Eフェーズ.共通_通常状態;
-        base.listChildren.Add(this.actFIFO = new CActFIFOBlack());
-        base.listChildren.Add(this.actFIfromResult = new CActFIFOBlack());
-        base.listChildren.Add(this.actFOtoNowLoading = new CActFIFOStart());
+        //base.listChildren.Add(this.actFIFO = new CActFIFOBlack());
+        //base.listChildren.Add(this.actFIfromResult = new CActFIFOBlack());
+        //base.listChildren.Add(this.actFOtoNowLoading = new CActFIFOStart());
         base.listChildren.Add(this.act曲リスト = new CActSelect曲リスト(this));
         base.listChildren.Add(this.actDifficultySelect = new CActSelectDifficultySelect(this));
         base.listChildren.Add(this.actHistoryPanel = new CActSelectHistoryPanel(this));
@@ -55,7 +59,7 @@ internal class CStage選曲 : CStage
         Trace.Indent();
         try
         {
-            this.eFadeOut完了時の戻り値 = E戻り値.継続;
+            //this.eFadeOut完了時の戻り値 = E戻り値.継続;
             this.bBGM再生済み = false;
             for (int i = 0; i < 4; i++)
                 this.ctキー反復用[i] = new CCounter(0, 0, 0, TJAPlayerPI.app.Timer);
@@ -114,6 +118,7 @@ internal class CStage選曲 : CStage
             if (base.b初めての進行描画)
             {
                 this.ct登場時アニメ用共通 = new CCounter(0, 100, 3, TJAPlayerPI.app.Timer);
+                /*
                 if (TJAPlayerPI.r直前のステージ is CStageResult)
                 {
                     this.actFIfromResult.tFadeIn開始();
@@ -124,6 +129,7 @@ internal class CStage選曲 : CStage
                     this.actFIFO.tFadeIn開始();
                     base.eフェーズID = CStage.Eフェーズ.共通_FadeIn;
                 }
+                */
                 this.t選択曲変更通知();
                 base.b初めての進行描画 = false;
             }
@@ -349,7 +355,7 @@ internal class CStage選曲 : CStage
             if (act曲リスト.r現在選択中の曲 is not null && TJAPlayerPI.app.Tx.SongSelect_Difficulty is not null)
                 TJAPlayerPI.app.Tx.SongSelect_Difficulty.t2D描画(TJAPlayerPI.app.Device, 830, 40, new Rectangle(0, 70 * this.n現在選択中の曲の難易度[0], 260, 70));
 
-            if (!this.bBGM再生済み && (base.eフェーズID == CStage.Eフェーズ.共通_通常状態))
+            if (!this.bBGM再生済み)
             {
                 TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.BGM選曲画面].t再生する();
                 this.bBGM再生済み = true;
@@ -371,7 +377,7 @@ internal class CStage選曲 : CStage
             this.actPlayOption.On進行描画();
 
             // キー入力
-            if (base.eフェーズID == CStage.Eフェーズ.共通_通常状態)
+            if (TJAPlayerPI.FadeManager.FadeState == FadeState.None)
             {
                 if (popupbool[0])
                 {
@@ -735,9 +741,15 @@ internal class CStage選曲 : CStage
                             if (this.act曲リスト.r現在選択中の曲.r親ノード is null)
                             {   // [ESC]
                                 TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND取消音].t再生する();
-                                this.eFadeOut完了時の戻り値 = E戻り値.タイトルに戻る;
-                                this.actFIFO.tFadeOut開始();
-                                base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
+                                //this.eFadeOut完了時の戻り値 = E戻り値.タイトルに戻る;
+                                //this.actFIFO.tFadeOut開始();
+                                //base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
+
+                                TJAPlayerPI.FadeManager.FadeOut(FadeManager.FadeBlack, finished: () =>
+                                {
+                                    GoToTitle?.Invoke(this, EventArgs.Empty);
+                                });
+
                                 return 0;
                             }
                             else
@@ -962,6 +974,7 @@ internal class CStage選曲 : CStage
 
                 this.actSortSongs.t進行描画();
             }
+            /*
             switch (base.eフェーズID)
             {
                 case CStage.Eフェーズ.共通_FadeIn:
@@ -992,6 +1005,7 @@ internal class CStage選曲 : CStage
                     }
                     return (int)this.eFadeOut完了時の戻り値;
             }
+            */
         }
         return 0;
     }
@@ -1027,9 +1041,16 @@ internal class CStage選曲 : CStage
         actPlayOption.tDeativatePopupMenu(0);
         actPlayOption.tDeativatePopupMenu(1);
         this.actPresound.tサウンドの停止MT();
-        this.eFadeOut完了時の戻り値 = E戻り値.コンフィグ呼び出し;  // #24525 2011.3.16 yyagi: [SHIFT]-[F1]でCONFIG呼び出し
-        this.actFIFO.tFadeOut開始();
-        base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
+
+        TJAPlayerPI.FadeManager.FadeOut(FadeManager.FadeBlack, finished: () =>
+        {
+            GoToConfig?.Invoke(this, EventArgs.Empty);
+        });
+
+        //this.eFadeOut完了時の戻り値 = E戻り値.コンフィグ呼び出し;  // #24525 2011.3.16 yyagi: [SHIFT]-[F1]でCONFIG呼び出し
+        //this.actFIFO.tFadeOut開始();
+        //base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
+
         TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND取消音].t再生する();
     }
 
@@ -1127,10 +1148,10 @@ internal class CStage選曲 : CStage
             }
         }
     }
-    internal CActFIFOBlack actFIFO;
-    private CActFIFOBlack actFIfromResult;
+    //internal CActFIFOBlack actFIFO;
+    //private CActFIFOBlack actFIfromResult;
     //private CActFIFOBlack actFOtoNowLoading;
-    private CActFIFOStart actFOtoNowLoading;
+    //private CActFIFOStart actFOtoNowLoading;
     private CActSelectPresound actPresound;
     public CActSelectHistoryPanel actHistoryPanel;
     public CActSelect曲リスト act曲リスト;
@@ -1149,10 +1170,21 @@ internal class CStage選曲 : CStage
     internal CCounter ctDifficultySelectIN用タイマー;
     internal CCounter ctDifficultySelectINバー拡大用タイマー;
     internal CCounter ctDifficultySelectOUT用タイマー;
-    internal E戻り値 eFadeOut完了時の戻り値;
+    //internal E戻り値 eFadeOut完了時の戻り値;
+
+    private void GoToGameWithFade()
+    {
+        TJAPlayerPI.FadeManager.FadeOut(FadeManager.GetSongLoading(), finished: () =>
+        {
+            GoToGame?.Invoke(this, EventArgs.Empty);
+        });
+    }
 
     public void MouseWheel(float i)
     {
+        if (b活性化してない)
+            return;
+
         if (this.現在の選曲画面状況 == E選曲画面.通常)
         {
             if (i < 0)
@@ -1204,9 +1236,11 @@ internal class CStage選曲 : CStage
 
         if ((TJAPlayerPI.app.r確定された曲 is not null) && (TJAPlayerPI.app.r確定されたスコア is not null))
         {
-            this.eFadeOut完了時の戻り値 = E戻り値.選曲した;
-            this.actFOtoNowLoading.tFadeOut開始();				// #27787 2012.3.10 yyagi 曲決定時の画面FadeOutの省略
-            base.eフェーズID = CStage.Eフェーズ.選曲_NowLoading画面へのFadeOut;
+            GoToGameWithFade();
+
+            //this.eFadeOut完了時の戻り値 = E戻り値.選曲した;
+            //this.actFOtoNowLoading.tFadeOut開始();				// #27787 2012.3.10 yyagi 曲決定時の画面FadeOutの省略
+            //base.eフェーズID = CStage.Eフェーズ.選曲_NowLoading画面へのFadeOut;
         }
         TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.BGM選曲画面].t再生する();
     }
@@ -1216,9 +1250,11 @@ internal class CStage選曲 : CStage
 
         if ((TJAPlayerPI.app.r確定された曲 is not null) && (TJAPlayerPI.app.r確定されたスコア is not null))
         {
-            this.eFadeOut完了時の戻り値 = E戻り値.選曲した;
-            this.actFOtoNowLoading.tFadeOut開始();				// #27787 2012.3.10 yyagi 曲決定時の画面FadeOutの省略
-            base.eフェーズID = CStage.Eフェーズ.選曲_NowLoading画面へのFadeOut;
+            GoToGameWithFade();
+
+            //this.eFadeOut完了時の戻り値 = E戻り値.選曲した;
+            //this.actFOtoNowLoading.tFadeOut開始();				// #27787 2012.3.10 yyagi 曲決定時の画面FadeOutの省略
+            //base.eフェーズID = CStage.Eフェーズ.選曲_NowLoading画面へのFadeOut;
         }
 
         TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.BGM選曲画面].t停止する();
@@ -1229,9 +1265,11 @@ internal class CStage選曲 : CStage
 
         if ((TJAPlayerPI.app.r確定された曲 is not null) && (TJAPlayerPI.app.r確定されたスコア is not null))
         {
-            this.eFadeOut完了時の戻り値 = E戻り値.選曲した;
-            this.actFOtoNowLoading.tFadeOut開始();                // #27787 2012.3.10 yyagi 曲決定時の画面FadeOutの省略
-            base.eフェーズID = CStage.Eフェーズ.選曲_NowLoading画面へのFadeOut;
+            GoToGameWithFade();
+
+            //this.eFadeOut完了時の戻り値 = E戻り値.選曲した;
+            //this.actFOtoNowLoading.tFadeOut開始();                // #27787 2012.3.10 yyagi 曲決定時の画面FadeOutの省略
+            //base.eフェーズID = CStage.Eフェーズ.選曲_NowLoading画面へのFadeOut;
         }
 
         TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.BGM選曲画面].t停止する();

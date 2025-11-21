@@ -37,7 +37,7 @@ class TextureLoader
     const string EFFECTS = @"10_Effects/";
     const string BALLOON = @"11_Balloon/";
     const string LANE = @"12_Lane/";
-    const string GENRE = @"13_Genre/";
+    public const string GENRE = @"13_Genre/";
     const string GAMEMODE = @"14_GameMode/";
     const string FAILED = @"15_Failed/";
     public const string RUNNER = @"16_Runner/";
@@ -54,13 +54,14 @@ class TextureLoader
         this.IsLoaded = false;
     }
 
-    internal CTexture? TxC(string FileName)
+    private CTexture? TxC(string FileName)
     {
-        return TJAPlayerPI.app.tCreateTexture(CSkin.Path(BASE + FileName));
-    }
-    internal CTexture? TxCGen(string FileName)
-    {
-        return TJAPlayerPI.app.tCreateTexture(CSkin.Path(BASE + GAME + GENRE + FileName + ".png"));
+        CTexture? texture = TJAPlayerPI.app.tCreateTexture(CSkin.Path(BASE + FileName));
+        if (texture is not null)
+        {
+            disposables.Add(texture);
+        }
+        return texture;
     }
 
     public void LoadTexture()
@@ -236,10 +237,16 @@ class TextureLoader
         #endregion
 
         #region 4_読み込み画面
-        SongLoading_BG = TxC(SONGLOADING + @"Background.png");
-        SongLoading_Plate = TxC(SONGLOADING + @"Plate.png");
         SongLoading_v2_BG = TxC(SONGLOADINGV2 + @"Background.png");
         SongLoading_v2_Plate = TxC(SONGLOADINGV2 + @"Plate.png");
+
+        SongLoading_Upper = TxC($"{SONGLOADING}Upper.png");
+        SongLoading_Lower = TxC($"{SONGLOADING}Lower.png");
+        SongLoading_Center = TxC($"{SONGLOADING}Center.png");
+        SongLoading_Mob_Center = TxC($"{SONGLOADING}Mob_Center.png");
+        SongLoading_Mob_Left = TxC($"{SONGLOADING}Mob_Left.png");
+        SongLoading_Mob_Right = TxC($"{SONGLOADING}Mob_Right.png");
+        SongLoading_Title_Base = TxC($"{SONGLOADING}Title_Base.png");
         #endregion
 
         #region 5_演奏画面
@@ -719,363 +726,12 @@ class TextureLoader
 
     public void DisposeTexture()
     {
-        #region 共通
-        TJAPlayerPI.t安全にDisposeする(ref Tile_Black);
-        TJAPlayerPI.t安全にDisposeする(ref Menu_Title);
-        TJAPlayerPI.t安全にDisposeする(ref Menu_Highlight);
-        TJAPlayerPI.t安全にDisposeする(ref Enum_Song);
-        TJAPlayerPI.t安全にDisposeする(ref Scanning_Loudness);
-        TJAPlayerPI.t安全にDisposeする(ref Overlay);
-        TJAPlayerPI.t安全にDisposeする(ref Network_Connection);
-        TJAPlayerPI.t安全にDisposeする(ref Crown_t);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_Crown_t);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Icons);
-        #endregion
-
-        #region NamePlate
-        TJAPlayerPI.t安全にDisposeする(ref NamePlate_Shadow);
-        TJAPlayerPI.t安全にDisposeする(ref NamePlate_Base);
-        TJAPlayerPI.t安全にDisposeする(ref NamePlate_DanBase);
-        TJAPlayerPI.t安全にDisposeする(ref NamePlate_PlayerNumber);
-        TJAPlayerPI.t安全にDisposeする(ref NamePlate_TitleBase_Player);
-        TJAPlayerPI.t安全にDisposeする(ref NamePlate_TitleBase_Wood);
-        TJAPlayerPI.t安全にDisposeする(ref NamePlate_TitleBase_Gold);
-        TJAPlayerPI.t安全にDisposeする(ref NamePlate_TitleBase_Purple);
-        TJAPlayerPI.t安全にDisposeする(ref NamePlate_TitleBase_Rainbow);
-        #endregion
-
-        #region 1_タイトル画面
-        TJAPlayerPI.t安全にDisposeする(ref Title_Background);
-        TJAPlayerPI.t安全にDisposeする(ref Title_AcBar);
-        TJAPlayerPI.t安全にDisposeする(ref Title_InBar);
-        #endregion
-
-        #region 2_コンフィグ画面
-        TJAPlayerPI.t安全にDisposeする(ref Config_Background);
-        TJAPlayerPI.t安全にDisposeする(ref Config_Cursor);
-        TJAPlayerPI.t安全にDisposeする(ref Config_ItemBox);
-        TJAPlayerPI.t安全にDisposeする(ref Config_Arrow);
-        TJAPlayerPI.t安全にDisposeする(ref Config_KeyAssign);
-        TJAPlayerPI.t安全にDisposeする(ref Config_Enum_Song);
-        #endregion
-
-        #region 3_選曲画面
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Background);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Header);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Footer);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Difficulty);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Auto);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Level);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Branch_Text_NEW);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Bar_Center);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Frame_Score);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Frame_Box);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Frame_BackBox);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Frame_Random);
-        //TJAPlayer3.t安全にDisposeする(ref SongSelect_Score_Select);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Cursor_Left);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Cursor_Right);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Bar_BackBox);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Lyric_Text);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Bar_Genre);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Bar_Box_Genre);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Box_Center_Genre);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Box_Center_Header_Genre);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Box_Center_Text_Genre);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Bar_Center_Back_Genre);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_ScoreWindow);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_GenreBack);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Counter_Back);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_Counter_Num);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_ScoreWindow_Text);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_PapaMama);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_ItemNumber);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_ItemNumber_BG);
-        TJAPlayerPI.t安全にDisposeする(ref SongSelect_GenreText);
-
-        #region[3.5難易度選択]
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Dan_Box);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Dan_Box_Selecting);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Star);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Branch);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Center_Bar);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_PapaMama);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_BPMNumber);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_BPMBox);
-        TJAPlayerPI.t安全にDisposeする(ref ChangeSE_Box);
-        TJAPlayerPI.t安全にDisposeする(ref ChangeSE_Note);
-        TJAPlayerPI.t安全にDisposeする(ref ChangeSE_Num);
-        TJAPlayerPI.t安全にDisposeする(ref PlayOption_List);
-        TJAPlayerPI.t安全にDisposeする(ref PlayOption_Active);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Anc);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Anc_Same);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Anc_Box);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Anc_Box_Etc);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Bar);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Bar_Etc);
-        TJAPlayerPI.t安全にDisposeする(ref Difficulty_Mark);
-
-        #endregion
-
-        #endregion
-
-        #region 4_読み込み画面
-        TJAPlayerPI.t安全にDisposeする(ref SongLoading_BG);
-        TJAPlayerPI.t安全にDisposeする(ref SongLoading_Plate);
-        TJAPlayerPI.t安全にDisposeする(ref SongLoading_v2_BG);
-        TJAPlayerPI.t安全にDisposeする(ref SongLoading_v2_Plate);
-        #endregion
-
-        #region 5_演奏画面
-        #region 共通
-        TJAPlayerPI.t安全にDisposeする(ref Notes);
-        TJAPlayerPI.t安全にDisposeする(ref Notes_White);
-        TJAPlayerPI.t安全にDisposeする(ref Note_Balloon_Tail);
-        TJAPlayerPI.t安全にDisposeする(ref Note_Kusudama);
-        TJAPlayerPI.t安全にDisposeする(ref Judge_Frame);
-        TJAPlayerPI.t安全にDisposeする(ref SENotes);
-        TJAPlayerPI.t安全にDisposeする(ref Notes_Arm);
-        TJAPlayerPI.t安全にDisposeする(ref Judge);
-
-        TJAPlayerPI.t安全にDisposeする(ref Judge_Meter);
-        TJAPlayerPI.t安全にDisposeする(ref Bar);
-        TJAPlayerPI.t安全にDisposeする(ref Bar_Branch);
-
-        #endregion
-        #region キャラクター
-        for (int nPlayer = 0; nPlayer < 2; nPlayer++)
+        for (int i = 0; i < disposables.Count; i++)
         {
-            TJAPlayerPI.t安全にDisposeする(ref Chara_Normal[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_Normal_Cleared[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_Normal_Maxed[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_GoGoTime[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_GoGoTime_Maxed[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_10Combo[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_10Combo_Maxed[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_GoGoStart[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_GoGoStart_Maxed[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_Become_Cleared[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_Become_Maxed[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_Balloon_Breaking[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_Balloon_Broke[nPlayer]);
-            TJAPlayerPI.t安全にDisposeする(ref Chara_Balloon_Miss[nPlayer]);
+            disposables[i].Dispose();
         }
+        disposables.Clear();
 
-        #endregion
-        #region 踊り子
-        if (Dancer is not null)
-            for (int i = 0; i < Dancer.Length; i++)
-            {
-                TJAPlayerPI.t安全にDisposeする(ref Dancer[i]);
-            }
-        #endregion
-        #region モブ
-        TJAPlayerPI.t安全にDisposeする(ref Mob);
-        #endregion
-        #region フッター
-        TJAPlayerPI.t安全にDisposeする(ref Mob_Footer);
-        #endregion
-        #region 背景
-        TJAPlayerPI.t安全にDisposeする(ref Background);
-        TJAPlayerPI.t安全にDisposeする(ref Background_Up);
-        TJAPlayerPI.t安全にDisposeする(ref Background_Up_Clear);
-        TJAPlayerPI.t安全にDisposeする(ref Background_Up_YMove);
-        TJAPlayerPI.t安全にDisposeする(ref Background_Up_YMove_Clear);
-        TJAPlayerPI.t安全にDisposeする(ref Background_Up_Sakura);
-        TJAPlayerPI.t安全にDisposeする(ref Background_Up_Sakura_Clear);
-        TJAPlayerPI.t安全にDisposeする(ref Background_Down);
-        TJAPlayerPI.t安全にDisposeする(ref Background_Down_Clear);
-        TJAPlayerPI.t安全にDisposeする(ref Background_Down_Scroll);
-
-        #endregion
-        #region 太鼓
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_Background);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_Frame);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_PlayerNumber);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_Base);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_Don_Left);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_Don_Right);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_Ka_Left);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_Ka_Right);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_LevelUp);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_LevelDown);
-        TJAPlayerPI.t安全にDisposeする(ref Couse_Symbol);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_Score_Base);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_Score);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_Combo);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_Combo_Effect);
-        TJAPlayerPI.t安全にDisposeする(ref Taiko_Combo_Text);
-        #endregion
-        #region ゲージ
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Base_Lv1);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Base_Lv2);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Base_Lv3);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Base_LvDan);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Line);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Flash);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Rainbow_Lv1);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Rainbow_Lv2);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Rainbow_Lv3);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Rainbow_LvDan);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Edge_Lv1);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Edge_Lv2);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Edge_Lv3);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Edge_LvDan);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Frame_Lv1);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Frame_Lv2);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Frame_Lv3);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Frame_LvDan);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_ClearText);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_SoulFire);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_SoulText);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Explosion);
-        /*
-        TJAPlayerPI.t安全にDisposeする(ref Gauge);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Base);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Line);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Rainbow);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Soul);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Soul_Fire);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Soul_Explosion);
-        */
-
-        #region[Gauge_DanC]
-        /*
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Danc);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Base_Danc);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Line_Danc);
-        TJAPlayerPI.t安全にDisposeする(ref Gauge_Rainbow_Danc);
-        */
-        #endregion
-
-        #endregion
-        #region 吹き出し
-        TJAPlayerPI.t安全にDisposeする(ref Balloon_Combo);
-        TJAPlayerPI.t安全にDisposeする(ref Balloon_Combo_Shin);
-        TJAPlayerPI.t安全にDisposeする(ref Balloon_Roll);
-        TJAPlayerPI.t安全にDisposeする(ref Balloon_Balloon);
-        TJAPlayerPI.t安全にDisposeする(ref Balloon_Number_Roll);
-        TJAPlayerPI.t安全にDisposeする(ref Balloon_Number_Combo);
-        TJAPlayerPI.t安全にDisposeする(ref Balloon_Number_Combo_Text);
-        TJAPlayerPI.t安全にDisposeする(ref Balloon_Number_Combo_Score);
-        TJAPlayerPI.t安全にDisposeする(ref Balloon_Number_Combo_Score_Flash);
-        TJAPlayerPI.t安全にDisposeする(ref Balloon_Number_Combo_Score_Text);
-        TJAPlayerPI.t安全にDisposeする(ref Balloon_Breaking);
-        #endregion
-        #region エフェクト
-        TJAPlayerPI.t安全にDisposeする(ref Effects_Hit_Base);
-        TJAPlayerPI.t安全にDisposeする(ref Effects_Hit_Explosion);
-        TJAPlayerPI.t安全にDisposeする(ref Effects_Hit_Explosion_Big);
-        TJAPlayerPI.t安全にDisposeする(ref Effects_Hit_FireWorks);
-        TJAPlayerPI.t安全にDisposeする(ref Effects_Fire);
-        TJAPlayerPI.t安全にDisposeする(ref Effects_Rainbow);
-        TJAPlayerPI.t安全にDisposeする(ref Effects_GoGoSplash);
-        TJAPlayerPI.t安全にDisposeする(ref Effects_Roll);
-
-        #endregion
-        #region レーン
-        TJAPlayerPI.t安全にDisposeする(ref Lane_Base);
-        TJAPlayerPI.t安全にDisposeする(ref Lane_Text);
-        TJAPlayerPI.t安全にDisposeする(ref Lane_Red);
-        TJAPlayerPI.t安全にDisposeする(ref Lane_Blue);
-        TJAPlayerPI.t安全にDisposeする(ref Lane_Yellow);
-        TJAPlayerPI.t安全にDisposeする(ref Lane_Background_Main);
-        TJAPlayerPI.t安全にDisposeする(ref Lane_Background_Sub);
-        TJAPlayerPI.t安全にDisposeする(ref Lane_Background_GoGo);
-
-        #endregion
-        #region 終了演出
-        TJAPlayerPI.t安全にDisposeする(ref End_Clear_L);
-        TJAPlayerPI.t安全にDisposeする(ref End_Clear_R);
-        TJAPlayerPI.t安全にDisposeする(ref End_Failed_L);
-        TJAPlayerPI.t安全にDisposeする(ref End_Failed_R);
-        TJAPlayerPI.t安全にDisposeする(ref End_Fan);
-        TJAPlayerPI.t安全にDisposeする(ref End_Failed_Text);
-        TJAPlayerPI.t安全にDisposeする(ref End_Failed_Impact);
-        TJAPlayerPI.t安全にDisposeする(ref End_Clear_Text);
-        TJAPlayerPI.t安全にDisposeする(ref End_Clear_Text_Effect);
-        TJAPlayerPI.t安全にDisposeする(ref End_FullCombo_Text);
-        TJAPlayerPI.t安全にDisposeする(ref End_FullCombo_Text_Effect);
-        TJAPlayerPI.t安全にDisposeする(ref End_DonderFullCombo_Lane);
-        TJAPlayerPI.t安全にDisposeする(ref End_DonderFullCombo_L);
-        TJAPlayerPI.t安全にDisposeする(ref End_DonderFullCombo_R);
-        TJAPlayerPI.t安全にDisposeする(ref End_DonderFullCombo_Text);
-        TJAPlayerPI.t安全にDisposeする(ref End_DonderFullCombo_Text_Effect);
-        #endregion
-        #region ゲームモード
-        TJAPlayerPI.t安全にDisposeする(ref GameMode_Timer_Tick);
-        TJAPlayerPI.t安全にDisposeする(ref GameMode_Timer_Frame);
-        #endregion
-        #region ステージ失敗
-        TJAPlayerPI.t安全にDisposeする(ref Failed_Game);
-        TJAPlayerPI.t安全にDisposeする(ref Failed_Stage);
-        #endregion
-        #region DanC
-        TJAPlayerPI.t安全にDisposeする(ref DanC_Background);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_Gauge);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_Base);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_Failed);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_Number);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_ExamRange);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_ExamUnit);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_ExamType);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_Screen);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_V2_Background);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_V2_Base);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_V2_Failed_Text);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_V2_Failed_Cover);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_V2_Number);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_V2_ExamRange);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_V2_ExamType_Box);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_V2_ExamType);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_V2_Panel);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_V2_SoulGauge_Box);
-        TJAPlayerPI.t安全にDisposeする(ref DanC_V2_Gauge);
-        #endregion
-        #region PuchiChara
-        TJAPlayerPI.t安全にDisposeする(ref PuchiChara);
-        #endregion
-        #region Training
-        TJAPlayerPI.t安全にDisposeする(ref Tokkun_DownBG);
-        TJAPlayerPI.t安全にDisposeする(ref Tokkun_BigTaiko);
-        TJAPlayerPI.t安全にDisposeする(ref Tokkun_ProgressBar);
-        TJAPlayerPI.t安全にDisposeする(ref Tokkun_ProgressBarWhite);
-        TJAPlayerPI.t安全にDisposeする(ref Tokkun_GoGoPoint);
-        TJAPlayerPI.t安全にDisposeする(ref Tokkun_JumpPoint);
-        TJAPlayerPI.t安全にDisposeする(ref Tokkun_Background_Up);
-        TJAPlayerPI.t安全にDisposeする(ref Tokkun_BigNumber);
-        TJAPlayerPI.t安全にDisposeする(ref Tokkun_SmallNumber);
-        TJAPlayerPI.t安全にDisposeする(ref Tokkun_Speed_Measure);
-        #endregion
-        #endregion
-
-        #region 6_結果発表
-        TJAPlayerPI.t安全にDisposeする(ref Result_Background);
-        TJAPlayerPI.t安全にDisposeする(ref Result_FadeIn);
-        TJAPlayerPI.t安全にDisposeする(ref Result_Gauge);
-        TJAPlayerPI.t安全にDisposeする(ref Result_Gauge_Base);
-        TJAPlayerPI.t安全にDisposeする(ref Result_Judge);
-        TJAPlayerPI.t安全にDisposeする(ref Result_Header);
-        TJAPlayerPI.t安全にDisposeする(ref Result_Number);
-        TJAPlayerPI.t安全にDisposeする(ref Result_Panel);
-        TJAPlayerPI.t安全にDisposeする(ref Result_Score_Text);
-        TJAPlayerPI.t安全にDisposeする(ref Result_Score_Number);
-        TJAPlayerPI.t安全にDisposeする(ref Result_Dan);
-        TJAPlayerPI.t安全にDisposeする(ref Result_v2_GaugeBack);
-        TJAPlayerPI.t安全にDisposeする(ref Result_v2_GaugeBase);
-        TJAPlayerPI.t安全にDisposeする(ref Result_v2_Gauge);
-        TJAPlayerPI.t安全にDisposeする(ref Result_v2_Header);
-        TJAPlayerPI.t安全にDisposeする(ref Result_v2_Number);
-        TJAPlayerPI.t安全にDisposeする(ref Result_v2_Background);
-        TJAPlayerPI.t安全にDisposeする(ref Result_v2_Mountain);
-        TJAPlayerPI.t安全にDisposeする(ref Result_v2_Panel);
-        #endregion
-
-        #region 7_終了画面
-        TJAPlayerPI.t安全にDisposeする(ref Exit_Curtain);
-        TJAPlayerPI.t安全にDisposeする(ref Exit_Text);
-        #endregion
         this.IsLoaded = false;
 
     }
@@ -1179,10 +835,16 @@ class TextureLoader
     #endregion
 
     #region 4_読み込み画面
-    public CTexture? SongLoading_BG,
-        SongLoading_Plate,
+    public CTexture? 
         SongLoading_v2_BG,
         SongLoading_v2_Plate;
+    public CTexture? SongLoading_Upper;
+    public CTexture? SongLoading_Lower;
+    public CTexture? SongLoading_Center;
+    public CTexture? SongLoading_Mob_Center;
+    public CTexture? SongLoading_Mob_Left;
+    public CTexture? SongLoading_Mob_Right;
+    public CTexture? SongLoading_Title_Base;
     #endregion
 
     #region 5_演奏画面
@@ -1419,4 +1081,6 @@ class TextureLoader
                     Exit_Text;
     #endregion
 
+
+    private List<IDisposable> disposables = new List<IDisposable>();
 }

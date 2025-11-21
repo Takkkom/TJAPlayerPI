@@ -1,5 +1,8 @@
-﻿namespace TJAPlayerPI;
+﻿using System;
 
+namespace TJAPlayerPI.Stages.SongSelect.Legacy;
+
+[Obsolete]
 internal class CActSortSongs : CActSelectPopupMenu
 {
 

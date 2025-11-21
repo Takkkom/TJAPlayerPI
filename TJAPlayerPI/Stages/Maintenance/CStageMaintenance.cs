@@ -7,9 +7,10 @@ class CStageMaintenance : CStage
 {
     // コンストラクタ
 
+    public EventHandler<EventArgs>? ExitMaintenance;
+
     public CStageMaintenance()
     {
-        base.eStageID = CStage.EStage.Maintenance;
     }
     // CStage 実装
 
@@ -70,7 +71,9 @@ class CStageMaintenance : CStage
         }
 
         if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Escape))
-            return 1;
+        {
+            ExitMaintenance?.Invoke(this, EventArgs.Empty);
+        }
 
         if ((don is null) || (ka is null))
             return 0;

@@ -1,13 +1,14 @@
 ﻿using FDK;
 using TJAPlayerPI.Helper;
 
-namespace TJAPlayerPI;
+namespace TJAPlayerPI.Stages.SongSelect.Legacy;
 
+[Obsolete]
 internal class CActSelectHistoryPanel : CActivity
 {
     // メソッド
 
-    public CActSelectHistoryPanel(CStage選曲 stage選曲)
+    public CActSelectHistoryPanel(CStage選曲Legacy stage選曲)
     {
         this.stage選曲 = stage選曲;
     }
@@ -79,7 +80,7 @@ internal class CActSelectHistoryPanel : CActivity
     private CCachedFontRenderer? Font;
     private Cスコア? r現在選択中のスコア;
     private C曲リストノード? r現在選択中の曲;
-    private CStage選曲 stage選曲;
+    private CStage選曲Legacy stage選曲;
     //-----------------
 
     private void t小文字表示(int x, int y, long n)

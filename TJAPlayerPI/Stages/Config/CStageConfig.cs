@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Fade;
 using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
@@ -7,11 +8,11 @@ internal class CStageConfig : CStage
 {
     // コンストラクタ
 
+    public EventHandler<EventArgs>? PressedExit;
+
     public CStageConfig()
     {
-        base.eStageID = CStage.EStage.Config;
-        base.eフェーズID = CStage.Eフェーズ.共通_通常状態;
-        base.listChildren.Add(this.actFIFO = new CActFIFOBlack());
+        //base.listChildren.Add(this.actFIFO = new CActFIFOBlack());
         base.listChildren.Add(this.actList = new CActConfigList());
         base.listChildren.Add(this.actKeyAssign = new CActConfigKeyAssign());
     }
@@ -80,6 +81,8 @@ internal class CStageConfig : CStage
             }
 
             TJAPlayerPI.app.Discord.Update("Config");
+
+            TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.BGMコンフィグ画面].t再生する();
         }
         finally
         {
@@ -94,6 +97,8 @@ internal class CStageConfig : CStage
         Trace.Indent();
         try
         {
+            TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.BGMコンフィグ画面].t停止する();
+
             TJAPlayerPI.app.ConfigIni.t書き出し(TJAPlayerPI.strEXEのあるフォルダ + "Config.ini");	// CONFIGだけ
             if (this.privatefont is not null)                                                    // 以下OPTIONと共通
             {
@@ -142,8 +147,8 @@ internal class CStageConfig : CStage
 
         if (base.b初めての進行描画)
         {
-            base.eフェーズID = CStage.Eフェーズ.共通_FadeIn;
-            this.actFIFO.tFadeIn開始();
+            //base.eフェーズID = CStage.Eフェーズ.共通_FadeIn;
+            //this.actFIFO.tFadeIn開始();
             base.b初めての進行描画 = false;
         }
 
@@ -220,8 +225,9 @@ internal class CStageConfig : CStage
         }
         //---------------------
         #endregion
-        #region [ FadeIn_アウト ]
+        #region [ Fade ]
         //---------------------
+        /*
         switch (base.eフェーズID)
         {
             case CStage.Eフェーズ.共通_FadeIn:
@@ -233,12 +239,14 @@ internal class CStageConfig : CStage
                 break;
 
             case CStage.Eフェーズ.共通_FadeOut:
-                if (this.actFIFO.On進行描画() == 0)
+                if (this.actFIFO.On進行描画() != 0)
                 {
                     break;
                 }
+                TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.BGMコンフィグ画面].t停止する();
                 return 1;
         }
+        */
         //---------------------
         #endregion
 
@@ -248,7 +256,7 @@ internal class CStageConfig : CStage
 
         // キー入力
 
-        if ((base.eフェーズID != CStage.Eフェーズ.共通_通常状態)
+        if (TJAPlayerPI.FadeManager.FadeState != FadeState.None
             || this.actKeyAssign.bキー入力待ちの最中である)
             return 0;
 
@@ -274,8 +282,10 @@ internal class CStageConfig : CStage
                 }
                 else
                 {
-                    this.actFIFO.tFadeOut開始();
-                    base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
+                    TJAPlayerPI.FadeManager.FadeOut(FadeManager.FadeBlack, finished: ExitConfig);
+
+                    //this.actFIFO.tFadeOut開始();
+                    //base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
                 }
             }
             else if (TJAPlayerPI.app.ConfigIni.bEnterがキー割り当てのどこにも使用されていない && TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Return) || TJAPlayerPI.app.Pad.bPressed(EPad.LRed) || TJAPlayerPI.app.Pad.bPressed(EPad.RRed) || (TJAPlayerPI.app.Pad.bPressed(EPad.LRed2P) || TJAPlayerPI.app.Pad.bPressed(EPad.RRed2P)) && TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount >= 2)
@@ -283,8 +293,11 @@ internal class CStageConfig : CStage
                 if (this.n現在のメニュー番号 == 2)
                 {
                     TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND決定音]?.t再生する();
-                    this.actFIFO.tFadeOut開始();
-                    base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
+
+                    TJAPlayerPI.FadeManager.FadeOut(FadeManager.FadeBlack, finished: ExitConfig);
+
+                    //this.actFIFO.tFadeOut開始();
+                    //base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
                 }
                 else if (this.bメニューにフォーカス中)
                 {
@@ -411,7 +424,12 @@ internal class CStageConfig : CStage
         }
     }
 
-    private CActFIFOBlack actFIFO;
+    private void ExitConfig()
+    {
+        PressedExit?.Invoke(this, EventArgs.Empty);
+    }
+
+    //private CActFIFOBlack actFIFO;
     private CActConfigKeyAssign actKeyAssign;
     private CActConfigList actList;
     private bool bメニューにフォーカス中;

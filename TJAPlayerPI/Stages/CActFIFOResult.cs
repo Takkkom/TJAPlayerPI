@@ -2,6 +2,7 @@
 
 namespace TJAPlayerPI;
 
+[Obsolete]
 internal class CActFIFOResult : CActivity
 {
     // メソッド

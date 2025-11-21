@@ -1,6 +1,7 @@
 ﻿using FDK;
 using SkiaSharp;
 using TJAPlayerPI.Common;
+using TJAPlayerPI.Fade;
 using TJAPlayerPI.Helper;
 using static TJAPlayerPI.CDTX;
 
@@ -13,11 +14,13 @@ internal class CStage演奏画面共通 : CStage
 {
     // プロパティ
 
+    public EventHandler<EventArgs>? RestartAndReloadChart;
+    public EventHandler<EventArgs>? ExitGameAndGoToSongSelect;
+    public EventHandler<EventArgs>? ExitGameAndGoToResult;
+
     // メソッド
     public CStage演奏画面共通()
     {
-        base.eStageID = CStage.EStage.Playing;
-        base.eフェーズID = CStage.Eフェーズ.共通_通常状態;
         base.listChildren.Add(this.actCombo = new CAct演奏Combo共通());
         base.listChildren.Add(this.actChipFireD = new CAct演奏DrumsチップファイアD());
         base.listChildren.Add(this.Rainbow = new Rainbow(this));
@@ -38,9 +41,6 @@ internal class CStage演奏画面共通 : CStage
         base.listChildren.Add(this.actLyric = new CActLyric());
         base.listChildren.Add(this.actStageFailed = new CActStageFailed());
         base.listChildren.Add(this.actPlayInfo = new CActPlayInfo());
-        base.listChildren.Add(this.actFI = new CActFIFOStart());
-        base.listChildren.Add(this.actFO = new CActFIFOBlack());
-        base.listChildren.Add(this.actFOClear = new CActFIFOResult());
         base.listChildren.Add(this.actLane = new CAct演奏Drumsレーン(this));
         base.listChildren.Add(this.actDancer = new CActDancer(actGauge));
         base.listChildren.Add(this.actEnd = new CAct演奏Drums演奏終了演出(this, actGauge));
@@ -119,7 +119,7 @@ internal class CStage演奏画面共通 : CStage
         this.actGame.t叩ききりまショー_初期化();
         for (int nPlayer = 0; nPlayer < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; nPlayer++)
             this.ReSetScore(TJAPlayerPI.DTX[nPlayer].nScoreInit[0, TJAPlayerPI.app.n確定された曲の難易度[nPlayer]], TJAPlayerPI.DTX[nPlayer].nScoreDiff[TJAPlayerPI.app.n確定された曲の難易度[nPlayer]], nPlayer);
-        this.eフェーズID = CStage.Eフェーズ.共通_通常状態;//初期化する。
+        //this.eフェーズID = CStage.Eフェーズ.共通_通常状態;//初期化する。
 
         for (int index = TJAPlayerPI.DTX[0].listChip.Count - 1; index >= 0; index--)
         {
@@ -140,7 +140,6 @@ internal class CStage演奏画面共通 : CStage
             ctBalloonChipAnime[i] = new CCounter();
         }
 
-        this.eFadeOut完了時の戻り値 = E演奏画面の戻り値.継続;
         this.n現在のトップChip = (TJAPlayerPI.DTX[0].listChip.Count > 0) ? 0 : -1;
 
         this.nヒット数[0] = new CHITCOUNTOFRANK();
@@ -236,6 +235,11 @@ internal class CStage演奏画面共通 : CStage
 
         this.bDoublePlay = TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount >= 2 ? true : false;
 
+        this.ctExitWait = null;
+        this.IsEnded = false;
+        this.IsFailed = false;
+        this.IsExisting = false;
+
         this.tBranchReset(0);
         this.tBranchReset(1);
 
@@ -289,7 +293,7 @@ internal class CStage演奏画面共通 : CStage
             double dbPtn_GoGo = (60.0 / actPlayInfo.dbBPM[nPlayer]) * TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BeatGoGo[nPlayer] / this.actChara.arゴーゴーモーション番号[nPlayer].Length / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0);
             if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_Normal[nPlayer] != 0)
             {
-                this.actChara.ctChara_Normal[nPlayer] = new CCounter(0, this.actChara.arモーション番号[nPlayer].Length - 1, dbPtn_Normal, CSoundManager.rc演奏用タイマ);
+                this.actChara.ctChara_Normal[nPlayer] = new CCounter(0, this.actChara.arモーション番号[nPlayer].Length - 1, dbPtn_Normal, TJAPlayerPI.app.Timer);
             }
             else
             {
@@ -297,7 +301,7 @@ internal class CStage演奏画面共通 : CStage
             }
             if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_Clear[nPlayer] != 0)
             {
-                this.actChara.ctChara_Clear[nPlayer] = new CCounter(0, this.actChara.arクリアモーション番号[nPlayer].Length - 1, dbPtn_Clear, CSoundManager.rc演奏用タイマ);
+                this.actChara.ctChara_Clear[nPlayer] = new CCounter(0, this.actChara.arクリアモーション番号[nPlayer].Length - 1, dbPtn_Clear, TJAPlayerPI.app.Timer);
             }
             else
             {
@@ -305,7 +309,7 @@ internal class CStage演奏画面共通 : CStage
             }
             if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGo[nPlayer] != 0)
             {
-                this.actChara.ctChara_GoGo[nPlayer] = new CCounter(0, this.actChara.arゴーゴーモーション番号[nPlayer].Length - 1, dbPtn_GoGo, CSoundManager.rc演奏用タイマ);
+                this.actChara.ctChara_GoGo[nPlayer] = new CCounter(0, this.actChara.arゴーゴーモーション番号[nPlayer].Length - 1, dbPtn_GoGo, TJAPlayerPI.app.Timer);
             }
             else
             {
@@ -316,7 +320,7 @@ internal class CStage演奏画面共通 : CStage
         if (this.actDancer.ct踊り子モーション is not null)
         {
             double dbUnit_dancer = (((60 / (actPlayInfo.dbBPM[0]))) / this.actDancer.ar踊り子モーション番号.Length);
-            this.actDancer.ct踊り子モーション = new CCounter(0, this.actDancer.ar踊り子モーション番号.Length - 1, dbUnit_dancer * TJAPlayerPI.app.Skin.SkinConfig.Game.Dancer.Beat, CSoundManager.rc演奏用タイマ);
+            this.actDancer.ct踊り子モーション = new CCounter(0, this.actDancer.ar踊り子モーション番号.Length - 1, dbUnit_dancer * TJAPlayerPI.app.Skin.SkinConfig.Game.Dancer.Beat, TJAPlayerPI.app.Timer);
         }
         else
         {
@@ -403,8 +407,6 @@ internal class CStage演奏画面共通 : CStage
         if (!base.b活性化してない)
         {
             bool bIsFinishedPlaying = false;
-            bool bIsFinishedEndAnime = false;
-            bool bIsFinishedFadeout = false;
             #region [ 初めての進行描画 ]
             if (base.b初めての進行描画)
             {
@@ -417,8 +419,8 @@ internal class CStage演奏画面共通 : CStage
                 // ものすごく待たされる(2回目以降と比べると2,3桁tick違う)。そこで最初の画面FadeInの間に
                 // 一発Start()を掛けてJITの結果を生成させておく。
 
-                base.eフェーズID = CStage.Eフェーズ.共通_FadeIn;
-                this.actFI.tFadeIn開始();
+                //base.eフェーズID = CStage.Eフェーズ.共通_FadeIn;
+                //this.actFI.tFadeIn開始();
 
                 base.b初めての進行描画 = false;
             }
@@ -441,12 +443,16 @@ internal class CStage演奏画面共通 : CStage
                 TJAPlayerPI.app.Timer.t再開();
                 t演奏中止();
             });
-            if (((TJAPlayerPI.app.ConfigToml.PlayOption.Risky != 0 && this.actGauge.IsFailed(0)) || this.actGame.st叩ききりまショー.ct残り時間.b終了値に達した) && (base.eフェーズID == CStage.Eフェーズ.共通_通常状態))
+
+
+            if (((TJAPlayerPI.app.ConfigToml.PlayOption.Risky != 0 && this.actGauge.IsFailed(0)) || this.actGame.st叩ききりまショー.ct残り時間.b終了値に達した) && !IsFailed)
             {
-                this.actStageFailed.Start();
-                t全チップの再生停止();
-                base.eフェーズID = CStage.Eフェーズ.演奏_STAGE_FAILED;
+                FailGame();
+                IsFailed = true;
             }
+
+
+
             if ((!String.IsNullOrEmpty(TJAPlayerPI.DTX[0].strBGIMAGE_PATH) || (TJAPlayerPI.DTX[0].listVD.Count == 0)) || !TJAPlayerPI.app.ConfigToml.Game.Background.Movie) //背景動画があったら背景画像を描画しない。
             {
                 if (this.tx背景 is not null)
@@ -569,53 +575,36 @@ internal class CStage演奏画面共通 : CStage
 
             this.t進行描画_STAGEFAILED();
 
-            bIsFinishedEndAnime = this.actEnd.On進行描画() == 1 ? true : false;
-            bIsFinishedFadeout = this.t進行描画_FadeIn_アウト();
-
             //演奏終了→演出表示→FadeOut
-            if (bIsFinishedPlaying && base.eフェーズID == CStage.Eフェーズ.共通_通常状態)
+            if (bIsFinishedPlaying && !IsEnded)
             {
-                if (TJAPlayerPI.app.ConfigToml.PlayOption._GameMode == EGame.特訓モード)
-                {
-                    TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND特訓停止].t再生する();
-                    actTraining.t演奏を停止する();
+                EndGame();
+            }
 
-                    actTraining.n現在の小節線 = actPlayInfo.NowMeasure[0];
-                    actTraining.t譜面の表示位置を合わせる(false);
-                }
-                else
+            if (IsEnded)
+            {
+                this.actEnd.On進行描画();
+
+                ctExitWait?.t進行();
+                if (ctExitWait is CCounter exitWait && exitWait.n現在の値 == exitWait.n終了値 && !IsExisting)
                 {
-                    base.eフェーズID = CStage.Eフェーズ.演奏_演奏終了演出;
-                    this.actEnd.Start();
-                    for (int nPlayer = 0; nPlayer < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; nPlayer++)
+                    FadeBase fade = IsFailed ? FadeManager.FadeBlack : FadeManager.GetFadeResult();
+                    TJAPlayerPI.FadeManager.FadeOut(fade, finished: () =>
                     {
-                        if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo_Max[nPlayer] != 0)
+                        if (IsFailed)
                         {
-                            if (actGauge.db現在のゲージ値[nPlayer] >= 100)
-                            {
-                                double dbUnit = (((60.0 / (actPlayInfo.dbBPM[nPlayer]))));
-                                this.actChara.アクションタイマーリセット(nPlayer);
-                                this.actChara.ctキャラクターアクション_10コンボMAX[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo_Max[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo_Max[nPlayer]) * 1.5, CSoundManager.rc演奏用タイマ);
-                                this.actChara.ctキャラクターアクション_10コンボMAX[nPlayer].t進行db();
-                                this.actChara.ctキャラクターアクション_10コンボMAX[nPlayer].db現在の値 = 0D;
-                                this.actChara.bマイどんアクション中[nPlayer] = true;
-                            }
+                            ExitGameAndGoToSongSelect?.Invoke(this, EventArgs.Empty);
                         }
-                    }
+                        else
+                        {
+                            ExitGameAndGoToResult?.Invoke(this, EventArgs.Empty);
+                        }
+                    });
+
+                    IsExisting = true;
                 }
             }
-            else if (bIsFinishedEndAnime && base.eフェーズID == Eフェーズ.演奏_演奏終了演出)
-            {
-                this.eFadeOut完了時の戻り値 = E演奏画面の戻り値.ステージクリア;
-                base.eフェーズID = CStage.Eフェーズ.演奏_STAGE_CLEAR_FadeOut;
-                this.actFOClear.tFadeOut開始();
-            }
 
-            if (bIsFinishedFadeout)
-            {
-                Debug.WriteLine("Total On進行描画=" + sw.ElapsedMilliseconds + "ms");
-                return (int)this.eFadeOut完了時の戻り値;
-            }
 
             ManageMixerQueue();
 
@@ -718,9 +707,9 @@ internal class CStage演奏画面共通 : CStage
     public Rainbow Rainbow;
     public CAct演奏Combo共通 actCombo;
     //protected CActFIFOBlack actFI;
-    protected CActFIFOStart actFI;
-    protected CActFIFOBlack actFO;
-    protected CActFIFOResult actFOClear;
+    //protected CActFIFOStart actFI;
+    //protected CActFIFOBlack actFO;
+    //protected CActFIFOResult actFOClear;
     public CAct演奏ゲージ共通 actGauge;
 
     public CActDancer actDancer;
@@ -786,8 +775,12 @@ internal class CStage演奏画面共通 : CStage
     private bool[] b途中でAutoを切り替えたか;
     private int[] n顔座標 = { 0, 0 };
     private int[] nBigFaceIndex = { 0, 0 };
+    private bool IsEnded;
+    private bool IsFailed;
+    private CCounter? ctExitWait;
+    private bool IsExisting;
 
-    protected E演奏画面の戻り値 eFadeOut完了時の戻り値;
+    //protected E演奏画面の戻り値 eFadeOut完了時の戻り値;
 
     public CHITCOUNTOFRANK[] nヒット数 = new CHITCOUNTOFRANK[2];
     public int n現在のトップChip = -1;
@@ -851,7 +844,7 @@ internal class CStage演奏画面共通 : CStage
         if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_ClearIn[nPlayer] != 0 && actChara.CharaAction_Balloon_Delay[nPlayer].b終了値に達した)
         {
             this.actChara.アクションタイマーリセット(nPlayer);
-            this.actChara.ctキャラクターアクション_ノルマ[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_ClearIn[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_ClearIn[nPlayer]) * 1.5, CSoundManager.rc演奏用タイマ);
+            this.actChara.ctキャラクターアクション_ノルマ[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_ClearIn[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_ClearIn[nPlayer]) * 1.5, TJAPlayerPI.app.Timer);
             this.actChara.ctキャラクターアクション_ノルマ[nPlayer].t進行db();
             this.actChara.ctキャラクターアクション_ノルマ[nPlayer].db現在の値 = 0D;
             this.actChara.bマイどんアクション中[nPlayer] = true;
@@ -875,7 +868,7 @@ internal class CStage演奏画面共通 : CStage
         if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_SoulIn[nPlayer] != 0 && actChara.CharaAction_Balloon_Delay[nPlayer].b終了値に達した)
         {
             this.actChara.アクションタイマーリセット(nPlayer);
-            this.actChara.ctキャラクターアクション_魂MAX[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_SoulIn[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_SoulIn[nPlayer]) * 1.5, CSoundManager.rc演奏用タイマ);
+            this.actChara.ctキャラクターアクション_魂MAX[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_SoulIn[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_SoulIn[nPlayer]) * 1.5, TJAPlayerPI.app.Timer);
             this.actChara.ctキャラクターアクション_魂MAX[nPlayer].t進行db();
             this.actChara.ctキャラクターアクション_魂MAX[nPlayer].db現在の値 = 0D;
             this.actChara.bマイどんアクション中[nPlayer] = true;
@@ -888,6 +881,50 @@ internal class CStage演奏画面共通 : CStage
         double dbUnit = (60.0 / (actPlayInfo.dbBPM[nPlayer])) * TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed / 20.0;
     }
 
+    private void FailGame()
+    {
+        this.actStageFailed.Start();
+        t全チップの再生停止();
+
+        CSoundManager.rc演奏用タイマ?.t一時停止();
+
+        EndGame();
+    }
+
+    private void EndGame()
+    {
+        if (TJAPlayerPI.app.ConfigToml.PlayOption._GameMode == EGame.特訓モード)
+        {
+            TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND特訓停止].t再生する();
+            actTraining.t演奏を停止する();
+
+            actTraining.n現在の小節線 = actPlayInfo.NowMeasure[0];
+            actTraining.t譜面の表示位置を合わせる(false);
+        }
+        else
+        {
+            this.actEnd.Start();
+            for (int nPlayer = 0; nPlayer < TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount; nPlayer++)
+            {
+                if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo_Max[nPlayer] != 0)
+                {
+                    if (actGauge.db現在のゲージ値[nPlayer] >= 100)
+                    {
+                        double dbUnit = (((60.0 / (actPlayInfo.dbBPM[nPlayer]))));
+                        this.actChara.アクションタイマーリセット(nPlayer);
+                        this.actChara.ctキャラクターアクション_10コンボMAX[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo_Max[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo_Max[nPlayer]) * 1.5, TJAPlayerPI.app.Timer);
+                        this.actChara.ctキャラクターアクション_10コンボMAX[nPlayer].t進行db();
+                        this.actChara.ctキャラクターアクション_10コンボMAX[nPlayer].db現在の値 = 0D;
+                        this.actChara.bマイどんアクション中[nPlayer] = true;
+                    }
+                }
+            }
+
+            ctExitWait = new CCounter(0, 9000, 1, TJAPlayerPI.app.Timer);
+        }
+
+        IsEnded = true;
+    }
 
     public void AddMixer(CSound cs, bool _b演奏終了後も再生が続くチップである)
     {
@@ -1584,7 +1621,7 @@ internal class CStage演奏画面共通 : CStage
                             // 魂ゲージMAXではない
                             // ジャンプ_ノーマル
                             this.actChara.アクションタイマーリセット(nPlayer);
-                            this.actChara.ctキャラクターアクション_10コンボ[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo[nPlayer]) * 1.5, CSoundManager.rc演奏用タイマ);
+                            this.actChara.ctキャラクターアクション_10コンボ[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo[nPlayer]) * 1.5, TJAPlayerPI.app.Timer);
                             this.actChara.ctキャラクターアクション_10コンボ[nPlayer].t進行db();
                             this.actChara.ctキャラクターアクション_10コンボ[nPlayer].db現在の値 = 0D;
                             this.actChara.bマイどんアクション中[nPlayer] = true;
@@ -1598,7 +1635,7 @@ internal class CStage演奏画面共通 : CStage
                             // 魂ゲージMAX
                             // ジャンプ_MAX
                             this.actChara.アクションタイマーリセット(nPlayer);
-                            this.actChara.ctキャラクターアクション_10コンボMAX[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo_Max[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo_Max[nPlayer]) * 1.5, CSoundManager.rc演奏用タイマ);
+                            this.actChara.ctキャラクターアクション_10コンボMAX[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo_Max[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_10combo_Max[nPlayer]) * 1.5, TJAPlayerPI.app.Timer);
                             this.actChara.ctキャラクターアクション_10コンボMAX[nPlayer].t進行db();
                             this.actChara.ctキャラクターアクション_10コンボMAX[nPlayer].db現在の値 = 0D;
                             this.actChara.bマイどんアクション中[nPlayer] = true;
@@ -2671,7 +2708,7 @@ internal class CStage演奏画面共通 : CStage
         IInputDevice keyboard = TJAPlayerPI.app.InputManager.Keyboard;
         if (keyboard.bIsKeyPressed((int)SlimDXKeys.Key.F1))
         {
-            if (!this.actPauseMenu.bIsActivePopupMenu && this.bPAUSE == false)
+            if (!this.actPauseMenu.bIsActivePopupMenu && this.bPAUSE == false && TJAPlayerPI.FadeManager.FadeState == FadeState.None)
             {
                 TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND変更音].t再生する();
 
@@ -2685,7 +2722,7 @@ internal class CStage演奏画面共通 : CStage
             }
 
         }
-        if ((!this.bPAUSE && (base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED)) && (base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut))
+        if (!this.bPAUSE && TJAPlayerPI.FadeManager.FadeState == FadeState.None)
         {
             this.t入力処理_ドラム();
             if (keyboard.bIsKeyPressed((int)SlimDXKeys.Key.UpArrow) && (keyboard.bIsKeyDown((int)SlimDXKeys.Key.RightShift) || keyboard.bIsKeyDown((int)SlimDXKeys.Key.LeftShift)))
@@ -2724,7 +2761,7 @@ internal class CStage演奏画面共通 : CStage
             {
                 ChangeInputAdjustTimeInPlaying(keyboard, +1);
             }
-            else if ((base.eフェーズID == CStage.Eフェーズ.共通_通常状態) && (keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Escape)) && !this.actPauseMenu.bIsActivePopupMenu)
+            else if ((keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Escape)) && !this.actPauseMenu.bIsActivePopupMenu)
             {   // escape (exit)
                 this.t演奏中止();
             }
@@ -2807,7 +2844,7 @@ internal class CStage演奏画面共通 : CStage
                 this.b途中でAutoを切り替えたか[1] = true;
             }
         }
-        if (!this.actPauseMenu.bIsActivePopupMenu && this.bPAUSE && ((base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED)) && (base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut))
+        if (!this.actPauseMenu.bIsActivePopupMenu && this.bPAUSE)
         {
             if (keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Delete))
             {	// del (debug info)
@@ -2849,24 +2886,19 @@ internal class CStage演奏画面共通 : CStage
 
     protected virtual void t進行描画_AVI()
     {
-        if (((base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED) && (base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut)) && (TJAPlayerPI.app.ConfigToml.Game.Background.Movie))
+        if (TJAPlayerPI.app.ConfigToml.Game.Background.Movie)
         {
             this.actAVI.t進行描画();
         }
     }
     protected void t進行描画_STAGEFAILED()
     {
-        if (((base.eフェーズID == CStage.Eフェーズ.演奏_STAGE_FAILED) || (base.eフェーズID == CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut)) && ((this.actStageFailed.On進行描画() != 0) && (base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut)))
-        {
-            this.eFadeOut完了時の戻り値 = E演奏画面の戻り値.ステージ失敗;
-            base.eフェーズID = CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut;
-            this.actFO.tFadeOut開始();
-        }
+        this.actStageFailed.On進行描画();
     }
 
     protected void t進行描画_パネル文字列()
     {
-        if ((base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED) && (base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut))
+        //if ((base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED) && (base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut))
         {
             if (!actDan.IsAnimating)
             {
@@ -2892,17 +2924,10 @@ internal class CStage演奏画面共通 : CStage
 
     protected void t進行描画_ゲージ()
     {
-        if ((base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED) && (base.eフェーズID != CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut))
-        {
-            this.actGauge.On進行描画();
-        }
+        this.actGauge.On進行描画();
     }
     protected bool t進行描画_チップ(int nPlayer)
     {
-        if ((base.eフェーズID == CStage.Eフェーズ.演奏_STAGE_FAILED) || (base.eフェーズID == CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut))
-        {
-            return true;
-        }
         if ((this.n現在のトップChip == -1) || (this.n現在のトップChip >= TJAPlayerPI.DTX[nPlayer].listChip.Count))
         {
             return true;
@@ -3153,14 +3178,14 @@ internal class CStage演奏画面共通 : CStage
                             {
                                 for (int i = 0; i < 2; i++)
                                 {
-                                    ctChipAnime[i] = new CCounter(0, 3, 60.0 / actPlayInfo.dbBPM[nPlayer] * 1 / 4 / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), CSoundManager.rc演奏用タイマ);
-                                    ctBalloonChipAnime[i] = new CCounter(0, 400, 60.0 / actPlayInfo.dbBPM[nPlayer] * 1 / 400f / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), CSoundManager.rc演奏用タイマ);
+                                    ctChipAnime[i] = new CCounter(0, 3, 60.0 / actPlayInfo.dbBPM[nPlayer] * 1 / 4 / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), TJAPlayerPI.app.Timer);
+                                    ctBalloonChipAnime[i] = new CCounter(0, 400, 60.0 / actPlayInfo.dbBPM[nPlayer] * 1 / 400f / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), TJAPlayerPI.app.Timer);
                                 }
 
                                 if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_Normal[nPlayer] != 0)
                                 {
                                     double dbPtn_Normal = (60.0 / actPlayInfo.dbBPM[nPlayer]) * TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BeatNormal[nPlayer] / this.actChara.arモーション番号[nPlayer].Length / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0);
-                                    this.actChara.ctChara_Normal[nPlayer] = new CCounter(0, this.actChara.arモーション番号[nPlayer].Length - 1, dbPtn_Normal, CSoundManager.rc演奏用タイマ);
+                                    this.actChara.ctChara_Normal[nPlayer] = new CCounter(0, this.actChara.arモーション番号[nPlayer].Length - 1, dbPtn_Normal, TJAPlayerPI.app.Timer);
                                 }
                                 else
                                 {
@@ -3169,7 +3194,7 @@ internal class CStage演奏画面共通 : CStage
                                 if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_Clear[nPlayer] != 0)
                                 {
                                     double dbPtn_Clear = (60.0 / actPlayInfo.dbBPM[nPlayer]) * TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BeatClear[nPlayer] / this.actChara.arクリアモーション番号[nPlayer].Length / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0);
-                                    this.actChara.ctChara_Clear[nPlayer] = new CCounter(0, this.actChara.arクリアモーション番号[nPlayer].Length - 1, dbPtn_Clear, CSoundManager.rc演奏用タイマ);
+                                    this.actChara.ctChara_Clear[nPlayer] = new CCounter(0, this.actChara.arクリアモーション番号[nPlayer].Length - 1, dbPtn_Clear, TJAPlayerPI.app.Timer);
                                 }
                                 else
                                 {
@@ -3178,7 +3203,7 @@ internal class CStage演奏画面共通 : CStage
                                 if (TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGo[nPlayer] != 0)
                                 {
                                     double dbPtn_GoGo = (60.0 / actPlayInfo.dbBPM[nPlayer]) * TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BeatGoGo[nPlayer] / this.actChara.arゴーゴーモーション番号[nPlayer].Length / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0);
-                                    this.actChara.ctChara_GoGo[nPlayer] = new CCounter(0, this.actChara.arゴーゴーモーション番号[nPlayer].Length - 1, dbPtn_GoGo, CSoundManager.rc演奏用タイマ);
+                                    this.actChara.ctChara_GoGo[nPlayer] = new CCounter(0, this.actChara.arゴーゴーモーション番号[nPlayer].Length - 1, dbPtn_GoGo, TJAPlayerPI.app.Timer);
                                 }
                                 else
                                 {
@@ -3187,7 +3212,7 @@ internal class CStage演奏画面共通 : CStage
                                 if (TJAPlayerPI.app.Skin.Game_Dancer_Ptn != 0)
                                 {
                                     double dbUnit_dancer = (((60 / (actPlayInfo.dbBPM[nPlayer]))) / this.actDancer.ar踊り子モーション番号.Length) / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0);
-                                    this.actDancer.ct踊り子モーション = new CCounter(0, this.actDancer.ar踊り子モーション番号.Length - 1, dbUnit_dancer * TJAPlayerPI.app.Skin.SkinConfig.Game.Dancer.Beat, CSoundManager.rc演奏用タイマ);
+                                    this.actDancer.ct踊り子モーション = new CCounter(0, this.actDancer.ar踊り子モーション番号.Length - 1, dbUnit_dancer * TJAPlayerPI.app.Skin.SkinConfig.Game.Dancer.Beat, TJAPlayerPI.app.Timer);
                                 }
                                 else
                                 {
@@ -3195,8 +3220,8 @@ internal class CStage演奏画面共通 : CStage
                                 }
                                 if (TJAPlayerPI.app.Skin.Game_Mob_Ptn != 0 && TJAPlayerPI.app.Skin.SkinConfig.Game.Mob.Beat > 0) //2018.6.15 Game_Mob_Beatが0のままCCounter生成をされて無限ループが発生しないよう対策
                                 {
-                                    this.actMob.ctMob = new CCounter(1, 180, 60.0 / actPlayInfo.dbBPM[nPlayer] * TJAPlayerPI.app.Skin.SkinConfig.Game.Mob.Beat / 180 / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), CSoundManager.rc演奏用タイマ);
-                                    this.actMob.ctMobPtn = new CCounter(0, TJAPlayerPI.app.Skin.Game_Mob_Ptn - 1, 60.0 / actPlayInfo.dbBPM[nPlayer] * TJAPlayerPI.app.Skin.SkinConfig.Game.Mob.PtnBeat / TJAPlayerPI.app.Skin.Game_Mob_Ptn / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), CSoundManager.rc演奏用タイマ);
+                                    this.actMob.ctMob = new CCounter(1, 180, 60.0 / actPlayInfo.dbBPM[nPlayer] * TJAPlayerPI.app.Skin.SkinConfig.Game.Mob.Beat / 180 / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), TJAPlayerPI.app.Timer);
+                                    this.actMob.ctMobPtn = new CCounter(0, TJAPlayerPI.app.Skin.Game_Mob_Ptn - 1, 60.0 / actPlayInfo.dbBPM[nPlayer] * TJAPlayerPI.app.Skin.SkinConfig.Game.Mob.PtnBeat / TJAPlayerPI.app.Skin.Game_Mob_Ptn / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), TJAPlayerPI.app.Timer);
                                 }
                                 else
                                 {
@@ -3328,13 +3353,13 @@ internal class CStage演奏画面共通 : CStage
                             for (int i = 0; i < 2; i++)
                             {
                                 double db値 = ctChipAnime[i].db現在の値;
-                                ctChipAnime[i] = new CCounter(0, 3, 60.0 / actPlayInfo.dbBPM[i] * 1 / 4 / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), CSoundManager.rc演奏用タイマ);
+                                ctChipAnime[i] = new CCounter(0, 3, 60.0 / actPlayInfo.dbBPM[i] * 1 / 4 / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), TJAPlayerPI.app.Timer);
                                 this.ctChipAnime[i].t時間Resetdb();
                                 this.ctChipAnime[i].db現在の値 = db値;
 
 
                                 double dbBalloonValue = ctBalloonChipAnime[i].db現在の値;
-                                ctBalloonChipAnime[i] = new CCounter(0, 400, 60.0 / actPlayInfo.dbBPM[i] * 1 / 400f / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), CSoundManager.rc演奏用タイマ);
+                                ctBalloonChipAnime[i] = new CCounter(0, 400, 60.0 / actPlayInfo.dbBPM[i] * 1 / 400f / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), TJAPlayerPI.app.Timer);
                                 this.ctBalloonChipAnime[i].t時間Resetdb();
                                 this.ctBalloonChipAnime[i].db現在の値 = dbBalloonValue;
                             }
@@ -3343,7 +3368,7 @@ internal class CStage演奏画面共通 : CStage
                             {
                                 double dbPtn_Normal = (60.0 / actPlayInfo.dbBPM[nPlayer]) * TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BeatNormal[nPlayer] / this.actChara.arモーション番号[nPlayer].Length / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0);
                                 double db値 = this.actChara.ctChara_Normal[nPlayer].db現在の値;
-                                this.actChara.ctChara_Normal[nPlayer] = new CCounter(0, this.actChara.arモーション番号[nPlayer].Length - 1, dbPtn_Normal, CSoundManager.rc演奏用タイマ);
+                                this.actChara.ctChara_Normal[nPlayer] = new CCounter(0, this.actChara.arモーション番号[nPlayer].Length - 1, dbPtn_Normal, TJAPlayerPI.app.Timer);
                                 this.actChara.ctChara_Normal[nPlayer].t時間Resetdb();
                                 this.actChara.ctChara_Normal[nPlayer].db現在の値 = db値;
                             }
@@ -3355,7 +3380,7 @@ internal class CStage演奏画面共通 : CStage
                             {
                                 double dbPtn_Clear = (60.0 / actPlayInfo.dbBPM[nPlayer]) * TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BeatClear[nPlayer] / this.actChara.arクリアモーション番号[nPlayer].Length / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0);
                                 double db値 = this.actChara.ctChara_Clear[nPlayer].db現在の値;
-                                this.actChara.ctChara_Clear[nPlayer] = new CCounter(0, this.actChara.arクリアモーション番号[nPlayer].Length - 1, dbPtn_Clear, CSoundManager.rc演奏用タイマ);
+                                this.actChara.ctChara_Clear[nPlayer] = new CCounter(0, this.actChara.arクリアモーション番号[nPlayer].Length - 1, dbPtn_Clear, TJAPlayerPI.app.Timer);
                                 this.actChara.ctChara_Clear[nPlayer].t時間Resetdb();
                                 this.actChara.ctChara_Clear[nPlayer].db現在の値 = db値;
                             }
@@ -3367,7 +3392,7 @@ internal class CStage演奏画面共通 : CStage
                             {
                                 double dbPtn_GoGo = (60.0 / actPlayInfo.dbBPM[nPlayer]) * TJAPlayerPI.app.Skin.SkinConfig.Game.Chara.BeatGoGo[nPlayer] / this.actChara.arゴーゴーモーション番号[nPlayer].Length / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0);
                                 double db値 = this.actChara.ctChara_GoGo[nPlayer].db現在の値;
-                                this.actChara.ctChara_GoGo[nPlayer] = new CCounter(0, this.actChara.arゴーゴーモーション番号[nPlayer].Length - 1, dbPtn_GoGo, CSoundManager.rc演奏用タイマ);
+                                this.actChara.ctChara_GoGo[nPlayer] = new CCounter(0, this.actChara.arゴーゴーモーション番号[nPlayer].Length - 1, dbPtn_GoGo, TJAPlayerPI.app.Timer);
                                 this.actChara.ctChara_GoGo[nPlayer].t時間Resetdb();
                                 this.actChara.ctChara_GoGo[nPlayer].db現在の値 = db値;
                             }
@@ -3379,7 +3404,7 @@ internal class CStage演奏画面共通 : CStage
                             {
                                 double dbUnit_dancer = (((60 / (actPlayInfo.dbBPM[nPlayer]))) / this.actDancer.ar踊り子モーション番号.Length) / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0);
                                 double db値 = this.actDancer.ct踊り子モーション.db現在の値;
-                                this.actDancer.ct踊り子モーション = new CCounter(0, this.actDancer.ar踊り子モーション番号.Length - 1, dbUnit_dancer * TJAPlayerPI.app.Skin.SkinConfig.Game.Dancer.Beat, CSoundManager.rc演奏用タイマ);
+                                this.actDancer.ct踊り子モーション = new CCounter(0, this.actDancer.ar踊り子モーション番号.Length - 1, dbUnit_dancer * TJAPlayerPI.app.Skin.SkinConfig.Game.Dancer.Beat, TJAPlayerPI.app.Timer);
                                 this.actDancer.ct踊り子モーション.t時間Resetdb();
                                 this.actDancer.ct踊り子モーション.db現在の値 = db値;
                             }
@@ -3390,12 +3415,12 @@ internal class CStage演奏画面共通 : CStage
                             if (TJAPlayerPI.app.Skin.Game_Mob_Ptn != 0)
                             {
                                 double db値 = this.actMob.ctMob.db現在の値;
-                                this.actMob.ctMob = new CCounter(1, 180, 60.0 / actPlayInfo.dbBPM[nPlayer] * TJAPlayerPI.app.Skin.SkinConfig.Game.Mob.Beat / 180 / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), CSoundManager.rc演奏用タイマ);
+                                this.actMob.ctMob = new CCounter(1, 180, 60.0 / actPlayInfo.dbBPM[nPlayer] * TJAPlayerPI.app.Skin.SkinConfig.Game.Mob.Beat / 180 / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), TJAPlayerPI.app.Timer);
                                 this.actMob.ctMob.t時間Resetdb();
                                 this.actMob.ctMob.db現在の値 = db値;
 
                                 db値 = this.actMob.ctMobPtn.db現在の値;
-                                this.actMob.ctMobPtn = new CCounter(0, TJAPlayerPI.app.Skin.Game_Mob_Ptn - 1, 60.0 / actPlayInfo.dbBPM[nPlayer] * TJAPlayerPI.app.Skin.SkinConfig.Game.Mob.PtnBeat / TJAPlayerPI.app.Skin.Game_Mob_Ptn / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), CSoundManager.rc演奏用タイマ);
+                                this.actMob.ctMobPtn = new CCounter(0, TJAPlayerPI.app.Skin.Game_Mob_Ptn - 1, 60.0 / actPlayInfo.dbBPM[nPlayer] * TJAPlayerPI.app.Skin.SkinConfig.Game.Mob.PtnBeat / TJAPlayerPI.app.Skin.Game_Mob_Ptn / (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0), TJAPlayerPI.app.Timer);
                                 this.actMob.ctMobPtn.t時間Resetdb();
                                 this.actMob.ctMobPtn.db現在の値 = db値;
                             }
@@ -3434,7 +3459,7 @@ internal class CStage演奏画面共通 : CStage
                                 // 魂ゲージMAXではない
                                 // ゴーゴースタート_ノーマル
                                 this.actChara.アクションタイマーリセット(nPlayer);
-                                this.actChara.ctキャラクターアクション_ゴーゴースタート[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGoStart[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGoStart[nPlayer]) * 1.5, CSoundManager.rc演奏用タイマ);
+                                this.actChara.ctキャラクターアクション_ゴーゴースタート[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGoStart[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGoStart[nPlayer]) * 1.5, TJAPlayerPI.app.Timer);
                                 this.actChara.ctキャラクターアクション_ゴーゴースタート[nPlayer].t進行db();
                                 this.actChara.ctキャラクターアクション_ゴーゴースタート[nPlayer].db現在の値 = 0D;
                                 this.actChara.bマイどんアクション中[nPlayer] = true;
@@ -3448,7 +3473,7 @@ internal class CStage演奏画面共通 : CStage
                                 // 魂ゲージMAX
                                 // ゴーゴースタート_MAX
                                 this.actChara.アクションタイマーリセット(nPlayer);
-                                this.actChara.ctキャラクターアクション_ゴーゴースタートMAX[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGoStart_Max[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGoStart_Max[nPlayer]) * 1.5, CSoundManager.rc演奏用タイマ);
+                                this.actChara.ctキャラクターアクション_ゴーゴースタートMAX[nPlayer] = new CCounter(0, TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGoStart_Max[nPlayer] - 1, (dbUnit / TJAPlayerPI.app.Skin.Game_Chara_Ptn_GoGoStart_Max[nPlayer]) * 1.5, TJAPlayerPI.app.Timer);
                                 this.actChara.ctキャラクターアクション_ゴーゴースタートMAX[nPlayer].t進行db();
                                 this.actChara.ctキャラクターアクション_ゴーゴースタートMAX[nPlayer].db現在の値 = 0D;
                                 this.actChara.bマイどんアクション中[nPlayer] = true;
@@ -3673,10 +3698,6 @@ internal class CStage演奏画面共通 : CStage
 
     protected bool t進行描画_チップ_連打(int nPlayer)
     {
-        if ((base.eフェーズID == CStage.Eフェーズ.演奏_STAGE_FAILED) || (base.eフェーズID == CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut))
-        {
-            return true;
-        }
         if ((this.n現在のトップChip == -1) || (this.n現在のトップChip >= TJAPlayerPI.DTX[nPlayer].listChip.Count))
         {
             return true;
@@ -3888,8 +3909,8 @@ internal class CStage演奏画面共通 : CStage
     public void t再読込()
     {
         t全チップの再生停止とミキサーからの削除();
-        this.eFadeOut完了時の戻り値 = E演奏画面の戻り値.再読込_再演奏;
-        base.eフェーズID = CStage.Eフェーズ.演奏_再読込;
+        RestartAndReloadChart?.Invoke(this, EventArgs.Empty);
+
         this.bPAUSE = false;
     }
 
@@ -4111,9 +4132,10 @@ internal class CStage演奏画面共通 : CStage
 
     public void t演奏中止()
     {
-        this.actFO.tFadeOut開始();
-        base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
-        this.eFadeOut完了時の戻り値 = E演奏画面の戻り値.演奏中断;
+        TJAPlayerPI.FadeManager.FadeOut(FadeManager.FadeBlack, finished: () =>
+        {
+            ExitGameAndGoToSongSelect?.Invoke(this, EventArgs.Empty);
+        });
     }
 
     protected void t進行描画_チップ_Taiko(ref CDTX dTX, ref CDTX.CChip pChip, int nPlayer)
@@ -4783,36 +4805,6 @@ internal class CStage演奏画面共通 : CStage
         {
             return this.n顔座標[nPlayer];
         }
-    }
-
-    protected bool t進行描画_FadeIn_アウト()
-    {
-        switch (base.eフェーズID)
-        {
-            case CStage.Eフェーズ.共通_FadeIn:
-                if (this.actFI.On進行描画() != 0)
-                {
-                    base.eフェーズID = CStage.Eフェーズ.共通_通常状態;
-                }
-                break;
-
-            case CStage.Eフェーズ.共通_FadeOut:
-            case CStage.Eフェーズ.演奏_STAGE_FAILED_FadeOut:
-                if (this.actFO.On進行描画() != 0)
-                {
-                    return true;
-                }
-                break;
-
-            case CStage.Eフェーズ.演奏_STAGE_CLEAR_FadeOut:
-                if (this.actFOClear.On進行描画() == 0)
-                {
-                    break;
-                }
-                return true;
-
-        }
-        return false;
     }
 
     protected void t背景テクスチャの生成()

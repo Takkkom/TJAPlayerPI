@@ -1,9 +1,9 @@
 ﻿using FDK;
 using TJAPlayerPI.Helper;
 
+namespace TJAPlayerPI.Stages.SongSelect.Legacy;
 
-namespace TJAPlayerPI;
-
+[Obsolete]
 internal class CActSelectPopupMenu : CActivity
 {
 

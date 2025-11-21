@@ -1,7 +1,7 @@
 local tau = 2.0 * math.pi
 
 Runner = {}
-Runner.Variant = 1
+Runner.Variant = 2
 Runner.AnimSpeed = 1
 
 local config = Content:LoadJson("Config.json")

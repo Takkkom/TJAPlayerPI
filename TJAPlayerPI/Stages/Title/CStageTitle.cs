@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Fade;
 using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
@@ -7,11 +8,16 @@ internal class CStageTitle : CStage
 {
     // コンストラクタ
 
+    public EventHandler<EventArgs>? PressedGameStart;
+    public EventHandler<EventArgs>? PressedConfig;
+    public EventHandler<EventArgs>? PressedExit;
+    public EventHandler<EventArgs>? PressedMaintenance;
+
     public CStageTitle()
     {
-        base.eStageID = CStage.EStage.Title;
-        base.listChildren.Add(this.actFI = new CActFIFOBlack());
-        base.listChildren.Add(this.actFO = new CActFIFOBlack());
+        //base.eStageID = CStage.EStage.Title;
+        //base.listChildren.Add(this.actFI = new CActFIFOBlack());
+        //base.listChildren.Add(this.actFO = new CActFIFOBlack());
     }
 
     // CStage 実装
@@ -78,13 +84,15 @@ internal class CStageTitle : CStage
             {
                 if (TJAPlayerPI.r直前のステージ is CStageStartUp)
                 {
-                    this.actFI.tFadeIn開始();
-                    base.eフェーズID = CStage.Eフェーズ.タイトル_起動画面からのFadeIn;
+                    //this.actFI.tFadeIn開始();
+                    //base.eフェーズID = CStage.Eフェーズ.タイトル_起動画面からのFadeIn;
+                    TJAPlayerPI.FadeManager.FadeIn(FadeManager.FadeBlack);//white fade
                 }
                 else
                 {
-                    this.actFI.tFadeIn開始();
-                    base.eフェーズID = CStage.Eフェーズ.共通_FadeIn;
+                    //this.actFI.tFadeIn開始();
+                    //base.eフェーズID = CStage.Eフェーズ.共通_FadeIn;
+                    TJAPlayerPI.FadeManager.FadeIn(FadeManager.FadeBlack);
                 }
                 base.b初めての進行描画 = false;
             }
@@ -120,10 +128,12 @@ internal class CStageTitle : CStage
 
             // キー入力
 
-            if (base.eフェーズID == CStage.Eフェーズ.共通_通常状態)        // 通常状態
+            if (TJAPlayerPI.FadeManager.FadeState == FadeState.None)        // 通常状態
             {
                 if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Escape))
-                    return (int)E戻り値.EXIT;
+                {
+                    PressedExit?.Invoke(this, EventArgs.Empty);
+                }
 
                 if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.UpArrow) || TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.LeftArrow) || TJAPlayerPI.app.Pad.bPressed(EPad.LBlue) || TJAPlayerPI.app.Pad.bPressed(EPad.LBlue2P) && TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount >= 2)
                     this.tカーソルを上へ移動する();
@@ -142,12 +152,10 @@ internal class CStageTitle : CStage
                     {
                         TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND決定音]?.t再生する();
                     }
-                    if (this.n現在のカーソル行 == (int)E戻り値.EXIT - 1)
-                    {
-                        return (int)E戻り値.EXIT;
-                    }
-                    this.actFO.tFadeOut開始();
-                    base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
+
+                    TJAPlayerPI.FadeManager.FadeOut(FadeManager.FadeBlack, finished: FadeOutEnded);
+                    //this.actFO.tFadeOut開始();
+                    //base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
                 }
                 //					if ( CDTXMania.InputManager.Keyboard.bIsKeyPressed( (int) Key.Space ) )
                 //						Trace.TraceInformation( "DTXMania Title: SPACE key registered. " + CDTXMania.ct.nシステム時刻 );
@@ -221,6 +229,7 @@ internal class CStageTitle : CStage
             }
 
 
+            /*
             CStage.Eフェーズ eフェーズid = base.eフェーズID;
             switch (eフェーズid)
             {
@@ -263,6 +272,7 @@ internal class CStageTitle : CStage
                     }
                     break;
             }
+            */
         }
         return 0;
     }
@@ -290,8 +300,8 @@ internal class CStageTitle : CStage
     }
 
     CTexture?[] texttexture = new CTexture?[6];
-    private CActFIFOBlack actFI;
-    private CActFIFOBlack actFO;
+    //private CActFIFOBlack actFI;
+    //private CActFIFOBlack actFO;
     private CCounter? ct下移動用;
     private CCounter? ct上移動用;
     //縦スタイル用
@@ -299,6 +309,29 @@ internal class CStageTitle : CStage
     private const int MENU_YT = 100;
     //------------------------------------
     private int n現在のカーソル行;
+
+    private void FadeOutEnded()
+    {
+        if (!((TJAPlayerPI.app.InputManager.Keyboard.bIsKeyDown((int)SlimDXKeys.Key.LeftControl) || TJAPlayerPI.app.InputManager.Keyboard.bIsKeyDown((int)SlimDXKeys.Key.RightControl)) && TJAPlayerPI.app.InputManager.Keyboard.bIsKeyDown((int)SlimDXKeys.Key.A)))
+        {
+            switch (this.n現在のカーソル行)
+            {
+                case (int)E戻り値.GAMESTART - 1:
+                    PressedGameStart?.Invoke(this, EventArgs.Empty);
+                    break;
+                case (int)E戻り値.CONFIG - 1:
+                    PressedConfig?.Invoke(this, EventArgs.Empty);
+                    break;
+                case (int)E戻り値.EXIT - 1:
+                    PressedExit?.Invoke(this, EventArgs.Empty);
+                    break;
+            }
+        }
+        else
+        {
+            PressedMaintenance?.Invoke(this, EventArgs.Empty);
+        }
+    }
 
     private void tカーソルを下へ移動する()
     {

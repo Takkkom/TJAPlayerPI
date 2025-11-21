@@ -41,11 +41,11 @@ internal class CActMtaiko : CActivity
     {
         if (base.b初めての進行描画)
         {
-            this.nフラッシュ制御タイマ = (long)(CSoundManager.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
+            this.nフラッシュ制御タイマ = (long)(TJAPlayerPI.app.Timer.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
             base.b初めての進行描画 = false;
         }
 
-        long num = (long)(CSoundManager.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
+        long num = (long)(TJAPlayerPI.app.Timer.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
         if (num < this.nフラッシュ制御タイマ)
         {
             this.nフラッシュ制御タイマ = num;

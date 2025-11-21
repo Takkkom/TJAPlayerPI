@@ -827,6 +827,18 @@ internal class CSkin : IDisposable
         public CSongLoading SongLoading { get; set; } = new();
         public class CSongLoading
         {
+            public int BackgroundExtension { get; set; } = 96;
+            public int MobLeftX { get; set; } = 132;
+            public int MobLeftY { get; set; } = 47;
+            public int MobRightX { get; set; } = 942;
+            public int MobRightY { get; set; } = 67;
+            public int MobCenterX { get; set; } = 72;
+            public int MobCenterY { get; set; } = 18;
+            public int MobCenterExY { get; set; } = 20;
+            public int MobSideMovingX { get; set; } = 320;
+            public int MobSideMovingY { get; set; } = 470;
+            public int MobSideMovingEx { get; set; } = 5;
+
             public int PlateX { get; set; } = 640;
             public int PlateY { get; set; } = 360;
             public int TitleX { get; set; } = 640;

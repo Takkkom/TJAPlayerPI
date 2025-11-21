@@ -1,7 +1,8 @@
 ﻿using FDK;
 
-namespace TJAPlayerPI;
+namespace TJAPlayerPI.Stages.SongSelect.Legacy;
 
+[Obsolete]
 internal class CActSelectPresound : CActivity
 {
     // メソッド

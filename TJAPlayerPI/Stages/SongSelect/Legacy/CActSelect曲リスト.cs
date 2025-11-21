@@ -2,8 +2,9 @@
 using System.Runtime.CompilerServices;
 using TJAPlayerPI.Helper;
 
-namespace TJAPlayerPI;
+namespace TJAPlayerPI.Stages.SongSelect.Legacy;
 
+[Obsolete]
 internal class CActSelect曲リスト : CActivity
 {
     // プロパティ
@@ -58,7 +59,7 @@ internal class CActSelect曲リスト : CActivity
 
     // コンストラクタ
 
-    public CActSelect曲リスト(CStage選曲 stage選曲)
+    public CActSelect曲リスト(CStage選曲Legacy stage選曲)
     {
         this.stage選曲 = stage選曲;
         this.r現在選択中の曲 = null;
@@ -547,7 +548,7 @@ internal class CActSelect曲リスト : CActivity
         //-----------------
         if (this.b初めての進行描画)
         {
-            this.nスクロールタイマ = (long)(CSoundManager.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
+            this.nスクロールタイマ = (long)(TJAPlayerPI.app.Timer.n現在時刻ms * (((double)TJAPlayerPI.app.ConfigToml.PlayOption.PlaySpeed) / 20.0));
             stage選曲.t選択曲変更通知();
 
             this.ct三角矢印アニメ.t開始(0, 1000, 1, TJAPlayerPI.app.Timer);
@@ -599,9 +600,9 @@ internal class CActSelect曲リスト : CActivity
         //DifficultySelectフェード用
 
         int 全体Opacity;
-        if (stage選曲.現在の選曲画面状況 == CStage選曲.E選曲画面.難易度選択In)
+        if (stage選曲.現在の選曲画面状況 == CStage選曲Legacy.E選曲画面.難易度選択In)
             全体Opacity = (int)(255.0f - (stage選曲.ctDifficultySelectIN用タイマー.n現在の値 * 255.0f / stage選曲.ctDifficultySelectIN用タイマー.n終了値));
-        else if (stage選曲.現在の選曲画面状況 == CStage選曲.E選曲画面.難易度選択Out)
+        else if (stage選曲.現在の選曲画面状況 == CStage選曲Legacy.E選曲画面.難易度選択Out)
             全体Opacity = (int)(stage選曲.ctDifficultySelectOUT用タイマー.n現在の値 * 255.0f / stage選曲.ctDifficultySelectOUT用タイマー.n終了値);
         else
             全体Opacity = 255;
@@ -689,7 +690,7 @@ internal class CActSelect曲リスト : CActivity
 
         #region [ (2) 通常フェーズの進行。]
         //-----------------
-        long n現在時刻 = CSoundManager.rc演奏用タイマ.n現在時刻ms;
+        long n現在時刻 = TJAPlayerPI.app.Timer.n現在時刻ms;
 
         if (n現在時刻 < this.nスクロールタイマ) // 念のため
             this.nスクロールタイマ = n現在時刻;
@@ -824,15 +825,6 @@ internal class CActSelect曲リスト : CActivity
                 this.txEnumeratingSongs?.t2D描画(TJAPlayerPI.app.Device, 320, 160);
             else
                 this.txSongNotFound?.t2D描画(TJAPlayerPI.app.Device, 320, 160);
-
-            if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Escape))
-            {
-                TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND取消音].t再生する();
-                stage選曲.eFadeOut完了時の戻り値 = CStage選曲.E戻り値.タイトルに戻る;
-                stage選曲.actFIFO.tFadeOut開始();
-                stage選曲.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
-                return 0;
-            }
             //-----------------
             #endregion
 
@@ -965,14 +957,14 @@ internal class CActSelect曲リスト : CActivity
             int xAnime = TJAPlayerPI.app.Skin.SkinConfig.SongSelect.BarX[n見た目の行番号] + ((int)((TJAPlayerPI.app.Skin.SkinConfig.SongSelect.BarX[n次のパネル番号] - TJAPlayerPI.app.Skin.SkinConfig.SongSelect.BarX[n見た目の行番号]) * (((double)Math.Abs(this.n現在のスクロールカウンタ)) / 100.0)));
 
             #region [曲決定時のバーの横移動]
-            if (stage選曲.現在の選曲画面状況 == CStage選曲.E選曲画面.難易度選択Out)
+            if (stage選曲.現在の選曲画面状況 == CStage選曲Legacy.E選曲画面.難易度選択Out)
             {
                 if (n見た目の行番号 < 6)
                     xAnime += (stage選曲.ctDifficultySelectOUT用タイマー.n現在の値 - stage選曲.ctDifficultySelectOUT用タイマー.n終了値) * 3;
                 else if (n見た目の行番号 > 6)
                     xAnime -= (stage選曲.ctDifficultySelectOUT用タイマー.n現在の値 - stage選曲.ctDifficultySelectOUT用タイマー.n終了値) * 3;
             }
-            else if (stage選曲.現在の選曲画面状況 == CStage選曲.E選曲画面.難易度選択In)
+            else if (stage選曲.現在の選曲画面状況 == CStage選曲Legacy.E選曲画面.難易度選択In)
             {
                 if (n見た目の行番号 < 6)
                     xAnime -= stage選曲.ctDifficultySelectIN用タイマー.n現在の値 * 3;
@@ -1335,7 +1327,7 @@ internal class CActSelect曲リスト : CActivity
     private CCachedFontRenderer? pfSubtitle;
     internal CTexture タイトルtmp;
     internal CTexture サブタイトルtmp;
-    private CStage選曲 stage選曲;
+    private CStage選曲Legacy stage選曲;
 
     private readonly Dictionary<TitleTextureKey, CTexture> _titledictionary
         = new Dictionary<TitleTextureKey, CTexture>();

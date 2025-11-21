@@ -1,4 +1,5 @@
 ﻿using FDK;
+using ManagedBass;
 
 namespace TJAPlayerPI;
 
@@ -62,8 +63,8 @@ internal class C文字コンソール : CActivity
     // CActivity 実装
     public override void On活性化()
     {
-        this.txフォント8x16[0] = TJAPlayerPI.app.Tx.TxC(@"Console_Font.png");
-        this.txフォント8x16[1] = TJAPlayerPI.app.Tx.TxC(@"Console_Font_Small.png");
+        this.txフォント8x16[0] = TJAPlayerPI.app.tCreateTexture(CSkin.Path($"{TextureLoader.BASE}Console_Font.png"));
+        this.txフォント8x16[1] = TJAPlayerPI.app.tCreateTexture(CSkin.Path($"{TextureLoader.BASE}Console_Font_Small.png"));
         base.On活性化();
     }
     public override void On非活性化()

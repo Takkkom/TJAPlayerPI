@@ -18,8 +18,6 @@ internal class CAct演奏Drums演奏終了演出 : CActivity
     public void Start()
     {
         this.ct進行メイン = new CCounter(0, 500, 22, TJAPlayerPI.app.Timer);
-        this.ct進行return用 = new CCounter(0, this.ct進行メイン.n終了値 - 100, 22, TJAPlayerPI.app.Timer);
-        this.bリザルトボイス再生済み = false;
         // モードの決定。クリア失敗・フルコンボも事前に作っとく。
         if (TJAPlayerPI.app.n確定された曲の難易度[0] == (int)Difficulty.Dan)
         {
@@ -75,7 +73,6 @@ internal class CAct演奏Drums演奏終了演出 : CActivity
 
     public override void On活性化()
     {
-        this.bリザルトボイス再生済み = false;
         this.Mode = new EndMode[2];
 
         this.soundFailed = TJAPlayerPI.SoundManager.tCreateSound(CSkin.Path(@"Sounds/Failed.ogg"), ESoundGroup.SoundEffect);
@@ -102,10 +99,9 @@ internal class CAct演奏Drums演奏終了演出 : CActivity
         {
             base.b初めての進行描画 = false;
         }
-        if (this.ct進行メイン is not null && this.ct進行return用 is not null && (stage演奏ドラム画面.eフェーズID == CStage.Eフェーズ.演奏_演奏終了演出 || stage演奏ドラム画面.eフェーズID == CStage.Eフェーズ.演奏_STAGE_CLEAR_FadeOut))
+        if (this.ct進行メイン is not null)
         {
             this.ct進行メイン.t進行();
-            this.ct進行return用.t進行();
 
             //CDTXMania.act文字コンソール.tPrint( 0, 0, C文字コンソール.EFontType.灰, this.ct進行メイン.n現在の値.ToString() );
             //仮置き
@@ -958,16 +954,6 @@ internal class CAct演奏Drums演奏終了演出 : CActivity
                 }
 
             }
-
-            if (this.ct進行return用.b終了値に達した)
-            {
-                if (!this.bリザルトボイス再生済み)
-                {
-                    TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND成績発表].t再生する();
-                    this.bリザルトボイス再生済み = true;
-                }
-                return 1;
-            }
         }
 
         return 0;
@@ -977,9 +963,7 @@ internal class CAct演奏Drums演奏終了演出 : CActivity
     //-----------------
     private CStage演奏画面共通 stage演奏ドラム画面;
     private CAct演奏ゲージ共通 actGauge;
-    bool bリザルトボイス再生済み;
     CCounter ct進行メイン;
-    CCounter ct進行return用;
     CSound? soundFailed;
     CSound? soundClear;
     CSound? soundFullCombo;

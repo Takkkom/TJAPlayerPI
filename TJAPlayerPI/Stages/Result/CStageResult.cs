@@ -1,4 +1,5 @@
 ﻿using FDK;
+using TJAPlayerPI.Fade;
 using TJAPlayerPI.Helper;
 
 namespace TJAPlayerPI;
@@ -9,18 +10,18 @@ internal class CStageResult : CStage
 
     public CScoreJson.CRecord[] cRecords;
 
+    public EventHandler<EventArgs>? ExitResult;
 
     // コンストラクタ
 
     public CStageResult()
     {
         this.cRecords = new CScoreJson.CRecord[2];
-        base.eStageID = CStage.EStage.Result;
-        base.eフェーズID = CStage.Eフェーズ.共通_通常状態;
+        //base.eフェーズID = CStage.Eフェーズ.共通_通常状態;
         base.listChildren.Add(this.actParameterPanel = new CActResultParameterPanel(this));
         base.listChildren.Add(this.actSongBar = new CActResultSongBar());
         base.listChildren.Add(this.actFI = new CActFIFOResult());
-        base.listChildren.Add(this.actFO = new CActFIFOBlack());
+        //base.listChildren.Add(this.actFO = new CActFIFOBlack());
     }
 
     // CStage 実装
@@ -33,7 +34,7 @@ internal class CStageResult : CStage
         {
             #region [ 初期化 ]
             //---------------------
-            this.eFadeOut完了時の戻り値 = E戻り値.継続;
+            //this.eFadeOut完了時の戻り値 = E戻り値.継続;
             this.bアニメが完了 = false;
             //---------------------
             #endregion
@@ -149,7 +150,7 @@ internal class CStageResult : CStage
             {
                 this.ct登場用 = new CCounter(0, 100, 5, TJAPlayerPI.app.Timer);
                 this.actFI.tFadeIn開始();
-                base.eフェーズID = CStage.Eフェーズ.共通_FadeIn;
+                //base.eフェーズID = CStage.Eフェーズ.共通_FadeIn;
                 base.b初めての進行描画 = false;
             }
             this.bアニメが完了 = true;
@@ -251,6 +252,7 @@ internal class CStageResult : CStage
             }
             #endregion
 
+            /*
             if (base.eフェーズID == CStage.Eフェーズ.共通_FadeIn)
             {
                 if (this.actFI.On進行描画() != 0)
@@ -262,6 +264,7 @@ internal class CStageResult : CStage
             {
                 return (int)this.eFadeOut完了時の戻り値;
             }
+            */
 
             // キー入力
 
@@ -272,21 +275,15 @@ internal class CStageResult : CStage
                 this.actSongBar.tアニメを完了させる();
                 this.ct登場用.t停止();
             }
-            if (base.eフェーズID == CStage.Eフェーズ.共通_通常状態)
+            if (TJAPlayerPI.FadeManager.FadeState == FadeState.None)
             {
-                if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Escape))
+                if (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Escape) || (TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Return) || TJAPlayerPI.app.Pad.bPressed(EPad.LRed) || TJAPlayerPI.app.Pad.bPressed(EPad.RRed) || (TJAPlayerPI.app.Pad.bPressed(EPad.LRed2P) || TJAPlayerPI.app.Pad.bPressed(EPad.RRed2P)) && TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount >= 2) && this.bアニメが完了)
                 {
                     TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND取消音].t再生する();
-                    this.actFO.tFadeOut開始();
-                    base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
-                    this.eFadeOut完了時の戻り値 = E戻り値.完了;
-                }
-                if ((TJAPlayerPI.app.InputManager.Keyboard.bIsKeyPressed((int)SlimDXKeys.Key.Return) || TJAPlayerPI.app.Pad.bPressed(EPad.LRed) || TJAPlayerPI.app.Pad.bPressed(EPad.RRed) || (TJAPlayerPI.app.Pad.bPressed(EPad.LRed2P) || TJAPlayerPI.app.Pad.bPressed(EPad.RRed2P)) && TJAPlayerPI.app.ConfigToml.PlayOption.PlayerCount >= 2) && this.bアニメが完了)
-                {
-                    TJAPlayerPI.app.Skin.SystemSounds[Eシステムサウンド.SOUND取消音].t再生する();
+                    TJAPlayerPI.FadeManager.FadeOut(FadeManager.FadeBlack, finished: PressedExit);
                     //							this.actFO.tFadeOut開始();
-                    base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
-                    this.eFadeOut完了時の戻り値 = E戻り値.完了;
+                    //base.eフェーズID = CStage.Eフェーズ.共通_FadeOut;
+                    //this.eFadeOut完了時の戻り値 = E戻り値.完了;
                 }
             }
 
@@ -307,12 +304,17 @@ internal class CStageResult : CStage
     //-----------------
     private CCounter ct登場用;
     private CCounter ctMountainAndClear;
-    private E戻り値 eFadeOut完了時の戻り値;
+    //private E戻り値 eFadeOut完了時の戻り値;
     private CActFIFOResult actFI;
-    private CActFIFOBlack actFO;
+    //private CActFIFOBlack actFO;
     private CActResultParameterPanel actParameterPanel;
     private CActResultSongBar actSongBar;
     private bool bアニメが完了;
+
+    private void PressedExit()
+    {
+        ExitResult?.Invoke(this, EventArgs.Empty);
+    }
 
     #endregion
 }
